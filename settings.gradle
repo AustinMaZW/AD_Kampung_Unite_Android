@@ -1,0 +1,2 @@
+rootProject.name = "AD_Project_Kampung_Unite"
+include ':app'
