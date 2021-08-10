@@ -9,6 +9,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AD_Project_Kampung_Unite">
+        <activity
+            android:name=".ViewGroceryListActivity"
+            android:parentActivityName=".MyGroceryListsActivity"
+            android:exported="true" />
+        <activity
+            android:name=".MyGroceryListsActivity"
+            android:exported="true" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
