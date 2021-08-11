@@ -9,9 +9,10 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
+//Bridge between holder and
 public class MyAdapter extends RecyclerView.Adapter<MyHolder> {
 
     Context c;
@@ -26,7 +27,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyHolder> {
     @Override
     public MyHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
 
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row,null);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.my_grocery_lists_items,null);
         return new MyHolder(view);
     }
 
@@ -53,5 +54,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyHolder> {
     @Override
     public int getItemCount() {
         return lists.size();
+    }
+
+    public void setGroceryList(List<GroceryList> groceryLists){
+        this.lists = (ArrayList<GroceryList>) groceryLists;
+        notifyDataSetChanged();
     }
 }

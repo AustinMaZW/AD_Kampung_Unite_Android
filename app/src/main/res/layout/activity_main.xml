@@ -17,7 +17,7 @@
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/KampongUnite_Logo" />
+        app:srcCompat="@drawable/kampongunite_logo" />
 
     <Button
         android:id="@+id/button"

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
+//view details of each grocery list
 public class ViewGroceryListActivity extends AppCompatActivity {
 
     TextView mName, mPickupDetails;

@@ -4,14 +4,14 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="3dp"
-    app:cardElevation="3dp"
+    app:cardElevation="1dp"
     app:cardUseCompatPadding="true">
 
     <RelativeLayout
+        android:id="@+id/rowFG"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        >
+        android:layout_height="80dp"
+        android:padding="16dp">
         <!--
         for ref, groceryview
         <ImageView
@@ -21,28 +21,27 @@
             />
         -->
         <TextView
+            android:id="@+id/grocerylistname"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/grocerylistname"
-            android:text = "Grocery List Name"
-            android:textSize="18dp"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
-            />
+            android:layout_marginLeft="10dp"
+            android:text="Grocery List Name"
+            android:textColor="@color/black"
+            android:textSize="18dp"
+            android:textStyle="bold" />
+
         <TextView
+            android:id="@+id/pickupdetails"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/pickupdetails"
-            android:text = "Pickup details"
-            android:textSize="14dp"
-            android:textColor="@color/black"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="5dp"
             android:layout_below="@id/grocerylistname"
-            />
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:text="Pickup details"
+            android:textColor="@color/black"
+            android:textSize="14dp" />
     </RelativeLayout>
 
 
