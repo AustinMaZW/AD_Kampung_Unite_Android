@@ -46,7 +46,7 @@ public class SQLiteTestActivity extends AppCompatActivity {
     public void addEmployee(View view) {
         String name = txtName.getText().toString();
         String salary = txtSalary.getText().toString();
-        String dept = txtDept.getText().toString();
+//        String dept = txtDept.getText().toString();
 
         long insertedId = eAdapter.insert(name, salary);
         if (insertedId <= 0)
