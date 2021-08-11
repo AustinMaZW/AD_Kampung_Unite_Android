@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">AD_Project_Kampung_Unite</string>
+    <string name="app_name">Kampung Unite</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
 </resources>
