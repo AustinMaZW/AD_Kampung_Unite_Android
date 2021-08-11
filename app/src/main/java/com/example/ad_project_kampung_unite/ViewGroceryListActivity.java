@@ -19,7 +19,7 @@ public class ViewGroceryListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_grocery_list);
 
-        ActionBar actionBar = getSupportActionBar();
+//        ActionBar actionBar = getSupportActionBar();
 
         this.mName = findViewById(R.id.grocerylistname);
         this.mPickupDetails = findViewById(R.id.pickupdetails);
@@ -29,7 +29,7 @@ public class ViewGroceryListActivity extends AppCompatActivity {
         String gName = intent.getStringExtra("gName");
         String gPickupDetails = intent.getStringExtra("gDetails");
 
-        actionBar.setTitle(gName);
+//        actionBar.setTitle(gName);
 
         mName.setText(gName);
         mPickupDetails.setText(gPickupDetails);
