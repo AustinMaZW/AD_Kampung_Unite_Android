@@ -7,6 +7,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
+//pending item - haven't started
+
+//view details of each grocery list
 public class ViewGroceryListActivity extends AppCompatActivity {
 
     TextView mName, mPickupDetails;
@@ -16,7 +19,7 @@ public class ViewGroceryListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_grocery_list);
 
-        ActionBar actionBar = getSupportActionBar();
+//        ActionBar actionBar = getSupportActionBar();
 
         this.mName = findViewById(R.id.grocerylistname);
         this.mPickupDetails = findViewById(R.id.pickupdetails);
@@ -26,7 +29,7 @@ public class ViewGroceryListActivity extends AppCompatActivity {
         String gName = intent.getStringExtra("gName");
         String gPickupDetails = intent.getStringExtra("gDetails");
 
-        actionBar.setTitle(gName);
+//        actionBar.setTitle(gName);
 
         mName.setText(gName);
         mPickupDetails.setText(gPickupDetails);
