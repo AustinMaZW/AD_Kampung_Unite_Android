@@ -1,12 +1,8 @@
 <resources>
-    <string name="app_name">AD_Project_Kampung_Unite</string>
-    <string name="title_activity_my_grocery_list">MyGroceryList</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
-
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="app_name">Kampung Unite</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="greeting">Hello, User!</string>
+    <string name="grocery_lists">My Grocery Lists</string>
+    <string name="groups">My Groups</string>
 </resources>
