@@ -12,10 +12,12 @@ import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDialogFragment;
+import androidx.fragment.app.DialogFragment;
 
-public class AddGroceryListDialog extends AppCompatDialogFragment {
+//popup dialog to add new empty grocery list
+//linked to add button in layout 'activity_my_grocery_lists'
+public class AddGroceryListDialog extends DialogFragment {
     private EditText editTextGrocerylistName;
-    private AddGroceryListDialogListener listener;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState){
@@ -29,17 +31,16 @@ public class AddGroceryListDialog extends AppCompatDialogFragment {
                 .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        listener.onDialogNegativeClick(AddGroceryListDialog.this);
                     }
                 })
                 .setPositiveButton("ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String grocerylistName = editTextGrocerylistName.getText().toString();
-                        listener.applyTexts(grocerylistName);
 
-                        Intent intent = new Intent(getContext(),MyGroceryListsActivity.class);
-                        intent.putExtra("newlistName", grocerylistName);
+                        listener.onDialogPositiveClick(AddGroceryListDialog.this);
+                        listener.sendInput(grocerylistName);
                     }
                 });
         editTextGrocerylistName = view.findViewById(R.id.namegrocerylist);
@@ -47,18 +48,24 @@ public class AddGroceryListDialog extends AppCompatDialogFragment {
         return builder.create();
     }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-
-        try {
-            listener = (AddGroceryListDialogListener) context;
-        } catch (Exception e) {
-            throw new ClassCastException(context.toString()+"must implement dialoglistener");
-        }
+    public interface AddGroceryListDialogListener {
+        public void onDialogPositiveClick(DialogFragment dialog);
+        public void onDialogNegativeClick(DialogFragment dialog);
+        public void sendInput(String input);
     }
 
-    public interface AddGroceryListDialogListener{
-        void applyTexts(String grocerylistName);
+    public AddGroceryListDialogListener listener;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        // Verify that the host activity implements the callback interface
+        try {
+            listener = (AddGroceryListDialogListener) getActivity();
+        } catch (ClassCastException e) {
+            // The activity doesn't implement the interface, throw exception
+            throw new ClassCastException(MyGroceryListsActivity.class.toString()
+                    + " must implement AddGroceryListDialogListener");
+        }
     }
 }

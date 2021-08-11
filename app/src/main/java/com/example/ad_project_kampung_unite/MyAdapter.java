@@ -12,7 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-//Bridge between holder and
+//Bridge between holder and list,
+//for each holder - inflate, populate with data, add onClickListener, direct to activity 'view list details'
 public class MyAdapter extends RecyclerView.Adapter<MyHolder> {
 
     Context c;

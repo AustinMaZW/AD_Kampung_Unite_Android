@@ -3,6 +3,7 @@ package com.example.ad_project_kampung_unite;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,7 +28,7 @@ import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 //navigate to individual lists
 //delete or archive a list
 //add list
-public class MyGroceryListsActivity extends AppCompatActivity implements AddGroceryListDialog.AddGroceryListDialogListener {
+public class MyGroceryListsActivity extends AppCompatActivity implements AddGroceryListDialog.AddGroceryListDialogListener{
 
     private ArrayList<GroceryList> mGroceryLists;
 
@@ -34,7 +36,7 @@ public class MyGroceryListsActivity extends AppCompatActivity implements AddGroc
     private MyAdapter myAdapter;
 
     private Button buttonAdd;
-    private EditText editTextInsert;
+    private String newlistName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,12 +135,6 @@ public class MyGroceryListsActivity extends AppCompatActivity implements AddGroc
         }
     };
 
-    //open dialog for adding new grocery list
-    public void openDialog(){
-        AddGroceryListDialog addListDiaglog = new AddGroceryListDialog();
-        addListDiaglog.show(getSupportFragmentManager(),"example dialog");
-    }
-
     //create dummy data
     public void createMyList(){
 
@@ -161,9 +157,25 @@ public class MyGroceryListsActivity extends AppCompatActivity implements AddGroc
         mRecyclerView.setAdapter(myAdapter);
     }
 
-    @Override
-    public void applyTexts(String grocerylistName) {
+    public void openDialog(){
+        AddGroceryListDialog addListDiaglog = new AddGroceryListDialog();
+        addListDiaglog.show(getSupportFragmentManager(),"exampleDialog");
+    }
 
-        editTextInsert.setText(grocerylistName);
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
+
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+
+    }
+
+    @Override
+    public void sendInput(String input) {
+//        Log.d(MyGroceryListsActivity.class.toString(), "send input: "+ input);
+        newlistName = input;
+        mGroceryLists.add(new GroceryList(newlistName,"","","",""));
     }
 }
