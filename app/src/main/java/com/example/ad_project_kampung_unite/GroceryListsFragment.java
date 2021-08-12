@@ -80,12 +80,15 @@ public class GroceryListsFragment extends Fragment {
                         // Do something with value!
                         Bundle result = new Bundle();
                         result.putString("bundleKey", name);
-                        getParentFragmentManager().setFragmentResult("requestKey", result);
-                        FragmentManager fragmentManager = getParentFragmentManager();
-                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
                         GroceryListFragment groceryListFragment = new GroceryListFragment();
-                        fragmentTransaction.replace(R.id.fragment_container,groceryListFragment);
-                        fragmentTransaction.commit();
+                        getParentFragmentManager().setFragmentResult("requestKey", result);
+
+                        FragmentManager fragmentManager = getParentFragmentManager();
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.fragment_container,groceryListFragment)
+                                .addToBackStack(null)
+                                .commit();
                     }
                 });
 
