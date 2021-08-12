@@ -1,11 +1,11 @@
-package com.example.ad_project_kampung_unite;
+package com.example.ad_project_kampung_unite.model;
 
 import java.util.Date;
 
 public class GroceryList {
     private String name, date, time, totalitems, status;
 
-    GroceryList(String name, String date, String time, String totalitems, String status){
+    public GroceryList(String name, String date, String time, String totalitems, String status){
         this.name = name;
         this.date = date;
         this.time = time;

@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.ad_project_kampung_unite.model.GroceryList;
+
 import java.util.ArrayList;
 import java.util.List;
 
