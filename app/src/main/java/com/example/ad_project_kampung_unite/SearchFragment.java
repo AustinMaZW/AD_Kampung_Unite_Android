@@ -9,7 +9,11 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 
 import java.util.ArrayList;
 
@@ -22,6 +26,7 @@ public class SearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
+
         View layoutRoot = inflater.inflate(R.layout.fragment_search, container, false);
 
         SearchView searchView = (SearchView) layoutRoot.findViewById(R.id.searchView);
