@@ -1,6 +1,4 @@
-package com.example.ad_project_kampung_unite.model;
-
-import java.util.Date;
+package com.example.ad_project_kampung_unite.entities;
 
 public class GroceryList {
     private String name, date, time, totalitems, status;

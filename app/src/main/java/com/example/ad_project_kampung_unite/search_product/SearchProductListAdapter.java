@@ -1,19 +1,18 @@
 package com.example.ad_project_kampung_unite.search_product;
 
-import android.net.Uri;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.ad_project_kampung_unite.MyHolder;
 import com.example.ad_project_kampung_unite.R;
-import com.example.ad_project_kampung_unite.model.Product;
+import com.example.ad_project_kampung_unite.ViewGroceryListActivity;
+import com.example.ad_project_kampung_unite.entities.Product;
 import com.google.android.material.chip.Chip;
 
 public class SearchProductListAdapter extends RecyclerView.Adapter<SearchProductListAdapter.ViewHolder> {
@@ -41,7 +40,7 @@ public class SearchProductListAdapter extends RecyclerView.Adapter<SearchProduct
         holder.add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(view.getContext(),"clicked on "+product.getProductName(),Toast.LENGTH_LONG).show();
+                Toast.makeText(view.getContext(),"clicked on "+holder.getAbsoluteAdapterPosition(),Toast.LENGTH_LONG).show();
             }
         });
     }

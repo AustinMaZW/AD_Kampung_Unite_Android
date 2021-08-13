@@ -1,4 +1,4 @@
-package com.example.ad_project_kampung_unite.model;
+package com.example.ad_project_kampung_unite.entities;
 
 public class Product {
     private String productId, productName, productDescription, category, imgURL;

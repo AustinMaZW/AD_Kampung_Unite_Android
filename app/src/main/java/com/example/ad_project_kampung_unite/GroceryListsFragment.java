@@ -21,7 +21,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.example.ad_project_kampung_unite.model.GroceryList;
+import com.example.ad_project_kampung_unite.entities.GroceryList;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -81,10 +81,11 @@ public class GroceryListsFragment extends Fragment {
                         result.putString("bundleKey", name);
                         getParentFragmentManager().setFragmentResult("requestKey", result);
                         FragmentManager fragmentManager = getParentFragmentManager();
-                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                         GroceryListFragment groceryListFragment = new GroceryListFragment();
-                        fragmentTransaction.replace(R.id.fragment_container,groceryListFragment);
-                        fragmentTransaction.commit();
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.fragment_container,groceryListFragment)
+                                .addToBackStack(null)
+                                .commit();
                     }
                 });
 
