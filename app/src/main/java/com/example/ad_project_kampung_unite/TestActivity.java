@@ -68,7 +68,8 @@ public class TestActivity extends AppCompatActivity {
         Call<List<Comment>> call = postService.getComments(1);
         // Synchronous call | execute()
         // Synchronous methods are executed on the main thread
-        // The exception that is thrown when attempts to perform a networking operation on its main thread for applications targeting the Honeycomb SDK or higher
+        // The exception 'android.os.NetworkOnMainThreadException' that is thrown when the application attempts to perform a networking operation on its main thread
+        // This is only thrown for applications targeting the Honeycomb SDK or higher
         List<Comment> commentList = call.execute().body();
         commentList.stream().forEach(System.out::println);
     }
