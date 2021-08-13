@@ -11,7 +11,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentResultListener;
+
+import com.google.android.material.button.MaterialButton;
 
 public class GroceryListFragment extends Fragment {
 
@@ -46,6 +49,20 @@ public class GroceryListFragment extends Fragment {
             }
         });
 
+        MaterialButton buyerBtn;
+        buyerBtn = layoutRoot.findViewById(R.id.buyerButton);
+        buyerBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditBuyingDetailsFragment editBuyingDetailsFragment = new EditBuyingDetailsFragment();
+
+                FragmentManager fragmentManager = getParentFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container,editBuyingDetailsFragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
 
         return layoutRoot;
     }

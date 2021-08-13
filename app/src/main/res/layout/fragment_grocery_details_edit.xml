@@ -40,6 +40,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/purchaseDate"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:startIconDrawable="@drawable/ic_baseline_calendar_today_24"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingBottom="10dp"
@@ -48,13 +49,15 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:inputType="text"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_weight=".8"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/purchaseTime"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:startIconDrawable="@drawable/ic_baseline_access_time_24"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingBottom="10dp"
@@ -85,6 +88,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/pickupDate"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:startIconDrawable="@drawable/ic_baseline_calendar_today_24"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingBottom="10dp"
@@ -99,17 +103,13 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/pickupTime"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense.ExposedDropdownMenu"
+            app:startIconDrawable="@drawable/ic_baseline_access_time_24"
+
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingBottom="10dp"
             android:hint="Time">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text" />
-
         </com.google.android.material.textfield.TextInputLayout>
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/pickupLocation"

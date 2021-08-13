@@ -24,9 +24,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
+import lombok.val;
 
 public class EditBuyingDetailsFragment extends Fragment {
     public EditBuyingDetailsFragment(){}
@@ -45,7 +47,12 @@ public class EditBuyingDetailsFragment extends Fragment {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                GroupsFragment groupsFragment = new GroupsFragment();
 
+                FragmentManager fragmentManager = getParentFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container,groupsFragment)
+                        .commit();
             }
         });
 
