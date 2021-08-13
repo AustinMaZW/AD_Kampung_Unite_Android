@@ -9,7 +9,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
-    private static final String BASE_URL = "http://0.0.0.0:8080/api/";
+    private static final String BASE_URL = "http://10.0.2.2:8080/api/";
     private static final String TEST_URL = "https://jsonplaceholder.typicode.com/";
 //    Gson gson = new GsonBuilder()
 //            .setDateFormat("yyyy-MM-dd")

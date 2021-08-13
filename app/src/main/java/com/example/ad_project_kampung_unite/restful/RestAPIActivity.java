@@ -21,7 +21,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RestAPIActivity extends AppCompatActivity {
 
-    Retrofit retrofit;
+//    Retrofit retrofit;
     PostService postService;
 
     @Override
@@ -48,11 +48,7 @@ public class RestAPIActivity extends AppCompatActivity {
 //                .build();
 //        PostService postService = retrofit.create(PostService.class);
 
-        Call<List<Post>> call = postService.getPosts();
-        // Synchronous call | execute()
-        // Synchronous methods are executed on the main thread
-//        List<Post> postList = call.execute().body();
-
+       Call<List<Post>> call = postService.getPosts();
         // Asynchronous call | enqueue(Callback<T>)
         // Retrofit performs and handles the method execution in a separated thread
         call.enqueue(new Callback<List<Post>>() {
@@ -65,7 +61,7 @@ public class RestAPIActivity extends AppCompatActivity {
                     TextView textView = findViewById(R.id.text);
                     textView.setText(posts.get(3).getBody().toString());
                 } else {
-                    Log.e("Error", response.errorBody().toString());
+                    Log.e("Error", String.valueOf(response.code()));
                 }
             }
 
@@ -78,14 +74,14 @@ public class RestAPIActivity extends AppCompatActivity {
             }
         });
 
-        Call<List<Comment>> call2 = postService.getComments(1);
-        call2.enqueue(new Callback<List<Comment>>() {
+/*        Call<List<Product>> call2 = postService.getProducts();
+        call2.enqueue(new Callback<List<Product>>() {
             @Override
-            public void onResponse(Call<List<Comment>> call, Response<List<Comment>> response) {
+            public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
 
                 if (response.isSuccessful()) {
-                    List<Comment> comments = response.body();
-                    for (Comment comment:comments) {
+                    List<Product> comments = response.body();
+                    for (Product comment:comments) {
                         System.out.println(comment);
                     }
                 } else {
@@ -94,16 +90,21 @@ public class RestAPIActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<Comment>> call, Throwable t) {
+            public void onFailure(Call<List<Product>> call, Throwable t) {
+                // like no internet connection / the website doesn't exist
                 Log.w("Failure", "Failure!");
                 t.printStackTrace();
             }
-        });
+        });*/
     }
 
     private void test2() throws IOException {
         System.out.println("run test2");
         Call<List<Product>> call = postService.getProducts();
+        // Synchronous call | execute()
+        // Synchronous methods are executed on the main thread
+        // The exception 'android.os.NetworkOnMainThreadException' is thrown when an application attempts to perform a networking operation on its main thread.
+        // but only thrown for applications targeting the Honeycomb SDK or higher
         List<Product> postList = call.execute().body();
         postList.stream().forEach(System.out::println);
     }
