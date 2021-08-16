@@ -1,3 +1,13 @@
 <resources>
-    <string name="app_name">AD_Project_Kampung_Unite</string>
+    <string name="app_name">Kampung Unite</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="grocery_lists">My Grocery Lists</string>
+    <string name="groups">My Groups</string>
+    <string name="greeting">Hello, User!</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="be_buyer">Become A Buyer</string>
+    <string name="find_match">Find Match</string>
+
 </resources>
