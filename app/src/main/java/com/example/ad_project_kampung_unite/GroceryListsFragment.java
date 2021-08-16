@@ -1,19 +1,15 @@
 package com.example.ad_project_kampung_unite;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Canvas;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,14 +19,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +34,7 @@ public class GroceryListsFragment extends Fragment {
     private ArrayList<GroceryList> mGroceryLists;
 
     private RecyclerView mRecyclerView;
-    private MyAdapter myAdapter;
+    private GroceryListAdapter myAdapter;
 
     private Button buttonAdd;
     private String newlistName;
@@ -58,6 +49,18 @@ public class GroceryListsFragment extends Fragment {
         // Inflate the layout for this fragment
         View layoutRoot = inflater.inflate(R.layout.fragment_grocery_lists, container, false);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("My Grocery Lists");
+
+        FloatingActionButton tempButton = layoutRoot.findViewById(R.id.temp);
+        tempButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GroupDetailsFragment groupDetailsFragment = new GroupDetailsFragment();
+                FragmentManager fragmentManager = getParentFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container,groupDetailsFragment)
+                        .commit();
+            }
+        });
 
         FloatingActionButton addButton = layoutRoot.findViewById(R.id.fab);
 
@@ -130,7 +133,7 @@ public class GroceryListsFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext(), LinearLayoutManager.VERTICAL,false));
 
-        myAdapter = new MyAdapter(layoutRoot.getContext(), mGroceryLists);
+        myAdapter = new GroceryListAdapter(layoutRoot.getContext(), mGroceryLists);
         mRecyclerView.setAdapter(myAdapter);
     }
 

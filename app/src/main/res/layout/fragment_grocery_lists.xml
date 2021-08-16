@@ -27,5 +27,15 @@
             android:backgroundTint="@color/teal_200"
             android:layout_margin="16dp"/>
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:contentDescription="add"
+        android:src="@drawable/ic_add_black_24"
+        android:backgroundTint="@color/black"
+        android:layout_margin="16dp"/>
+
     </androidx.appcompat.widget.LinearLayoutCompat>
 </FrameLayout>

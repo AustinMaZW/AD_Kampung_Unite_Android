@@ -8,12 +8,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 //Holder for individual rows in 'My Grocery Lists' recyclerview
 //each row is a separate grocery list
-public class MyHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+public class GroceryListHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     TextView mGroceryListName, mPickupDetail;
     ItemClickListener itemClickListener;
 
-    MyHolder(@NonNull View itemView){
+    GroceryListHolder(@NonNull View itemView){
         super(itemView);
 
         this.mGroceryListName = itemView.findViewById(R.id.grocerylistname);
