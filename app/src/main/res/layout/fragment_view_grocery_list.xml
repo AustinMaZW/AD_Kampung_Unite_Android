@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/rqStat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="0dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/rqStat_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Request Sent to buyers!"
+            android:textColor="@color/black"
+            android:textSize="18dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/rqStat_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rqStat_title"
+            android:layout_marginTop="5dp"
+            android:text="Pending buyer confirmation"
+            android:textColor="@color/black"
+            android:textSize="14dp" />
+
+        <LinearLayout
+            android:id="@+id/status_approved"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rqStat_description"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/pickup_store"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rqStat_description"
+                android:layout_marginTop="5dp"
+                android:text="Buyer will be purchasing from: "
+                android:textColor="@color/black"
+                android:textSize="14dp" />
+
+
+            <TextView
+                android:id="@+id/pickup_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/pickup_store"
+                android:layout_marginTop="5dp"
+                android:text="Pickup Location: "
+                android:textColor="@color/black"
+                android:textSize="14dp" />
+
+            <TextView
+                android:id="@+id/pickup_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/pickup_location"
+                android:layout_marginTop="5dp"
+                android:text="Pickup between: "
+                android:textColor="@color/black"
+                android:textSize="14dp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/rv_hitch_rq"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:text="My Grocery List Summary"
+        android:textColor="@color/black"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/rv_grocery_list"
+        />
+
+</LinearLayout>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="2dp"
+    android:paddingBottom="2dp"
+    >
+
+    <TextView
+        android:id="@+id/group_plan_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginLeft="20dp"
+        android:text="Group Plan Name"
+        />
+
+    <Button
+        android:id="@+id/cancel_rq_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:backgroundTint="#a32603"
+        android:text="cancel"
+        android:textSize="10sp"
+        android:layout_marginRight="10dp"
+        />
+</LinearLayout>

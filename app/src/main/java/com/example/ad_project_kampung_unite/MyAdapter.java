@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ad_project_kampung_unite.entities.GroceryList;
@@ -46,10 +48,18 @@ public class MyAdapter extends RecyclerView.Adapter<MyHolder> {
                 String gName = lists.get(position).getName();
                 String gDetails = lists.get(position).getDate();
 
-                Intent intent = new Intent(c, ViewGroceryListActivity.class);
-                intent.putExtra("gName",gName);
-                intent.putExtra("gDetails",gDetails);
-                c.startActivity(intent);
+//                Intent intent = new Intent(c, ViewGroceryListActivity.class);
+//                intent.putExtra("gName",gName);
+//                intent.putExtra("gDetails",gDetails);
+//                c.startActivity(intent);
+
+                FragmentManager fm = ((AppCompatActivity)c).getSupportFragmentManager();
+                //fm.setFragmentResult("requestKey", result);
+                ViewGroceryListFragment ViewGLFragment = new ViewGroceryListFragment();
+                fm.beginTransaction()
+                        .replace(R.id.fragment_container,ViewGLFragment)
+                        .addToBackStack(null)
+                        .commit();
             }
         });
     }
