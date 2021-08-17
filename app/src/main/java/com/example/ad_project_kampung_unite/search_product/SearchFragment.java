@@ -34,11 +34,11 @@ public class SearchFragment extends Fragment {
 
         // mock data
         Product[] products = new Product[] {
-                new Product("1627923825-1174","Old Town 3IN1 Sugar Cane White Coffee", "15 x 36 g","Beverages","https://ssecomm.s3-ap-southeast-1.amazonaws.com/products/md/WPVi3KzqNyNsW7uGdcTMQqZmyiC2WH.0.jpg"),
-                new Product("1627923846-1184","Happy Family 2IN1 Kopi O With Sugar Mixture Bag","8 x 20 g","Beverages","https://ssecomm.s3-ap-southeast-1.amazonaws.com/products/md/yjwEFEKNPFnYIXrfN4s6wnfTAsdz5t.0.jpg"),
-                new Product("1627923819-1171","Nescafe Original Ice Milk Coffee","240 ml","Beverages","https://ssecomm.s3-ap-southeast-1.amazonaws.com/products/md/QUZdsA8aBQFb4vP3iIf36UeLv9KjWK.0.jpg"),
-                new Product("1627923829-1176","Old Town 3IN1 Hazelnut White Coffee","15 x 38 g","Beverages","https://ssecomm.s3-ap-southeast-1.amazonaws.com/products/md/S6k9DS5DfRko9CKoYg0fw1ERcJ8Kin.0.jpg"),
-                new Product("1627923837-1180","Pokka Premium Milk Coffee","500 ml","Beverages","https://ssecomm.s3-ap-southeast-1.amazonaws.com/products/md/fEvosk2kZcZaSfik0TpXJGLBO00lcr.0.jpg")
+                new Product(1627923825,"Old Town 3IN1 Sugar Cane White Coffee", "15 x 36 g","Beverages","https://ssecomm.s3-ap-southeast-1.amazonaws.com/products/md/WPVi3KzqNyNsW7uGdcTMQqZmyiC2WH.0.jpg"),
+                new Product(1627923846,"Happy Family 2IN1 Kopi O With Sugar Mixture Bag","8 x 20 g","Beverages","https://ssecomm.s3-ap-southeast-1.amazonaws.com/products/md/yjwEFEKNPFnYIXrfN4s6wnfTAsdz5t.0.jpg"),
+                new Product(1627923819,"Nescafe Original Ice Milk Coffee","240 ml","Beverages","https://ssecomm.s3-ap-southeast-1.amazonaws.com/products/md/QUZdsA8aBQFb4vP3iIf36UeLv9KjWK.0.jpg"),
+                new Product(1627923829,"Old Town 3IN1 Hazelnut White Coffee","15 x 38 g","Beverages","https://ssecomm.s3-ap-southeast-1.amazonaws.com/products/md/S6k9DS5DfRko9CKoYg0fw1ERcJ8Kin.0.jpg"),
+                new Product(1627923837,"Pokka Premium Milk Coffee","500 ml","Beverages","https://ssecomm.s3-ap-southeast-1.amazonaws.com/products/md/fEvosk2kZcZaSfik0TpXJGLBO00lcr.0.jpg")
         };
 
 
