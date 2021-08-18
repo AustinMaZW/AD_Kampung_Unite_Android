@@ -26,9 +26,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    buildFeatures {
-        viewBinding true
-    }
 }
 
 dependencies {
@@ -43,8 +40,10 @@ dependencies {
     implementation "androidx.cardview:cardview:1.0.0"
     implementation 'androidx.navigation:navigation-fragment:2.3.5'
     implementation 'androidx.navigation:navigation-ui:2.3.5'
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0' /* Retrofit 2 HTTP Client */
+    implementation 'com.squareup.retrofit2:converter-gson:2.4.0' /* Converter to (de)serialize the data */
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.5.0' /* Logging interceptor to know what kind of data is being sent and received by Retrofit */
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    compileOnly'org.projectlombok:lombok:1.18.20'
 }
