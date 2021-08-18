@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ad_project_kampung_unite.R;
 import com.example.ad_project_kampung_unite.entities.GroupPlan;
+import com.example.ad_project_kampung_unite.entities.HitchRequest;
 
 import java.util.List;
 
@@ -29,10 +30,10 @@ public class HitchRequestAdaptor extends RecyclerView.Adapter<HitchRequestAdapto
         }
     }
 
-    private List<GroupPlan> groupPlans;
+    private List<HitchRequest> hitchRequests;
 
-    public HitchRequestAdaptor(List<GroupPlan> groupPlans){
-        this.groupPlans = groupPlans;
+    public HitchRequestAdaptor(List<HitchRequest> hitchRequests){
+        this.hitchRequests = hitchRequests;
     }
 
     // inflate item row layout and returning the holder
@@ -53,19 +54,17 @@ public class HitchRequestAdaptor extends RecyclerView.Adapter<HitchRequestAdapto
     @Override
     public void onBindViewHolder(HitchRequestAdaptor.ViewHolder holder, int position) {
         // Get the data model based on position
-        GroupPlan groupPlan = groupPlans.get(position);
-
-        Integer gpId = groupPlan.getId();
+        HitchRequest hitchRequest = hitchRequests.get(position);
 
         // Set item views based on your views and data model
         TextView textView = holder.groupPlanName;
-        textView.setText(gpId.toString());    //change this to getName later when name is added to group plan as attr
+        textView.setText(hitchRequest.getGroupPlan().getPlanName());    //change this to getName later when name is added to group plan as attr
         Button button = holder.cancelRequestBtn;
     }
 
     // Returns the total count of items in the list
     @Override
     public int getItemCount() {
-        return groupPlans.size();
+        return hitchRequests.size();
     }
 }

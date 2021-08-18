@@ -36,7 +36,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-
 public class ViewGroceryListFragment extends Fragment {
 
     private List<GroupPlan> groupPlanList;
@@ -46,6 +45,7 @@ public class ViewGroceryListFragment extends Fragment {
     private GroceryListService groceryListService;
     private RecyclerView rvHitchRequests;
     private RecyclerView rvGroceryItems;
+    private View layoutRoot;
 
     public ViewGroceryListFragment() {
         // Required empty public constructor
@@ -56,23 +56,18 @@ public class ViewGroceryListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View layoutRoot = inflater.inflate(R.layout.fragment_view_grocery_list, container, false);
+        layoutRoot = inflater.inflate(R.layout.fragment_view_grocery_list, container, false);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Grocery List Name");     //need grocery list name passed from previous frag
 
         createDummyData(); //  fake data to be replaced with http request list with database
 
-        //recycler view for hitch requests
-        rvHitchRequests = layoutRoot.findViewById(R.id.rv_hitch_rq);
-        HitchRequestAdaptor hitchRequestAdaptor = new HitchRequestAdaptor(groupPlanList);
-        rvHitchRequests.setAdapter(hitchRequestAdaptor);    //move this and above line to http request method when added
-        rvHitchRequests.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext()));
-
-        //recycler view for grocery items
-        rvGroceryItems = layoutRoot.findViewById(R.id.rv_grocery_list);
-        rvGroceryItems.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext()));
-
+        //call to retrieve groceryitems
         groceryListService = RetrofitClient.createService(GroceryListService.class);
         getGroceryItemsFromServer();
+
+        //call to retrieve requests
+        hitchRequestService = RetrofitClient.createService(HitchRequestService.class);
+        getHitchRequestsFromServer();
 
         //add condition if request is pending then below are 'invisible
         layoutRoot.findViewById(R.id.status_approved).setVisibility(View.GONE);
@@ -91,8 +86,8 @@ public class ViewGroceryListFragment extends Fragment {
                     groceryItemList = response.body();
                     Log.d("Success", String.valueOf(groceryItemList.get(0).getProduct().getProductName())); //for testing
 
-                    GroceryListItemAdaptor groceryListItemAdaptor = new GroceryListItemAdaptor(groceryItemList);
-                    rvGroceryItems.setAdapter(groceryListItemAdaptor);  //set the adaptor here
+                    buildGroceryItemRV();
+
                 } else {
                     Log.e("Error", response.errorBody().toString());
                 }
@@ -108,34 +103,49 @@ public class ViewGroceryListFragment extends Fragment {
         });
     }
 
+    private void buildGroceryItemRV() {
+        //recycler view for grocery items
+        rvGroceryItems = layoutRoot.findViewById(R.id.rv_grocery_list);
+        GroceryListItemAdaptor groceryListItemAdaptor = new GroceryListItemAdaptor(groceryItemList);
+        rvGroceryItems.setAdapter(groceryListItemAdaptor);  //set the adaptor here
+        rvGroceryItems.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext()));
+    }
+
     //below code to be completed for hitch request
-//    private void getHitchRequestsFromServer(){
-//        Call<List<HitchRequest>> call = hitchRequestService.getHitchRequestsByGroceryListId(36);    //hard coded grocerylistid here, replace later
-//
-//        call.enqueue(new Callback<List<HitchRequest>>() {
-//            @Override
-//            public void onResponse(Call<List<HitchRequest>> call, Response<List<HitchRequest>> response) {
-//
-//                if (response.isSuccessful()) {
-//                    hitchRequests = response.body();
-//                    Log.d("Success", String.valueOf(hitchRequests.get(0))); //continue here....
-//
-//                    GroceryListItemAdaptor groceryListItemAdaptor = new GroceryListItemAdaptor(groceryItemList);
-//                    rvGroceryItems.setAdapter(groceryListItemAdaptor);  //set the adaptor here
-//                } else {
-//                    Log.e("Error", response.errorBody().toString());
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<List<hitchRequests>> call, Throwable t) {
-//                // like no internet connection / the website doesn't exist
-//                call.cancel();
-//                Log.w("Failure", "Failure!");
-//                t.printStackTrace();
-//            }
-//        });
-//    }
+    private void getHitchRequestsFromServer(){
+        Call<List<HitchRequest>> call = hitchRequestService.getHitchRequestsByGroceryListId(36);    //hard coded grocerylistid here, replace later
+
+        call.enqueue(new Callback<List<HitchRequest>>() {
+            @Override
+            public void onResponse(Call<List<HitchRequest>> call, Response<List<HitchRequest>> response) {
+
+                if (response.isSuccessful()) {
+                    hitchRequests = response.body();
+                    Log.d("Success", String.valueOf(hitchRequests.get(0))); //continue here....
+
+                    buildHitchRequestRV();
+                } else {
+                    Log.e("Error", response.errorBody().toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<HitchRequest>> call, Throwable t) {
+                // like no internet connection / the website doesn't exist
+                call.cancel();
+                Log.w("Failure", "Failure!");
+                t.printStackTrace();
+            }
+        });
+    }
+
+    private void buildHitchRequestRV() {
+        //recycler view for hitch requests
+        rvHitchRequests = layoutRoot.findViewById(R.id.rv_hitch_rq);
+        HitchRequestAdaptor hitchRequestAdaptor = new HitchRequestAdaptor(hitchRequests);
+        rvHitchRequests.setAdapter(hitchRequestAdaptor);    //move this and above line to http request method when added
+        rvHitchRequests.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext()));
+    }
 
     //below code for initial UI testing, to be replaced with http call
     private void createDummyData(){
