@@ -1,38 +1,39 @@
 package com.example.ad_project_kampung_unite.entities;
 
 public class Product {
-    private String productId, productName, productDescription, category, imgURL;
+    private int id;
+    private String name, description, imgURL, category;
 
-    public Product(String productId, String productName, String productDescription, String category, String imgURL) {
-        this.productId = productId;
-        this.productName = productName;
-        this.productDescription = productDescription;
+    public Product(int id, String name, String description, String category, String imgURL) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
         this.category = category;
         this.imgURL = imgURL;
     }
 
-    public String getProductId() {
-        return productId;
+    public int getProductId() {
+        return id;
     }
 
-    public void setProductId(String productId) {
-        this.productId = productId;
+    public void setProductId(int productId) {
+        this.id = productId;
     }
 
     public String getProductName() {
-        return productName;
+        return name;
     }
 
     public void setProductName(String productName) {
-        this.productName = productName;
+        this.name = productName;
     }
 
     public String getProductDescription() {
-        return productDescription;
+        return description;
     }
 
     public void setProductDescription(String productDescription) {
-        this.productDescription = productDescription;
+        this.description = productDescription;
     }
 
     public String getCategory() {
