@@ -19,9 +19,11 @@ import com.example.ad_project_kampung_unite.R;
 import com.example.ad_project_kampung_unite.adaptors.GroceryListItemAdaptor;
 import com.example.ad_project_kampung_unite.adaptors.HitchRequestAdaptor;
 import com.example.ad_project_kampung_unite.data.remote.GroceryListService;
+import com.example.ad_project_kampung_unite.data.remote.HitchRequestService;
 import com.example.ad_project_kampung_unite.entities.GroceryItem;
 import com.example.ad_project_kampung_unite.entities.GroceryList;
 import com.example.ad_project_kampung_unite.entities.GroupPlan;
+import com.example.ad_project_kampung_unite.entities.HitchRequest;
 import com.example.ad_project_kampung_unite.entities.Product;
 
 import java.time.LocalDate;
@@ -38,6 +40,8 @@ public class ViewGroceryListFragment extends Fragment {
 
     private List<GroupPlan> groupPlanList;
     private List<GroceryItem> groceryItemList = new ArrayList<>();
+    private List<HitchRequest> hitchRequests = new ArrayList<>();
+    private HitchRequestService hitchRequestService;
     private GroceryListService groceryListService;
     private RecyclerView rvHitchRequests;
     private RecyclerView rvGroceryItems;
@@ -76,7 +80,7 @@ public class ViewGroceryListFragment extends Fragment {
     }
 
     private void getGroceryItemsFromServer(){
-        Call<List<GroceryItem>> call = groceryListService.getGroceryItemByGroceryListId(30);
+        Call<List<GroceryItem>> call = groceryListService.getGroceryItemByGroceryListId(30); //hard coded grocerylistid here, replace later
 
         call.enqueue(new Callback<List<GroceryItem>>() {
             @Override
@@ -103,6 +107,34 @@ public class ViewGroceryListFragment extends Fragment {
         });
     }
 
+    //below code to be completed for hitch request
+//    private void getHitchRequestsFromServer(){
+//        Call<List<HitchRequest>> call = hitchRequestService.getHitchRequestsByGroceryListId(36);    //hard coded grocerylistid here, replace later
+//
+//        call.enqueue(new Callback<List<HitchRequest>>() {
+//            @Override
+//            public void onResponse(Call<List<HitchRequest>> call, Response<List<HitchRequest>> response) {
+//
+//                if (response.isSuccessful()) {
+//                    hitchRequests = response.body();
+//                    Log.d("Success", String.valueOf(hitchRequests.get(0))); //continue here....
+//
+//                    GroceryListItemAdaptor groceryListItemAdaptor = new GroceryListItemAdaptor(groceryItemList);
+//                    rvGroceryItems.setAdapter(groceryListItemAdaptor);  //set the adaptor here
+//                } else {
+//                    Log.e("Error", response.errorBody().toString());
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<List<hitchRequests>> call, Throwable t) {
+//                // like no internet connection / the website doesn't exist
+//                call.cancel();
+//                Log.w("Failure", "Failure!");
+//                t.printStackTrace();
+//            }
+//        });
+//    }
     private void createDummyData(){
 
         groupPlanList = new ArrayList<>();

@@ -77,11 +77,29 @@
 
     </LinearLayout>
 
+<!--    recyclerview for list of hitch requests-->
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/rv_hitch_rq"
         />
+
+<!--    button to find another request-->
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/hitch_rq_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="FIND ANOTHER GROUP"
+            android:textSize="9sp"
+            android:textColor="@color/Kampong_Blue"
+            android:background="@android:color/transparent"
+            android:layout_alignParentRight="true"
+            />
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -104,6 +122,7 @@
             android:paddingRight="10dp">
 
             <Button
+                android:id="@+id/edit_groceries"
                 android:layout_width="70dp"
                 android:layout_height="40dp"
                 android:text="Edit"
@@ -114,10 +133,9 @@
                 />
         </RelativeLayout>
 
-
     </LinearLayout>
 
-
+<!--    recycler view for list of grocery items-->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_grocery_list"
         android:layout_width="match_parent"
