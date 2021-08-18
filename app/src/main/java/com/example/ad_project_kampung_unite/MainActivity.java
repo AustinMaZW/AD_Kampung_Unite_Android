@@ -7,11 +7,13 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.ad_project_kampung_unite.model.UserDetail;
 import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -62,13 +64,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 //logout request
                 sharedPreferences = getSharedPreferences(LOGIN_CREDENTIALS, MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                sharedPreferences.getString(KEY_USERNAME, "");
+                String username = sharedPreferences.getString(KEY_USERNAME, "");
+                String url = "http://10.0.2.2:8080/user/";
+                editor.clear();
+                editor.apply();
+                Intent logout = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(logout);
                 break;
         }
 
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 
     @Override
     public void onBackPressed() {

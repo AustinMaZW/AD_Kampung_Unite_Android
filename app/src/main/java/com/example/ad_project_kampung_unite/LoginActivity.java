@@ -33,12 +33,18 @@ public class LoginActivity extends AppCompatActivity {
     EditText editText_username, editText_password;
     SharedPreferences sharedPreferences;
     //    private static UserDetail userDetail;
-    private String auth = null;
+    private String auth = "invalidLogin";
 
     private static final String LOGIN_CREDENTIALS = "LoginCredentials";
+    private static final String KEY_USERID = "userId";
     private static final String KEY_USERNAME = "username";
     private static final String KEY_PASSWORD = "password";
     private static final String KEY_AUTHENTICATION = "authentication";
+
+    private static HttpLoggingInterceptor logging = new HttpLoggingInterceptor()
+            .setLevel(HttpLoggingInterceptor.Level.BASIC);
+
+    private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,9 +66,7 @@ public class LoginActivity extends AppCompatActivity {
                     String username = editText_username.getText().toString();
                     String pwd = editText_password.getText().toString();
                     UserDetail user = new UserDetail(username, pwd);
-
                     loginRequest(user);
-
 //                    //Start use of path variable to login
 //                    String loginUrl = "https://localhost:8080/user/login"+username+"&&"+pwd;
 //                    StringRequest loginRequest = new StringRequest(loginUrl, new Response.Listener<String>() {
@@ -100,15 +104,61 @@ public class LoginActivity extends AppCompatActivity {
 //                    use this for easy no login required
 //                    Intent main = new Intent(LoginActivity.this, MainActivity.class);
 //                    startActivity(main);
-
-                    if( sharedPreferences.getString(KEY_AUTHENTICATION,"") != null){
-                        Intent main = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(main);
-                    }
-
                 }
             }
         });
+    }
+
+    private void loginRequest(UserDetail user) {
+        String url = "http://10.0.2.2:8080/user/";
+        httpClient.addInterceptor(logging);
+        Retrofit.Builder builder = new Retrofit.Builder()
+                .baseUrl(url)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(httpClient.build());
+        Retrofit retrofit = builder.build();
+
+        UserDetailService userDetailService = retrofit.create(UserDetailService.class);
+        Call<UserDetail> call = userDetailService.login(user);
+        call.enqueue(new Callback<UserDetail>() {
+            @Override
+            public void onResponse(Call<UserDetail> call, Response<UserDetail> response) {
+                if (response.isSuccessful()){
+                    if(response.body().getAuthentication() != null){
+                        auth = response.body().getAuthentication();
+                    }
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString(KEY_USERNAME, editText_username.getText().toString());
+                    editor.putString(KEY_PASSWORD, editText_password.getText().toString());
+                    editor.putString(KEY_USERID, response.body().getId().toString());
+                    editor.putString(KEY_AUTHENTICATION, auth);
+                    editor.commit();
+                    System.out.println(auth);
+                    if (auth != "invalidLogin"){
+                        Toast.makeText(LoginActivity.this, "Successful Login", Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        Toast.makeText(LoginActivity.this, "Enter Valid Username / Password", Toast.LENGTH_SHORT).show();
+                    }
+//                    Intent main = new Intent(LoginActivity.this, MainActivity.class);
+//                    startActivity(main);
+                    sharedPreferences = getSharedPreferences(LOGIN_CREDENTIALS, MODE_PRIVATE);
+                    if( sharedPreferences.getString(KEY_AUTHENTICATION,"invalidLogin") != "invalidLogin"){
+                        Intent main = new Intent(LoginActivity.this, MainActivity.class);
+                        startActivity(main);
+                    }
+                }
+                else{
+                    Toast.makeText(LoginActivity.this, "Enter Valid Username / Password", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserDetail> call, Throwable t) {
+                Toast.makeText(LoginActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     private void authenticateRequest(UserDetail user) {
@@ -133,7 +183,6 @@ public class LoginActivity extends AppCompatActivity {
                 editor.putString(KEY_PASSWORD, editText_password.getText().toString());
                 editor.putString(KEY_AUTHENTICATION, auth);
                 editor.commit();
-
             }
 
             @Override
@@ -141,48 +190,9 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(LoginActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    private static HttpLoggingInterceptor logging = new HttpLoggingInterceptor()
-            .setLevel(HttpLoggingInterceptor.Level.BASIC);
-
-    private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-
-    private void loginRequest(UserDetail user) {
-        String url = "http://10.0.2.2:8080/user/";
-        httpClient.addInterceptor(logging);
-        Retrofit.Builder builder = new Retrofit.Builder()
-                .baseUrl(url)
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(httpClient.build());
-        Retrofit retrofit = builder.build();
-
-        UserDetailService userDetailService = retrofit.create(UserDetailService.class);
-        Call<UserDetail> call = userDetailService.login(user);
-        call.enqueue(new Callback<UserDetail>() {
-            @Override
-            public void onResponse(Call<UserDetail> call, Response<UserDetail> response) {
-                Toast.makeText(LoginActivity.this, "Successful Login"+ response.body().getAuthentication(), Toast.LENGTH_SHORT).show();
-                if(response.body().getAuthentication() != null){
-                    auth = response.body().getAuthentication();
-                }
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString(KEY_USERNAME, editText_username.getText().toString());
-                editor.putString(KEY_PASSWORD, editText_password.getText().toString());
-                editor.putString(KEY_AUTHENTICATION, auth);
-                System.out.println(auth);
-            }
-
-            @Override
-            public void onFailure(Call<UserDetail> call, Throwable t) {
-                Toast.makeText(LoginActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
-            }
-        });
-
     }
 
     private void parseArray(JSONArray jsonArray) {
-
         for (int i = 0; i < jsonArray.length(); i++) {
             try {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
