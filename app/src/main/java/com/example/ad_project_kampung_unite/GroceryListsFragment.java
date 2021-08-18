@@ -58,7 +58,33 @@ public class GroceryListsFragment extends Fragment {
         View layoutRoot = inflater.inflate(R.layout.fragment_grocery_lists, container, false);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("My Grocery Lists");
 
+        // get grocery lists from database
+        groceryLists = new ArrayList<>();
+        groceryListService = RetrofitClient.createService(GroceryListService.class);
+
+        Call<List<GroceryList>> call = groceryListService.getGroceryLists();
+        call.enqueue(new Callback<List<GroceryList>>() {
+            @Override
+            public void onResponse(Call<List<GroceryList>> call, Response<List<GroceryList>> response) {
+                List<GroceryList> result = response.body();
+                result.stream().forEach(x -> groceryLists.add(x));
+                //recycler view adapter instantiated here
+                buildRecyclerView(layoutRoot);
+
+                //attaching touch helper to recycler view for swipe action itoms
+                ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+                itemTouchHelper.attachToRecyclerView(mRecyclerView);
+            }
+
+            @Override
+            public void onFailure(Call<List<GroceryList>> call, Throwable t) {
+
+            }
+        });
+
         FloatingActionButton addButton = layoutRoot.findViewById(R.id.fab);
+
+
 
 //        addButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -105,29 +131,7 @@ public class GroceryListsFragment extends Fragment {
 //            }
 //        });
 
-        //input dummy data
-        groceryLists = new ArrayList<>();
-        groceryListService = RetrofitClient.createService(GroceryListService.class);
 
-        Call<List<GroceryList>> call = groceryListService.getGroceryLists();
-        call.enqueue(new Callback<List<GroceryList>>() {
-            @Override
-            public void onResponse(Call<List<GroceryList>> call, Response<List<GroceryList>> response) {
-                List<GroceryList> result = response.body();
-                result.stream().forEach(x -> groceryLists.add(x));
-                //recycler view adapter instantiated here
-                buildRecyclerView(layoutRoot);
-
-                //attaching touch helper to recycler view for swipe action itoms
-                ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
-                itemTouchHelper.attachToRecyclerView(mRecyclerView);
-            }
-
-            @Override
-            public void onFailure(Call<List<GroceryList>> call, Throwable t) {
-
-            }
-        });
         return layoutRoot;
     }
 

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ad_project_kampung_unite.entities.GroceryList;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +37,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyHolder> {
     @Override
     public void onBindViewHolder(@NonNull MyHolder myholder, int i) {
         myholder.mGroceryListName.setText(lists.get(i).getName());
+        if(lists.get(i).getStatus() !=null) {
+            myholder.mPickupDetail.setText(lists.get(i).getGroupPlanGL().getPickupDate().format(DateTimeFormatter.ISO_DATE));
+        }
+
 //        myholder.mPickupDetail.setText((CharSequence) lists.get(i).getDate());
         //.setImageResource to set image.
 
