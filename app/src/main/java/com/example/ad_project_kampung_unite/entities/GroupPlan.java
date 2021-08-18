@@ -7,6 +7,7 @@ import java.util.List;
 
 public class GroupPlan {
     private int Id;
+    private String planName;
     private String storeName;
     private LocalDate shoppingDate;
     private String pickupAddress;
@@ -18,6 +19,13 @@ public class GroupPlan {
     private List<HitchRequest> groupPlan_hitchers;
 
     public GroupPlan() {
+    }
+
+    public GroupPlan(String storeName, LocalDate shoppingDate, String pickupAddress, LocalDate pickupDate) {
+        this.storeName = storeName;
+        this.shoppingDate = shoppingDate;
+        this.pickupAddress = pickupAddress;
+        this.pickupDate = pickupDate;
     }
 
     public GroupPlan(int id, String storeName, LocalDate shoppingDate, String pickupAddress, LocalDate pickupDate, GroupPlanStatus groupPlanStatus, CombinedPurchaseList combinedPurchaseList, List<AvailableTime> availableTimes, List<GroceryList> groceryLists, List<HitchRequest> groupPlan_hitchers) {
@@ -111,5 +119,23 @@ public class GroupPlan {
 
     public void setGroupPlan_hitchers(List<HitchRequest> groupPlan_hitchers) {
         this.groupPlan_hitchers = groupPlan_hitchers;
+    }
+
+    public String getPlanName() {
+        return planName;
+    }
+
+    public void setPlanName(String planName) {
+        this.planName = planName;
+    }
+
+    public GroupPlan(int id, String planName, String storeName, LocalDate shoppingDate, String pickupAddress, LocalDate pickupDate, GroupPlanStatus groupPlanStatus) {
+        Id = id;
+        this.planName = planName;
+        this.storeName = storeName;
+        this.shoppingDate = shoppingDate;
+        this.pickupAddress = pickupAddress;
+        this.pickupDate = pickupDate;
+        this.groupPlanStatus = groupPlanStatus;
     }
 }
