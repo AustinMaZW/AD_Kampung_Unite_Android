@@ -9,5 +9,6 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="be_buyer">Become A Buyer</string>
     <string name="find_match">Find Match</string>
+    <string name="logout">Logout</string>
 
 </resources>

@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -16,6 +17,11 @@ import com.google.android.material.navigation.NavigationView;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawer;
+
+
+    SharedPreferences sharedPreferences;
+    private static final String LOGIN_CREDENTIALS = "LoginCredentials";
+    private static final String KEY_USERNAME = "username";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +57,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_groups:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new GroupsFragment()).commit();
+                break;
+            case R.id.nav_logout:
+                //logout request
+                sharedPreferences = getSharedPreferences(LOGIN_CREDENTIALS, MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                sharedPreferences.getString(KEY_USERNAME, "");
                 break;
         }
 

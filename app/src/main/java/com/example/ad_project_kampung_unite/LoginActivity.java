@@ -96,7 +96,12 @@ public class LoginActivity extends AppCompatActivity {
 
 
 //                    String authenticateUrl = "https://localhost:8080/user/authenticate";
-                    if(auth != null){
+
+//                    use this for easy no login required
+//                    Intent main = new Intent(LoginActivity.this, MainActivity.class);
+//                    startActivity(main);
+
+                    if( sharedPreferences.getString(KEY_AUTHENTICATION,"") != null){
                         Intent main = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(main);
                     }
@@ -127,6 +132,8 @@ public class LoginActivity extends AppCompatActivity {
                 editor.putString(KEY_USERNAME, editText_username.getText().toString());
                 editor.putString(KEY_PASSWORD, editText_password.getText().toString());
                 editor.putString(KEY_AUTHENTICATION, auth);
+                editor.commit();
+
             }
 
             @Override

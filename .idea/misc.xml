@@ -4,10 +4,17 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/layout/activity_login.xml" value="0.25" />
-        <entry key="..\:/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/layout/activity_register.xml" value="0.36666666666666664" />
         <entry key="..\:/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/layout/activity_start_up.xml" value="0.25" />
         <entry key="..\:/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/layout/activity_view_grocery_list.xml" value="0.1" />
-        <entry key="..\:/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/menu/drawer_menu.xml" value="0.1" />
+        <entry key="..\:/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/layout/addgrocerylist_dialog.xml" value="0.36666666666666664" />
+        <entry key="..\:/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/layout/find_products_item.xml" value="0.36666666666666664" />
+        <entry key="..\:/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/layout/fragment_grocery_list.xml" value="0.36666666666666664" />
+        <entry key="..\:/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/layout/fragment_grocery_lists.xml" value="0.36666666666666664" />
+        <entry key="..\:/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/layout/fragment_search.xml" value="0.36666666666666664" />
+        <entry key="..\:/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/layout/my_grocery_lists_items.xml" value="0.36666666666666664" />
+        <entry key="..\:/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/menu/drawer_menu.xml" value="0.5" />
       </map>
     </option>
   </component>
