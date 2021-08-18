@@ -19,13 +19,13 @@
 
     <Button
         android:id="@+id/cancel_rq_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="70dp"
+        android:layout_height="40dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:backgroundTint="#a32603"
         android:text="cancel"
-        android:textSize="10sp"
+        android:textSize="8sp"
         android:layout_marginRight="10dp"
         />
 </LinearLayout>

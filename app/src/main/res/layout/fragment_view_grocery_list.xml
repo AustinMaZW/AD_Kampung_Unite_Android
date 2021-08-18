@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--this layout is meant for a hitcher to view each grocery list details -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -82,15 +83,40 @@
         android:id="@+id/rv_hitch_rq"
         />
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginLeft="10dp"
-        android:text="My Grocery List Summary"
-        android:textColor="@color/black"
-        android:textSize="18dp"
-        android:textStyle="bold" />
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:text="My Grocery List Summary"
+            android:textColor="@color/black"
+            android:textSize="18dp"
+            android:textStyle="bold" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="10dp">
+
+            <Button
+                android:layout_width="70dp"
+                android:layout_height="40dp"
+                android:text="Edit"
+                android:textSize="8sp"
+                android:textColor="@color/Kampong_Blue"
+                android:backgroundTint="@color/Kampong_Yellow"
+                android:layout_alignParentRight="true"
+                />
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_grocery_list"
