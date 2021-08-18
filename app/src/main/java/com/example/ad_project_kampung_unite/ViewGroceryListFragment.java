@@ -77,6 +77,9 @@ public class ViewGroceryListFragment extends Fragment {
         //add condition if request is pending then below are 'invisible
         layoutRoot.findViewById(R.id.status_approved).setVisibility(View.GONE);
 
+        //add condition if group plan status is shopping completed to show or hide this component
+//        layoutRoot.findViewById(R.id.payment_component).setVisibility(View.GONE);
+
         return layoutRoot;
     }
 
