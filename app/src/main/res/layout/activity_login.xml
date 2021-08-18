@@ -27,15 +27,15 @@
         android:text="LOGIN"
         android:textColor="@color/Kampong_Blue"
         android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@id/email"
+        app:layout_constraintBottom_toTopOf="@id/username"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
-        android:id="@+id/email"
+        android:id="@+id/username"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Email"
+        android:hint="Username"
         android:inputType="textEmailAddress"
         android:backgroundTint="@color/Kampong_Blue"
         app:layout_constraintBottom_toBottomOf="parent"
