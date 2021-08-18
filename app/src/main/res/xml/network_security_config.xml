@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--only for development purposes: clearTextTraffic so can connect to localhost-->
 <network-security-config>
     <base-config cleartextTrafficPermitted="true">
         <trust-anchors>

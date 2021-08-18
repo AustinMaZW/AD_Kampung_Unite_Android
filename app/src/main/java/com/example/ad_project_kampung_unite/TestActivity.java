@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
+
 import java.io.IOException;
 import java.util.List;
 

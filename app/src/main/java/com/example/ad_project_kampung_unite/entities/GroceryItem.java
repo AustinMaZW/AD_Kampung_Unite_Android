@@ -1,57 +1,60 @@
 package com.example.ad_project_kampung_unite.entities;
 
 public class GroceryItem {
-    private int id;
-    private int quantity;
-    private double subtotal;
-    private Product product;
-    private GroceryList groceryList;
+	private int id;
+	private int quantity;
+	private double subtotal;
+	private Product product;
+	private GroceryList groceryList;
 
-    public GroceryItem(int id, int quantity, double subtotal, Product product, GroceryList groceryList) {
-        this.id = id;
-        this.quantity = quantity;
-        this.subtotal = subtotal;
-        this.product = product;
-        this.groceryList = groceryList;
-    }
+	public GroceryItem() {
+	}
 
-    public int getId() {
-        return id;
-    }
+	public GroceryItem(int id, int quantity, double subtotal, Product product, GroceryList groceryList) {
+		this.id = id;
+		this.quantity = quantity;
+		this.subtotal = subtotal;
+		this.product = product;
+		this.groceryList = groceryList;
+	}
 
-    public void setId(int id) {
-        this.id = id;
-    }
+	public int getId() {
+		return id;
+	}
 
-    public int getQuantity() {
-        return quantity;
-    }
+	public void setId(int id) {
+		this.id = id;
+	}
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
+	public int getQuantity() {
+		return quantity;
+	}
 
-    public double getSubtotal() {
-        return subtotal;
-    }
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
 
-    public void setSubtotal(double subtotal) {
-        this.subtotal = subtotal;
-    }
+	public double getSubtotal() {
+		return subtotal;
+	}
 
-    public Product getProduct() {
-        return product;
-    }
+	public void setSubtotal(double subtotal) {
+		this.subtotal = subtotal;
+	}
 
-    public void setProduct(Product product) {
-        this.product = product;
-    }
+	public Product getProduct() {
+		return product;
+	}
 
-    public GroceryList getGroceryList() {
-        return groceryList;
-    }
+	public void setProduct(Product product) {
+		this.product = product;
+	}
 
-    public void setGroceryList(GroceryList groceryList) {
-        this.groceryList = groceryList;
-    }
+	public GroceryList getGroceryList() {
+		return groceryList;
+	}
+
+	public void setGroceryList(GroceryList groceryList) {
+		this.groceryList = groceryList;
+	}
 }

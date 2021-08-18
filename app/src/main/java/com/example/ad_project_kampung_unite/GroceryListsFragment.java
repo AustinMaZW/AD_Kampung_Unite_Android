@@ -21,6 +21,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.ad_project_kampung_unite.data.remote.GroceryListService;
+import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
 import com.example.ad_project_kampung_unite.entities.GroceryList;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -29,11 +31,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class GroceryListsFragment extends Fragment {
 
-    private ArrayList<GroceryList> mGroceryLists;
+    private List<GroceryList> groceryLists;
+    GroceryListService groceryListService;
 
     private RecyclerView mRecyclerView;
     private MyAdapter myAdapter;
@@ -52,72 +58,81 @@ public class GroceryListsFragment extends Fragment {
         View layoutRoot = inflater.inflate(R.layout.fragment_grocery_lists, container, false);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("My Grocery Lists");
 
-        FloatingActionButton addButton = layoutRoot.findViewById(R.id.fab);
+        // get grocery lists from database
+        groceryLists = new ArrayList<>();
+        groceryListService = RetrofitClient.createService(GroceryListService.class);
 
-        addButton.setOnClickListener(new View.OnClickListener() {
+        Call<List<GroceryList>> call = groceryListService.getGroceryLists();
+        call.enqueue(new Callback<List<GroceryList>>() {
             @Override
-            public void onClick(View view) {
-                // Create dialog
-                AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
-                alert.setTitle("Enter Name of Grocery List");
+            public void onResponse(Call<List<GroceryList>> call, Response<List<GroceryList>> response) {
+                List<GroceryList> result = response.body();
+                result.stream().forEach(x -> groceryLists.add(x));
+                //recycler view adapter instantiated here
+                buildRecyclerView(layoutRoot);
 
-                // Set an EditText view to get user input
-                final EditText input = new EditText(getContext());
-                alert.setView(input);
+                //attaching touch helper to recycler view for swipe action itoms
+                ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+                itemTouchHelper.attachToRecyclerView(mRecyclerView);
+            }
 
-                alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        String name = "";
-                        if(name == "") {
-                            name = "My Grocery List";
-                        } else {
-                            name = input.getText().toString();
-                        }
-                        mGroceryLists.add(new GroceryList(name,"","","",""));
+            @Override
+            public void onFailure(Call<List<GroceryList>> call, Throwable t) {
 
-
-                        // Do something with value!
-                        Bundle result = new Bundle();
-                        result.putString("bundleKey", name);
-                        getParentFragmentManager().setFragmentResult("requestKey", result);
-                        FragmentManager fragmentManager = getParentFragmentManager();
-                        GroceryListFragment groceryListFragment = new GroceryListFragment();
-                        fragmentManager.beginTransaction()
-                                .replace(R.id.fragment_container,groceryListFragment)
-                                .addToBackStack(null)
-                                .commit();
-                    }
-                });
-
-                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        // Canceled.
-                    }
-                });
-
-                alert.show();
             }
         });
 
-        //input dummy data
-        createMyList();
-        //recycler view adapter instantiated here
-        buildRecyclerView(layoutRoot);
-        //attaching touch helper to recycler view for swipe action itoms
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
-        itemTouchHelper.attachToRecyclerView(mRecyclerView);
+        FloatingActionButton addButton = layoutRoot.findViewById(R.id.fab);
+
+
+
+//        addButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                // Create dialog
+//                AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+//                alert.setTitle("Enter Name of Grocery List");
+//
+//                // Set an EditText view to get user input
+//                final EditText input = new EditText(getContext());
+//                alert.setView(input);
+//
+//                alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int whichButton) {
+//                        String name = "";
+//                        if(name == "") {
+//                            name = "My Grocery List";
+//                        } else {
+//                            name = input.getText().toString();
+//                        }
+//                        mGroceryLists.add(new GroceryList());
+//
+//
+//                        // Do something with value!
+//                        Bundle result = new Bundle();
+//                        result.putString("bundleKey", name);
+//                        getParentFragmentManager().setFragmentResult("requestKey", result);
+//                        FragmentManager fragmentManager = getParentFragmentManager();
+//                        GroceryListFragment groceryListFragment = new GroceryListFragment();
+//                        fragmentManager.beginTransaction()
+//                                .replace(R.id.fragment_container,groceryListFragment)
+//                                .addToBackStack(null)
+//                                .commit();
+//                    }
+//                });
+//
+//                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int whichButton) {
+//                        // Canceled.
+//                    }
+//                });
+//
+//                alert.show();
+//            }
+//        });
+
 
         return layoutRoot;
-    }
-    public void createMyList(){
-
-        mGroceryLists = new ArrayList<>();
-
-        mGroceryLists.add(new GroceryList("August Group Buy", "","","3","pending"));
-        mGroceryLists.add(new GroceryList("July Group Buy","19 Jul 2021", "0900", "10","completed"));
-        mGroceryLists.add(new GroceryList("July Group Buy 1", "", "", "10", "pending"));
-        mGroceryLists.add(new GroceryList("Week 3 groceries", "12 Jul 2021", "0900", "15", "accepted"));
-        mGroceryLists.add(new GroceryList("June Group Buy", "19 June 2021", "0900", "15", "completed"));
     }
 
     //build recycler view
@@ -127,7 +142,7 @@ public class GroceryListsFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext(), LinearLayoutManager.VERTICAL,false));
 
-        myAdapter = new MyAdapter(layoutRoot.getContext(), mGroceryLists);
+        myAdapter = new MyAdapter(layoutRoot.getContext(), groceryLists);
         mRecyclerView.setAdapter(myAdapter);
     }
 
@@ -153,10 +168,10 @@ public class GroceryListsFragment extends Fragment {
 
             switch (direction){
                 case ItemTouchHelper.LEFT:
-                    deletedList = mGroceryLists.get(position);
+                    deletedList = groceryLists.get(position);
                     deletedListName = deletedList.getName().toString();
 
-                    mGroceryLists.remove(position);
+                    groceryLists.remove(position);
                     myAdapter.notifyItemRemoved(position);
 
                     Snackbar.make(mRecyclerView, deletedListName, Snackbar.LENGTH_LONG)
@@ -164,17 +179,17 @@ public class GroceryListsFragment extends Fragment {
 
                                 @Override
                                 public void onClick(View v) {
-                                    mGroceryLists.add(position, deletedList);
+                                    groceryLists.add(position, deletedList);
                                     myAdapter.notifyItemInserted(position);
                                 }
                             }).show();
                     break;
                 case ItemTouchHelper.RIGHT:
-                    archiveList = mGroceryLists.get(position);
+                    archiveList = groceryLists.get(position);
                     archivedListName = archiveList.getName().toString();
                     archivedLists.add(archiveList);
 
-                    mGroceryLists.remove(position);
+                    groceryLists.remove(position);
                     myAdapter.notifyItemRemoved(position);
 
                     Snackbar.make(mRecyclerView, archivedListName, Snackbar.LENGTH_LONG)
@@ -183,7 +198,7 @@ public class GroceryListsFragment extends Fragment {
                                 @Override
                                 public void onClick(View v) {
                                     archivedLists.remove(archivedLists.lastIndexOf(archiveList));
-                                    mGroceryLists.add(position, archiveList);
+                                    groceryLists.add(position, archiveList);
                                     myAdapter.notifyItemInserted(position);
                                 }
                             }).show();
@@ -208,7 +223,8 @@ public class GroceryListsFragment extends Fragment {
     public void sendInput(String input) {
 //        Log.d(MyGroceryListsActivity.class.toString(), "send input: "+ input);
         newlistName = input;
-        mGroceryLists.add(new GroceryList(newlistName,"","","",""));
+        GroceryList newList = new GroceryList();
+        newList.setName(input);
     }
 }
 

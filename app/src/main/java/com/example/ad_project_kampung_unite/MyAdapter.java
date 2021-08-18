@@ -1,18 +1,16 @@
 package com.example.ad_project_kampung_unite;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ad_project_kampung_unite.entities.GroceryList;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,9 +19,9 @@ import java.util.List;
 public class MyAdapter extends RecyclerView.Adapter<MyHolder> {
 
     Context c;
-    ArrayList<GroceryList> lists;
+    List<GroceryList> lists;
 
-    public MyAdapter(Context c, ArrayList<GroceryList> lists) {
+    public MyAdapter(Context c, List<GroceryList> lists) {
         this.c = c;
         this.lists = lists;
     }
@@ -39,27 +37,23 @@ public class MyAdapter extends RecyclerView.Adapter<MyHolder> {
     @Override
     public void onBindViewHolder(@NonNull MyHolder myholder, int i) {
         myholder.mGroceryListName.setText(lists.get(i).getName());
-        myholder.mPickupDetail.setText((CharSequence) lists.get(i).getDate());
+        if(lists.get(i).getStatus() !=null) {
+            myholder.mPickupDetail.setText(lists.get(i).getGroupPlanGL().getPickupDate().format(DateTimeFormatter.ISO_DATE));
+        }
+
+//        myholder.mPickupDetail.setText((CharSequence) lists.get(i).getDate());
         //.setImageResource to set image.
 
         myholder.setItemClickListener(new ItemClickListener() {
             @Override
             public void onItemClickLister(View v, int position) {
                 String gName = lists.get(position).getName();
-                String gDetails = lists.get(position).getDate();
+//                String gDetails = lists.get(position).getDate();
 
 //                Intent intent = new Intent(c, ViewGroceryListActivity.class);
 //                intent.putExtra("gName",gName);
 //                intent.putExtra("gDetails",gDetails);
 //                c.startActivity(intent);
-
-                FragmentManager fm = ((AppCompatActivity)c).getSupportFragmentManager();
-                //fm.setFragmentResult("requestKey", result);
-                ViewGroceryListFragment ViewGLFragment = new ViewGroceryListFragment();
-                fm.beginTransaction()
-                        .replace(R.id.fragment_container,ViewGLFragment)
-                        .addToBackStack(null)
-                        .commit();
             }
         });
     }
