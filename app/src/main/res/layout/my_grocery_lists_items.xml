@@ -44,7 +44,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:text="Pickup details: "
+                android:text="Pick-Up Details: "
                 android:textColor="@color/black"
                 android:textSize="14dp" />
 
@@ -55,7 +55,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:text="placeholder"
+                android:text="TBC"
                 android:textColor="@color/black"
                 android:textSize="14dp" />
         </LinearLayout>
@@ -73,7 +73,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:text="Number of items: "
+                android:text="Number of Items: "
                 android:textColor="@color/black"
                 android:textSize="14dp" />
             <TextView
@@ -82,7 +82,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:text="placeholder"
+                android:text="0"
                 android:textColor="@color/black"
                 android:textSize="14dp" />
         </LinearLayout>
