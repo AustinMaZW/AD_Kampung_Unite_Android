@@ -1,30 +1,20 @@
-package com.example.ad_project_kampung_unite;
+package com.example.ad_project_kampung_unite.search_product;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.SearchView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentResultListener;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.ad_project_kampung_unite.model.Product;
+import com.example.ad_project_kampung_unite.R;
+import com.example.ad_project_kampung_unite.entities.Product;
 import com.example.ad_project_kampung_unite.search_product.SearchProductListAdapter;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class SearchFragment extends Fragment {
 
@@ -44,11 +34,11 @@ public class SearchFragment extends Fragment {
 
         // mock data
         Product[] products = new Product[] {
-                new Product("1627923825-1174","Old Town 3IN1 Sugar Cane White Coffee", "15 x 36 g","Beverages","https://ssecomm.s3-ap-southeast-1.amazonaws.com/products/md/WPVi3KzqNyNsW7uGdcTMQqZmyiC2WH.0.jpg"),
-                new Product("1627923846-1184","Happy Family 2IN1 Kopi O With Sugar Mixture Bag","8 x 20 g","Beverages","https://ssecomm.s3-ap-southeast-1.amazonaws.com/products/md/yjwEFEKNPFnYIXrfN4s6wnfTAsdz5t.0.jpg"),
-                new Product("1627923819-1171","Nescafe Original Ice Milk Coffee","240 ml","Beverages","https://ssecomm.s3-ap-southeast-1.amazonaws.com/products/md/QUZdsA8aBQFb4vP3iIf36UeLv9KjWK.0.jpg"),
-                new Product("1627923829-1176","Old Town 3IN1 Hazelnut White Coffee","15 x 38 g","Beverages","https://ssecomm.s3-ap-southeast-1.amazonaws.com/products/md/S6k9DS5DfRko9CKoYg0fw1ERcJ8Kin.0.jpg"),
-                new Product("1627923837-1180","Pokka Premium Milk Coffee","500 ml","Beverages","https://ssecomm.s3-ap-southeast-1.amazonaws.com/products/md/fEvosk2kZcZaSfik0TpXJGLBO00lcr.0.jpg")
+                new Product(1627923825,"Old Town 3IN1 Sugar Cane White Coffee", "15 x 36 g","Beverages","https://ssecomm.s3-ap-southeast-1.amazonaws.com/products/md/WPVi3KzqNyNsW7uGdcTMQqZmyiC2WH.0.jpg"),
+                new Product(1627923846,"Happy Family 2IN1 Kopi O With Sugar Mixture Bag","8 x 20 g","Beverages","https://ssecomm.s3-ap-southeast-1.amazonaws.com/products/md/yjwEFEKNPFnYIXrfN4s6wnfTAsdz5t.0.jpg"),
+                new Product(1627923819,"Nescafe Original Ice Milk Coffee","240 ml","Beverages","https://ssecomm.s3-ap-southeast-1.amazonaws.com/products/md/QUZdsA8aBQFb4vP3iIf36UeLv9KjWK.0.jpg"),
+                new Product(1627923829,"Old Town 3IN1 Hazelnut White Coffee","15 x 38 g","Beverages","https://ssecomm.s3-ap-southeast-1.amazonaws.com/products/md/S6k9DS5DfRko9CKoYg0fw1ERcJ8Kin.0.jpg"),
+                new Product(1627923837,"Pokka Premium Milk Coffee","500 ml","Beverages","https://ssecomm.s3-ap-southeast-1.amazonaws.com/products/md/fEvosk2kZcZaSfik0TpXJGLBO00lcr.0.jpg")
         };
 
 
