@@ -1,4 +1,4 @@
-package com.example.ad_project_kampung_unite;
+package com.example.ad_project_kampung_unite.data.remote;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -9,7 +9,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
-    private static final String BASE_URL = "http://10.0.2.2:8080/api/";
+    private static final String BASE_URL = "http://10.0.2.2:8080";
     private static final String TEST_URL = "https://jsonplaceholder.typicode.com/";
 
 //    Gson gson = new GsonBuilder()
@@ -17,7 +17,7 @@ public class RetrofitClient {
 //            .create();
 
     private static Retrofit.Builder builder = new Retrofit.Builder()
-            .baseUrl(TEST_URL)
+            .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create());
 
     private static Retrofit retrofit = builder.build();
