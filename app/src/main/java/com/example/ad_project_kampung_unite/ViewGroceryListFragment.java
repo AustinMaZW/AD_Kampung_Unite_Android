@@ -20,6 +20,7 @@ import com.example.ad_project_kampung_unite.adaptors.GroceryListItemAdaptor;
 import com.example.ad_project_kampung_unite.adaptors.HitchRequestAdaptor;
 import com.example.ad_project_kampung_unite.data.remote.GroceryListService;
 import com.example.ad_project_kampung_unite.data.remote.HitchRequestService;
+import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
 import com.example.ad_project_kampung_unite.entities.GroceryItem;
 import com.example.ad_project_kampung_unite.entities.GroceryList;
 import com.example.ad_project_kampung_unite.entities.GroupPlan;
@@ -135,6 +136,8 @@ public class ViewGroceryListFragment extends Fragment {
 //            }
 //        });
 //    }
+
+    //below code for initial UI testing, to be replaced with http call
     private void createDummyData(){
 
         groupPlanList = new ArrayList<>();
@@ -142,9 +145,9 @@ public class ViewGroceryListFragment extends Fragment {
         LocalDate d1 = LocalDate.of(2021, 8, 1);
         LocalDate d2 = LocalDate.of(2021, 8, 15);
 
-        groupPlanList.add(new GroupPlan(1, "Giant",d1,"123 Canada St",d2));
-        groupPlanList.add(new GroupPlan(2, "7-Eleven",d1,"321 MapleSyrup St",d2));
-        groupPlanList.add(new GroupPlan(3, "FairPrice",d1,"Lalala St",d2));
+//        groupPlanList.add(new GroupPlan(1, "Giant",d1,"123 Canada St",d2));
+//        groupPlanList.add(new GroupPlan(2, "7-Eleven",d1,"321 MapleSyrup St",d2));
+//        groupPlanList.add(new GroupPlan(3, "FairPrice",d1,"Lalala St",d2));
 
 //        groceryItemList = new ArrayList<>();
 //

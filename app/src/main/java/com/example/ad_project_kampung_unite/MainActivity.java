@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -45,8 +46,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.nav_grocerylists:
+                //original code
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new GroceryListsFragment()).commit();
+
+                //dev code - View hitcher grocery list (austin/ngu)
+//                FragmentManager fm = getSupportFragmentManager();
+//                ViewGroceryListFragment ViewGLFragment = new ViewGroceryListFragment();
+//                fm.beginTransaction()
+//                        .replace(R.id.fragment_container,ViewGLFragment)
+//                        .addToBackStack(null)
+//                        .commit();
                 break;
             case R.id.nav_groups:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
