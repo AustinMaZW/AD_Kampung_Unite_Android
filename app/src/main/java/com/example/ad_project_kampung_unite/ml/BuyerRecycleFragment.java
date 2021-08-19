@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.PopupWindow;
 
 import com.example.ad_project_kampung_unite.MyAdapter;
 import com.example.ad_project_kampung_unite.R;
@@ -18,6 +19,7 @@ import com.example.ad_project_kampung_unite.data.remote.GroupPlanService;
 import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
 import com.example.ad_project_kampung_unite.entities.GroupPlan;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -46,8 +48,6 @@ public class BuyerRecycleFragment extends Fragment {
     public void onStart() {
         super.onStart();
         queryPlans();
-//        buildRecyclerView(root);
-
     }
 
     @Override
@@ -61,9 +61,6 @@ public class BuyerRecycleFragment extends Fragment {
         if(root == null){
             root  = inflater.inflate(R.layout.fragment_buyer_recycle, container, false);
         }
-//        queryPlans();
-
-
         return root;
     }
 
@@ -74,11 +71,10 @@ public class BuyerRecycleFragment extends Fragment {
         recyclerView.setLayoutManager(linear);
         myAdapter = new BuyerListAdapter(plans,layoutRoot.getContext());
         recyclerView.setAdapter(myAdapter);
-
-//        adapter.setRecyclerItemClickListener(new BuyerListAdapter.onRecyclerItemClickListener() {
+//        myAdapter.setRecyclerItemClickListener(new BuyerListAdapter.onRecyclerItemClickListener() {
 //            @Override
-//            public void onRecyclerItemClick(int position) {
-//                Log.e("shit","sss");
+//            public void onRecyclerItemClick(View view, int position ) {
+//
 //            }
 //        });
     }
@@ -96,7 +92,6 @@ public class BuyerRecycleFragment extends Fragment {
                         plans = response.body();
                         buildRecyclerView(root);
                     }
-
                     //when request is fail, call back this
                     @Override
                     public void onFailure(Call<List<GroupPlan>> call, Throwable t) {

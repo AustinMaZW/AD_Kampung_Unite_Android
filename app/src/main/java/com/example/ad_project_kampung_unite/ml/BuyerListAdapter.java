@@ -1,20 +1,35 @@
 package com.example.ad_project_kampung_unite.ml;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ad_project_kampung_unite.R;
-import com.example.ad_project_kampung_unite.adaptors.HitchRequestAdaptor;
+import com.example.ad_project_kampung_unite.data.remote.GroupPlanService;
+import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
 import com.example.ad_project_kampung_unite.entities.GroupPlan;
+import com.example.ad_project_kampung_unite.entities.Product;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyViewHolder> {
 
@@ -25,23 +40,85 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
         this.plans = plans;
         this.context = context;
     }
-
+    private View view;
+    private View root;
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = View.inflate(context,R.layout.recycle_view_buyer_item,null);
+        view = View.inflate(context,R.layout.recycle_view_buyer_item,null);
+        root = View.inflate(context,R.layout.buyer_list_item_pop,null);
         return new MyViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.buyerName.setText(plans.get(position).getStoreName());
         holder.pickUpDate.setText(plans.get(position).getPickupDate().toString());
         holder.timeSlot.setText(plans.get(position).getPickupDate().toString());
         holder.location.setText(plans.get(position).getPickupAddress());
-        Log.e("shit","shishishis");
+        holder.sendRequest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                queryPronductsInplan(19,v);
+
+            }
+        });
     }
 
+    public void queryPronductsInplan(int planId,View v){
+        GroupPlanService p = RetrofitClient.createService(GroupPlanService.class);
+        Call<List<Product>> call = p.getProductsByPlanId(planId);
+        call.enqueue(new Callback<List<Product>>() {
+            //when request is successful, call back this
+            @Override
+            public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
+                List<Product> pList = response.body();
+                pList.stream().forEach(x->System.out.println(x.getProductId()));
+//                View view = LayoutInflater.from(v.getContext()).inflate(R.layout.buyer_list_item_pop_item,null);
+                View view = View.inflate(context,R.layout.buyer_list_item_pop,null);
+                PopupWindow popupWindow = popMaker(view,pList);
+                popupWindow.showAsDropDown(view);
+            }
+            //when request is fail, call back this
+            @Override
+            public void onFailure(Call<List<Product>> call, Throwable t) {
+                System.out.println("fail_2");
+            }
+        });
+    }
+    public void buildRecyclerView(View layoutRoot,List<Product> pList){
+        RecyclerView recyclerView = layoutRoot.findViewById(R.id.poprv);
+        LinearLayoutManager linear = new LinearLayoutManager(layoutRoot.getContext());
+        recyclerView.setLayoutManager(linear);
+        ProductListAdapter myAdapter = new ProductListAdapter(pList,layoutRoot.getContext());
+        recyclerView.setAdapter(myAdapter);
+
+    }
+
+    private PopupWindow popMaker(View layoutRoot,List<Product> pList){
+        View popView = LayoutInflater.from(context).inflate(R.layout.buyer_list_item_pop,null,false);
+        buildRecyclerView(popView,pList);
+        Button cancel = popView.findViewById(R.id.cancelPopBtn);
+        Button ok = popView.findViewById(R.id.goToSlot);
+
+        PopupWindow popupWindow = new PopupWindow(popView,ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT,true);
+//                popupWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.arrow_back));
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("cancel","cancel");
+                popupWindow.dismiss();
+
+            }
+        });
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("ok","ok");
+            }
+        });
+        return popupWindow;
+    }
     @Override
     public int getItemCount() {
         if(plans == null){
@@ -50,31 +127,42 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
         return plans.size();
     }
 
+
+
+
     public class MyViewHolder extends RecyclerView.ViewHolder{
         private TextView buyerName,pickUpDate,timeSlot,location;
+        private Button sendRequest;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             buyerName = itemView.findViewById(R.id.buyer_Name);
             pickUpDate = itemView.findViewById(R.id.pick_Up_Date);
             timeSlot = itemView.findViewById(R.id.time_Slot);
             location = itemView.findViewById(R.id._location_);
-
+            sendRequest = itemView.findViewById(R.id.sendRequestPlan);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
                     if(monRecyclerItemClickListener != null){
-                        monRecyclerItemClickListener.onRecyclerItemClick(getLayoutPosition());
+                        int position = getLayoutPosition();
+                        if(position != RecyclerView.NO_POSITION)
+                            monRecyclerItemClickListener.onRecyclerItemClick(v,position);
                     }
                 }
             });
         }
+
     }
+
+
+
     private onRecyclerItemClickListener monRecyclerItemClickListener;
     public void setRecyclerItemClickListener(onRecyclerItemClickListener listener){
         monRecyclerItemClickListener = listener;
     }
 
     public interface onRecyclerItemClickListener{
-        void onRecyclerItemClick(int position);
+        void onRecyclerItemClick(View view,int position);
     }
 }

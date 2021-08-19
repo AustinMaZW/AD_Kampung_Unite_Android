@@ -1,6 +1,7 @@
 package com.example.ad_project_kampung_unite.data.remote;
 
 import com.example.ad_project_kampung_unite.entities.GroupPlan;
+import com.example.ad_project_kampung_unite.entities.Product;
 
 import java.util.List;
 
@@ -16,4 +17,7 @@ public interface GroupPlanService {
 
     @POST("groupplan/listplans")
     Call<List<GroupPlan>> getPlans(@Body List<Integer> planIds);
+
+    @POST("groupplan/retrieveproducts")
+    Call<List<Product>> getProductsByPlanId(@Body int planId);
 }
