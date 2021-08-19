@@ -63,7 +63,9 @@ public class GroceryListItemAdaptor extends RecyclerView.Adapter<GroceryListItem
 
         itemQuantity.setText(String.valueOf(groceryItem.getQuantity()) + "x");
         itemName.setText(groceryItem.getProduct().getProductName());
+        //add condition checking whether the prices are updated
         itemAmount.setText("$" + String.valueOf(groceryItem.getSubtotal()));
+//        itemAmount.setVisibility(View.INVISIBLE);
     }
 
     // Returns the total count of items in the list

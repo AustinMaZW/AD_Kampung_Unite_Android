@@ -14,4 +14,7 @@ public interface HitchRequestService {
 
     @GET("hitchrequest/cancel/{hitchRequestId}")
     Call<Boolean> cancelHitchRequest(@Path("hitchRequestId") int id);
+
+    @GET("hitchrequest/accepted/{hitcherDetailId}")
+    Call<HitchRequest> getAcceptedHitchRequestByHitcherDetailId(@Path("hitcherDetailId") int id);
 }

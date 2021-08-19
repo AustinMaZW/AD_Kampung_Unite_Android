@@ -81,4 +81,14 @@ public class HitchRequest {
     public void setHitcherDetail(HitcherDetail hitcherDetail) {
         this.hitcherDetail = hitcherDetail;
     }
+
+    @Override
+    public String toString() {
+        return "HitchRequest{" +
+                "id=" + id +
+                ", buyerConfirmTransaction=" + buyerConfirmTransaction +
+                ", hitcherConfirmTransaction=" + hitcherConfirmTransaction +
+                ", requestStatus=" + requestStatus +
+                '}';
+    }
 }
