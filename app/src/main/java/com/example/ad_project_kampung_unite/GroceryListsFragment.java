@@ -67,13 +67,15 @@ public class GroceryListsFragment extends Fragment {
             @Override
             public void onResponse(Call<List<GroceryList>> call, Response<List<GroceryList>> response) {
                 List<GroceryList> result = response.body();
-                result.stream().forEach(x -> groceryLists.add(x));
-                //recycler view adapter instantiated here
-                buildRecyclerView(layoutRoot);
+                if(result != null) {
+                    result.stream().forEach(x -> groceryLists.add(x));
+                    //recycler view adapter instantiated here
+                    buildRecyclerView(layoutRoot);
 
-                //attaching touch helper to recycler view for swipe action itoms
-                ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
-                itemTouchHelper.attachToRecyclerView(mRecyclerView);
+                    //attaching touch helper to recycler view for swipe action itoms
+                    ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+                    itemTouchHelper.attachToRecyclerView(mRecyclerView);
+                }
             }
 
             @Override
