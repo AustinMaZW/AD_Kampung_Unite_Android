@@ -119,6 +119,9 @@ public class ViewGroceryListFragment extends Fragment {
             @Override
             public void onResponse(Call<List<HitchRequest>> call, Response<List<HitchRequest>> response) {
 
+                //need to add logic to differentiate pending request and approved.
+                // might first loop through to see if any is approved, if one is approved then change ui to approved
+                // else then build hitchrequestRV (cause this doesn't show if there is a approved status)
                 if (response.isSuccessful()) {
                     hitchRequests = response.body();
                     Log.d("Success", String.valueOf(hitchRequests.get(0))); //continue here....
