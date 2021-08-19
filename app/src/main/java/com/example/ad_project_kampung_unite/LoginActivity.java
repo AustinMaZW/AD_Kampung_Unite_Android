@@ -10,8 +10,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 import com.example.ad_project_kampung_unite.model.UserDetail;
 import com.example.ad_project_kampung_unite.service.UserDetailService;
 

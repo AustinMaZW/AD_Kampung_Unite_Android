@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -29,6 +30,8 @@ import com.example.ad_project_kampung_unite.entities.Product;
 import com.example.ad_project_kampung_unite.enums.RequestStatus;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,9 +47,13 @@ public class ViewGroceryListFragment extends Fragment {
     private List<HitchRequest> hitchRequests = new ArrayList<>();
     private HitchRequestService hitchRequestService;
     private GroceryListService groceryListService;
-    private RecyclerView rvHitchRequests;
-    private RecyclerView rvGroceryItems;
+    private GroupPlan approvedGroupPlan;
+
+    //views here
     private View layoutRoot;
+    private RecyclerView rvHitchRequests,rvGroceryItems;
+    private TextView rqStatusTitle, rqStatDescription, pickupStore, pickupLoc, pickupTime;
+    private Button hitchRqButton;
 
     public ViewGroceryListFragment() {
         // Required empty public constructor
@@ -60,6 +67,13 @@ public class ViewGroceryListFragment extends Fragment {
         layoutRoot = inflater.inflate(R.layout.fragment_view_grocery_list, container, false);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Grocery List Name");     //need grocery list name passed from previous frag
 
+        rqStatusTitle = layoutRoot.findViewById(R.id.rqStat_title);
+        rqStatDescription = layoutRoot.findViewById(R.id.rqStat_description);
+        pickupStore = layoutRoot.findViewById(R.id.pickup_store);
+        pickupLoc = layoutRoot.findViewById(R.id.pickup_location);
+        pickupTime = layoutRoot.findViewById(R.id.pickup_time);
+        hitchRqButton = layoutRoot.findViewById(R.id.hitch_rq_btn);
+
         createDummyData(); //  fake data to be replaced with http request list with database
 
         //call to retrieve groceryitems
@@ -70,8 +84,7 @@ public class ViewGroceryListFragment extends Fragment {
         hitchRequestService = RetrofitClient.createService(HitchRequestService.class);
         getHitchRequestsFromServer();
 
-        //add condition if request is pending then below are 'invisible
-        layoutRoot.findViewById(R.id.status_approved).setVisibility(View.GONE);
+
 
         return layoutRoot;
     }
@@ -114,7 +127,7 @@ public class ViewGroceryListFragment extends Fragment {
 
     //below code to be completed for hitch request
     private void getHitchRequestsFromServer(){
-        Call<List<HitchRequest>> call = hitchRequestService.getHitchRequestsByGroceryListId(36);    //hard coded grocerylistid here, replace later
+        Call<List<HitchRequest>> call = hitchRequestService.getHitchRequestsByGroceryListId(38);    //hard coded grocerylistid here, replace later
 
         call.enqueue(new Callback<List<HitchRequest>>() {
             @Override
@@ -125,14 +138,21 @@ public class ViewGroceryListFragment extends Fragment {
                 // else then build hitchrequestRV (cause this doesn't show if there is a approved status)
                 if (response.isSuccessful()) {
                     hitchRequests = response.body();
+
+                    //logic if there is an approved request, then do follow
                     hitchRequests.stream().forEach(x->{
                         if (x.getRequestStatus() == RequestStatus.ACCEPTED){
-                            System.out.println("There is an accepted request, change layout");
+                            updateApprovedStatUI(x);
                         }
                     });
+                    if(approvedGroupPlan==null){
+                        //add condition if request is pending then below are 'invisible
+                        layoutRoot.findViewById(R.id.status_approved).setVisibility(View.GONE);
+                        buildHitchRequestRV();
+                    }
+
                     Log.d("Success", String.valueOf(hitchRequests.get(0))); //continue here....
 
-                    buildHitchRequestRV();
                 } else {
                     Log.e("Error", response.errorBody().toString());
                 }
@@ -146,6 +166,24 @@ public class ViewGroceryListFragment extends Fragment {
                 t.printStackTrace();
             }
         });
+    }
+
+    private void updateApprovedStatUI(HitchRequest x) {
+        System.out.println("There is an accepted request, change layout");
+        approvedGroupPlan = x.getGroupPlan();
+        rqStatusTitle.setText("You found a buyer!");
+        rqStatDescription.setVisibility(View.GONE);
+        pickupStore.setText("Buyer will purchase from: " + approvedGroupPlan.getStoreName());
+        pickupLoc.setText("Pick up Location: " + approvedGroupPlan.getPickupAddress());
+
+        LocalDateTime pickupTimeFrom =  x.getPickupTimeChosen();
+        LocalTime pickupTimeTo = pickupTimeFrom.plusMinutes(30).toLocalTime();
+        DateTimeFormatter df1 = DateTimeFormatter.ofPattern("dd-MMM-yyyy h:mm a");
+        DateTimeFormatter df2 = DateTimeFormatter.ofPattern("h:mm a");
+        pickupTime.setText("Pick up from: " + pickupTimeFrom.format(df1) + " to " +
+                pickupTimeTo.format(df2));
+
+        hitchRqButton.setVisibility(View.GONE);
     }
 
     private void buildHitchRequestRV() {
