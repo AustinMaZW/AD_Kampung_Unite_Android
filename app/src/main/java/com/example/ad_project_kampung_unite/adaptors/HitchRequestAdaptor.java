@@ -27,6 +27,7 @@ public class HitchRequestAdaptor extends RecyclerView.Adapter<HitchRequestAdapto
 
             groupPlanName = itemView.findViewById(R.id.group_plan_name);
             cancelRequestBtn = itemView.findViewById(R.id.cancel_rq_btn);
+
         }
     }
 
@@ -59,7 +60,14 @@ public class HitchRequestAdaptor extends RecyclerView.Adapter<HitchRequestAdapto
         // Set item views based on your views and data model
         TextView textView = holder.groupPlanName;
         textView.setText(hitchRequest.getGroupPlan().getPlanName());    //change this to getName later when name is added to group plan as attr
-        Button button = holder.cancelRequestBtn;
+
+        Button cancelRequestBtn = holder.cancelRequestBtn;
+        cancelRequestBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                System.out.println(hitchRequests.get(position).getId());
+            }
+        });
     }
 
     // Returns the total count of items in the list

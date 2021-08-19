@@ -1,8 +1,5 @@
 package com.example.ad_project_kampung_unite.model;
 
-import lombok.Getter;
-import lombok.Setter;
-
 
 public class UserDetail {
 

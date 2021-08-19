@@ -11,6 +11,8 @@ public class HitcherDetail {
     private String prefPickupLocation;
     private List<HitchRequest> hitchRequestList;
 
+    //test commit
+
     public HitcherDetail() {
     }
 

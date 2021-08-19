@@ -26,6 +26,7 @@ import com.example.ad_project_kampung_unite.entities.GroceryList;
 import com.example.ad_project_kampung_unite.entities.GroupPlan;
 import com.example.ad_project_kampung_unite.entities.HitchRequest;
 import com.example.ad_project_kampung_unite.entities.Product;
+import com.example.ad_project_kampung_unite.enums.RequestStatus;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -124,6 +125,11 @@ public class ViewGroceryListFragment extends Fragment {
                 // else then build hitchrequestRV (cause this doesn't show if there is a approved status)
                 if (response.isSuccessful()) {
                     hitchRequests = response.body();
+                    hitchRequests.stream().forEach(x->{
+                        if (x.getRequestStatus() == RequestStatus.ACCEPTED){
+                            System.out.println("There is an accepted request, change layout");
+                        }
+                    });
                     Log.d("Success", String.valueOf(hitchRequests.get(0))); //continue here....
 
                     buildHitchRequestRV();
