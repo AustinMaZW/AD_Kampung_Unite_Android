@@ -37,7 +37,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyHolder> {
     @Override
     public void onBindViewHolder(@NonNull MyHolder myholder, int i) {
         myholder.mGroceryListName.setText(lists.get(i).getName());
-        if(lists.get(i).getStatus() !=null) {
+        if(lists.get(i).getGroupPlanGL() != null) {
             myholder.mPickupDetail.setText(lists.get(i).getGroupPlanGL().getPickupDate().format(DateTimeFormatter.ISO_DATE));
         }
 
