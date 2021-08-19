@@ -26,6 +26,7 @@ import com.example.ad_project_kampung_unite.entities.GroceryList;
 import com.example.ad_project_kampung_unite.entities.GroupPlan;
 import com.example.ad_project_kampung_unite.entities.HitchRequest;
 import com.example.ad_project_kampung_unite.entities.Product;
+import com.example.ad_project_kampung_unite.enums.RequestStatus;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -38,7 +39,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-
 public class ViewGroceryListFragment extends Fragment {
 
     private List<GroupPlan> groupPlanList;
@@ -48,6 +48,7 @@ public class ViewGroceryListFragment extends Fragment {
     private GroceryListService groceryListService;
     private RecyclerView rvHitchRequests;
     private RecyclerView rvGroceryItems;
+    private View layoutRoot;
     private LinearLayout llPaymentComponent;
     private TextView tvSubtotalAmount;
     private TextView tvGstAmount;
@@ -63,21 +64,12 @@ public class ViewGroceryListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View layoutRoot = inflater.inflate(R.layout.fragment_view_grocery_list, container, false);
+        layoutRoot = inflater.inflate(R.layout.fragment_view_grocery_list, container, false);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Grocery List Name");     //need grocery list name passed from previous frag
 
         createDummyData(); //  fake data to be replaced with http request list with database
 
-        //recycler view for hitch requests
-        rvHitchRequests = layoutRoot.findViewById(R.id.rv_hitch_rq);
-        HitchRequestAdaptor hitchRequestAdaptor = new HitchRequestAdaptor(groupPlanList);
-        rvHitchRequests.setAdapter(hitchRequestAdaptor);    //move this and above line to http request method when added
-        rvHitchRequests.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext()));
-
-        //recycler view for grocery items
-        rvGroceryItems = layoutRoot.findViewById(R.id.rv_grocery_list);
-        rvGroceryItems.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext()));
-
+        //call to retrieve groceryitems
         groceryListService = RetrofitClient.createService(GroceryListService.class);
 
         //add condition if group plan status is shopping completed to show or hide this component
@@ -85,13 +77,17 @@ public class ViewGroceryListFragment extends Fragment {
         llPaymentComponent = layoutRoot.findViewById(R.id.payment_component);
         getGroceryItemsFromServer(layoutRoot);
 
+        //call to retrieve requests
+        hitchRequestService = RetrofitClient.createService(HitchRequestService.class);
+        getHitchRequestsFromServer();
+
         //add condition if request is pending then below are 'invisible
         layoutRoot.findViewById(R.id.status_approved).setVisibility(View.GONE);
 
         return layoutRoot;
     }
 
-    private void getGroceryItemsFromServer(View layoutRoot){
+    private void getGroceryItemsFromServer(){
         Call<List<GroceryItem>> call = groceryListService.getGroceryItemByGroceryListId(30); //hard coded grocerylistid here, replace later
 
         call.enqueue(new Callback<List<GroceryItem>>() {
@@ -102,25 +98,7 @@ public class ViewGroceryListFragment extends Fragment {
                     groceryItemList = response.body();
                     Log.d("Success", String.valueOf(groceryItemList.get(0).getProduct().getProductName())); //for testing
 
-                    GroceryListItemAdaptor groceryListItemAdaptor = new GroceryListItemAdaptor(groceryItemList);
-                    rvGroceryItems.setAdapter(groceryListItemAdaptor);  //set the adaptor here
-
-                    if (llPaymentComponent != null) {
-                        // calculate total payment and load on screen
-                        Map<String, Double> totalPayment = calculateTotalPayment();
-
-                        tvSubtotalAmount = layoutRoot.findViewById(R.id.subtotal_amount);
-                        tvGstAmount = layoutRoot.findViewById(R.id.gst_amount);
-                        tvServicefeeAmount = layoutRoot.findViewById(R.id.service_fee_amount);
-                        tvTotalAmount = layoutRoot.findViewById(R.id.total_amount);
-
-                        tvSubtotalAmount.setText("$" + totalPayment.get("subtotal"));
-                        tvGstAmount.setText("$" + totalPayment.get("gst"));
-                        tvServicefeeAmount.setText("$" + totalPayment.get("servicefee"));
-                        tvTotalAmount.setText("$" + totalPayment.get("total"));
-
-                        llPaymentComponent.setVisibility(View.VISIBLE); // testing
-                    }
+                    buildGroceryItemRV();
 
                 } else {
                     Log.e("Error", response.errorBody().toString());
@@ -137,34 +115,57 @@ public class ViewGroceryListFragment extends Fragment {
         });
     }
 
+    private void buildGroceryItemRV() {
+        //recycler view for grocery items
+        rvGroceryItems = layoutRoot.findViewById(R.id.rv_grocery_list);
+        GroceryListItemAdaptor groceryListItemAdaptor = new GroceryListItemAdaptor(groceryItemList);
+        rvGroceryItems.setAdapter(groceryListItemAdaptor);  //set the adaptor here
+        rvGroceryItems.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext()));
+    }
+
     //below code to be completed for hitch request
-//    private void getHitchRequestsFromServer(){
-//        Call<List<HitchRequest>> call = hitchRequestService.getHitchRequestsByGroceryListId(36);    //hard coded grocerylistid here, replace later
-//
-//        call.enqueue(new Callback<List<HitchRequest>>() {
-//            @Override
-//            public void onResponse(Call<List<HitchRequest>> call, Response<List<HitchRequest>> response) {
-//
-//                if (response.isSuccessful()) {
-//                    hitchRequests = response.body();
-//                    Log.d("Success", String.valueOf(hitchRequests.get(0))); //continue here....
-//
-//                    GroceryListItemAdaptor groceryListItemAdaptor = new GroceryListItemAdaptor(groceryItemList);
-//                    rvGroceryItems.setAdapter(groceryListItemAdaptor);  //set the adaptor here
-//                } else {
-//                    Log.e("Error", response.errorBody().toString());
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<List<hitchRequests>> call, Throwable t) {
-//                // like no internet connection / the website doesn't exist
-//                call.cancel();
-//                Log.w("Failure", "Failure!");
-//                t.printStackTrace();
-//            }
-//        });
-//    }
+    private void getHitchRequestsFromServer(){
+        Call<List<HitchRequest>> call = hitchRequestService.getHitchRequestsByGroceryListId(36);    //hard coded grocerylistid here, replace later
+
+        call.enqueue(new Callback<List<HitchRequest>>() {
+            @Override
+            public void onResponse(Call<List<HitchRequest>> call, Response<List<HitchRequest>> response) {
+
+                //need to add logic to differentiate pending request and approved.
+                // might first loop through to see if any is approved, if one is approved then change ui to approved
+                // else then build hitchrequestRV (cause this doesn't show if there is a approved status)
+                if (response.isSuccessful()) {
+                    hitchRequests = response.body();
+                    hitchRequests.stream().forEach(x->{
+                        if (x.getRequestStatus() == RequestStatus.ACCEPTED){
+                            System.out.println("There is an accepted request, change layout");
+                        }
+                    });
+                    Log.d("Success", String.valueOf(hitchRequests.get(0))); //continue here....
+
+                    buildHitchRequestRV();
+                } else {
+                    Log.e("Error", response.errorBody().toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<HitchRequest>> call, Throwable t) {
+                // like no internet connection / the website doesn't exist
+                call.cancel();
+                Log.w("Failure", "Failure!");
+                t.printStackTrace();
+            }
+        });
+    }
+
+    private void buildHitchRequestRV() {
+        //recycler view for hitch requests
+        rvHitchRequests = layoutRoot.findViewById(R.id.rv_hitch_rq);
+        HitchRequestAdaptor hitchRequestAdaptor = new HitchRequestAdaptor(hitchRequests);
+        rvHitchRequests.setAdapter(hitchRequestAdaptor);    //move this and above line to http request method when added
+        rvHitchRequests.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext()));
+    }
 
     //below code for initial UI testing, to be replaced with http call
     private void createDummyData(){

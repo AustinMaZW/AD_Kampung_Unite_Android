@@ -8,15 +8,23 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.ad_project_kampung_unite.model.UserDetail;
 import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawer;
+
+
+    SharedPreferences sharedPreferences;
+    private static final String LOGIN_CREDENTIALS = "LoginCredentials";
+    private static final String KEY_USERNAME = "username";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,11 +70,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new GroupsFragment()).commit();
                 break;
+            case R.id.nav_logout:
+                //logout request
+                sharedPreferences = getSharedPreferences(LOGIN_CREDENTIALS, MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                String username = sharedPreferences.getString(KEY_USERNAME, "");
+                String url = "http://10.0.2.2:8080/user/";
+                editor.clear();
+                editor.apply();
+                Intent logout = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(logout);
+                break;
         }
 
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 
     @Override
     public void onBackPressed() {
