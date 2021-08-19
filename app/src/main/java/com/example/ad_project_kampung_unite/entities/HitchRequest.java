@@ -1,6 +1,6 @@
 package com.example.ad_project_kampung_unite.entities;
 
-import com.example.ad_project_kampung_unite.enums.RequestStatus;
+import com.example.ad_project_kampung_unite.entities.enums.RequestStatus;
 
 import java.time.LocalDateTime;
 
