@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -39,7 +40,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ViewGroceryListFragment extends Fragment {
+public class ViewGroceryListFragment extends Fragment implements View.OnClickListener {
 
     private List<GroupPlan> groupPlanList;
     private List<GroceryItem> groceryItemList = new ArrayList<>();
@@ -54,6 +55,7 @@ public class ViewGroceryListFragment extends Fragment {
     private TextView tvGstAmount;
     private TextView tvServicefeeAmount;
     private TextView tvTotalAmount;
+    private Button btnCompletePayment;
 
     public ViewGroceryListFragment() {
         // Required empty public constructor
@@ -71,11 +73,7 @@ public class ViewGroceryListFragment extends Fragment {
 
         //call to retrieve groceryitems
         groceryListService = RetrofitClient.createService(GroceryListService.class);
-
-        //add condition if group plan status is shopping completed to show or hide this component
-        layoutRoot.findViewById(R.id.payment_component).setVisibility(View.GONE);
-        llPaymentComponent = layoutRoot.findViewById(R.id.payment_component);
-        getGroceryItemsFromServer(layoutRoot);
+        getGroceryItemsFromServer();
 
         //call to retrieve requests
         hitchRequestService = RetrofitClient.createService(HitchRequestService.class);
@@ -85,6 +83,33 @@ public class ViewGroceryListFragment extends Fragment {
         layoutRoot.findViewById(R.id.status_approved).setVisibility(View.GONE);
 
         return layoutRoot;
+    }
+
+    @Override
+    public void onClick(View view) {
+        if(view.getId() == R.id.complete_payment_btn) {
+            Log.i("Click", "clicked complete payment");
+            Call<HitchRequest> call = hitchRequestService.getAcceptedHitchRequestByHitcherDetailId(37); //hard coded hitcherDetailId here, replace later
+            call.enqueue(new Callback<HitchRequest>() {
+                @Override
+                public void onResponse(Call<HitchRequest> call, Response<HitchRequest> response) {
+                    if (response.isSuccessful()) {
+                        HitchRequest hitchRequest = response.body();
+                        if (hitchRequest != null)
+                            Log.i("HitchRequest", hitchRequest.toString());
+                    } else {
+                        Log.e("Error", response.errorBody().toString());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<HitchRequest> call, Throwable t) {
+                    call.cancel();
+                    Log.w("Failure", "Failure!");
+                    t.printStackTrace();
+                }
+            });
+        }
     }
 
     private void getGroceryItemsFromServer(){
@@ -99,7 +124,12 @@ public class ViewGroceryListFragment extends Fragment {
                     Log.d("Success", String.valueOf(groceryItemList.get(0).getProduct().getProductName())); //for testing
 
                     buildGroceryItemRV();
-
+                    // need to change condition | if group plan status is shopping completed
+                    if (true) {
+                        // calculate total payment
+                        Map<String, Double> totalPayment = calculateTotalPayment();
+                        buildPaymentComponents(totalPayment);
+                    }
                 } else {
                     Log.e("Error", response.errorBody().toString());
                 }
@@ -121,6 +151,27 @@ public class ViewGroceryListFragment extends Fragment {
         GroceryListItemAdaptor groceryListItemAdaptor = new GroceryListItemAdaptor(groceryItemList);
         rvGroceryItems.setAdapter(groceryListItemAdaptor);  //set the adaptor here
         rvGroceryItems.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext()));
+
+        //add condition if group plan status is shopping completed to show or hide this component
+//        layoutRoot.findViewById(R.id.payment_component).setVisibility(View.GONE);
+//        llPaymentComponent = layoutRoot.findViewById(R.id.payment_component);
+    }
+
+    private void buildPaymentComponents(Map<String, Double> totalPayment) {
+        //view pending payment parts
+        tvSubtotalAmount = layoutRoot.findViewById(R.id.subtotal_amount);
+        tvGstAmount = layoutRoot.findViewById(R.id.gst_amount);
+        tvServicefeeAmount = layoutRoot.findViewById(R.id.service_fee_amount);
+        tvTotalAmount = layoutRoot.findViewById(R.id.total_amount);
+
+        tvSubtotalAmount.setText("$" + totalPayment.get("subtotal"));
+        tvGstAmount.setText("$" + totalPayment.get("gst"));
+        tvServicefeeAmount.setText("$" + totalPayment.get("servicefee"));
+        tvTotalAmount.setText("$" + totalPayment.get("total"));
+
+        btnCompletePayment = layoutRoot.findViewById(R.id.complete_payment_btn);
+        btnCompletePayment.setOnClickListener(this);
+//        llPaymentComponent.setVisibility(View.VISIBLE); // testing
     }
 
     //below code to be completed for hitch request
