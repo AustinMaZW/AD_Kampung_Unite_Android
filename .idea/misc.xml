@@ -3,6 +3,28 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/layout/activity_login.xml" value="0.25" />
+        <entry key="..\:/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/layout/activity_register.xml" value="0.36666666666666664" />
+        <entry key="..\:/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/layout/activity_start_up.xml" value="0.25" />
+        <entry key="..\:/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/layout/activity_view_grocery_list.xml" value="0.1" />
+        <entry key="..\:/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/layout/addgrocerylist_dialog.xml" value="0.36666666666666664" />
+        <entry key="..\:/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/layout/find_products_item.xml" value="0.36666666666666664" />
+        <entry key="..\:/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/layout/fragment_grocery_list.xml" value="0.36666666666666664" />
+        <entry key="..\:/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/layout/fragment_grocery_lists.xml" value="0.36666666666666664" />
+        <entry key="..\:/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/layout/fragment_search.xml" value="0.36666666666666664" />
+        <entry key="..\:/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/layout/my_grocery_lists_items.xml" value="0.36666666666666664" />
+        <entry key="..\:/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/menu/drawer_menu.xml" value="0.5" />
+        <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Kampung_Unite_Android/app/src/main/res/layout/activity_view_grocery_list.xml" value="0.20520833333333333" />
+        <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Kampung_Unite_Android/app/src/main/res/layout/find_products_item.xml" value="0.20520833333333333" />
+        <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Kampung_Unite_Android/app/src/main/res/layout/fragment_grocery_list.xml" value="0.20520833333333333" />
+        <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Kampung_Unite_Android/app/src/main/res/layout/fragment_grocery_lists.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Kampung_Unite_Android/app/src/main/res/layout/fragment_group_details.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Kampung_Unite_Android/app/src/main/res/layout/fragment_groups.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Kampung_Unite_Android/app/src/main/res/layout/fragment_view_grocery_list.xml" value="0.4" />
+        <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Kampung_Unite_Android/app/src/main/res/layout/hitch_request_item.xml" value="0.20520833333333333" />
+        <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Kampung_Unite_Android/app/src/main/res/layout/indiv_grocery_list_item.xml" value="0.4" />
+        <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Kampung_Unite_Android/app/src/main/res/layout/my_grocery_lists_items.xml" value="0.20520833333333333" />
         <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.25885416666666666" />
         <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/drawable/custom_button.xml" value="0.3828125" />
         <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/drawable/ic_baseline_delete_24.xml" value="0.221875" />
