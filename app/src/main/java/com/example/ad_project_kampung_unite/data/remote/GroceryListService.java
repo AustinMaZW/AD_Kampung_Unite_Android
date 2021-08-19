@@ -23,7 +23,10 @@ public interface GroceryListService {
     @PUT("grocerylists/{userDetailId}")
     Call<StatusResponseEntity<GroceryList>> addGroceryList(@Body GroceryList groceryList);
 
-    @GET("/groceries/{groceryListId}")
+    @GET("grocerylists")
+    Call<List<GroceryList>> getGroceryLists();
+
+    @GET("groceries/{groceryListId}")
     Call<List<GroceryItem>> getGroceryItemByGroceryListId(@Path("groceryListId") int id);
 
 

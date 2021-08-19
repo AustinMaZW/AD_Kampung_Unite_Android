@@ -2,7 +2,6 @@ package com.example.ad_project_kampung_unite;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.os.Bundle;
 
@@ -130,6 +129,8 @@ public class GroceryListsFragment extends Fragment {
 //                alert.show();
 //            }
 //        });
+
+
         return layoutRoot;
     }
 

@@ -10,7 +10,9 @@ import com.google.gson.JsonParseException;
 import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Locale;
 
 import okhttp3.OkHttpClient;
@@ -25,6 +27,7 @@ public class RetrofitClient {
     private static final Gson gson = new GsonBuilder()
 //            .setDateFormat("yyyy-MM-dd")  //didn't work for me
             .registerTypeAdapter(LocalDate.class, new LocalDateDeserializer())
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
             .create();
 
     private static Retrofit.Builder builder = new Retrofit.Builder()
@@ -48,13 +51,21 @@ public class RetrofitClient {
         return retrofit.create(serviceClass);
     }
 
-    //below class for parsing LocalDate... prob need one for localdatetime too
-    public static class LocalDateDeserializer implements JsonDeserializer<LocalDate> {
+    //below classes for parsing LocalDate and LocalDateTime
+    public static class LocalDateDeserializer implements JsonDeserializer<LocalDate>{
 
         @Override
         public LocalDate deserialize(JsonElement jsonElement, Type typeOF, JsonDeserializationContext context) throws JsonParseException {
             return LocalDate.parse(jsonElement.getAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd").withLocale(Locale.US));
 
+        }
+    }
+
+    public static class LocalDateTimeDeserializer implements JsonDeserializer<LocalDateTime> {
+
+        @Override
+        public LocalDateTime deserialize(JsonElement jsonElement, Type typeOF, JsonDeserializationContext context) throws JsonParseException {
+            return LocalDateTime.parse(jsonElement.getAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss").withLocale(Locale.ENGLISH));
         }
     }
 }
