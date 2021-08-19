@@ -33,6 +33,7 @@ public class BuyerListActivity extends AppCompatActivity implements View.OnClick
     private Toolbar tbar;
     private List<GroupPlan> plans = new ArrayList<>();
     private List<Integer> planIds = new ArrayList<>();
+    private FragmentManager fm;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,15 +47,15 @@ public class BuyerListActivity extends AppCompatActivity implements View.OnClick
         doml = findViewById(R.id.doml);
         doml.setOnClickListener(this);
 
-        FragmentManager fm = getSupportFragmentManager();
-//        BuyerRecycleFragment brv = (BuyerRecycleFragment)fm.findFragmentById(R.id.lists_byrv);
-        BuyerRecycleFragment brv = new BuyerRecycleFragment();
-        FragmentTransaction trans = fm.beginTransaction();
-//        brv.setPlans(plans);
-        brv.setPlanId(planIds);
-        trans.replace(R.id.lists_byrv,brv);
-//        trans.addToBackStack(null);
-        trans.commit();
+        this.fm = getSupportFragmentManager();
+////        BuyerRecycleFragment brv = (BuyerRecycleFragment)fm.findFragmentById(R.id.lists_byrv);
+//        BuyerRecycleFragment brv = new BuyerRecycleFragment();
+//        FragmentTransaction trans = fm.beginTransaction();
+////        brv.setPlans(plans);
+//        brv.setPlanId(planIds);
+//        trans.replace(R.id.lists_byrv,brv);
+////        trans.addToBackStack(null);
+//        trans.commit();
 
     }
 
@@ -83,8 +84,17 @@ public class BuyerListActivity extends AppCompatActivity implements View.OnClick
                 try{
                     Response<List<Integer>> response = recommand.execute();
                     planIds = response.body();
-                    planIds.stream().forEach(System.out::println);
-//                    queryPlans();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            BuyerRecycleFragment brv = new BuyerRecycleFragment();
+                            FragmentTransaction trans = fm.beginTransaction();
+                            brv.setPlanId(planIds);
+                            trans.replace(R.id.lists_byrv,brv);
+                            trans.commit();
+                        }
+                    });
+
                 }catch (Exception e){
                     Log.e("Request Fail 1","Ml fail");
                 }
