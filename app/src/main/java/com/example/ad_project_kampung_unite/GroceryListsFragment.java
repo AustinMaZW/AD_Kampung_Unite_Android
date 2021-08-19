@@ -25,7 +25,10 @@ import android.widget.Toast;
 
 import com.example.ad_project_kampung_unite.data.remote.GroceryListService;
 import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
+import com.example.ad_project_kampung_unite.data.remote.UserDetailService;
 import com.example.ad_project_kampung_unite.entities.GroceryList;
+import com.example.ad_project_kampung_unite.entities.UserDetail;
+import com.example.ad_project_kampung_unite.search_product.SearchFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -41,7 +44,9 @@ import retrofit2.Response;
 public class GroceryListsFragment extends Fragment {
 
     private List<GroceryList> groceryLists;
+    private UserDetail user;
     GroceryListService groceryListService;
+    UserDetailService userDetailService;
 
     private RecyclerView mRecyclerView;
     private MyAdapter myAdapter;
@@ -71,28 +76,13 @@ public class GroceryListsFragment extends Fragment {
         groceryLists = new ArrayList<>();
         groceryListService = RetrofitClient.createService(GroceryListService.class);
 
-        Call<List<GroceryList>> call = groceryListService.findGroceryListsByUserDetailId(userId);
-        call.enqueue(new Callback<List<GroceryList>>() {
-            @Override
-            public void onResponse(Call<List<GroceryList>> call, Response<List<GroceryList>> response) {
-                List<GroceryList> result = response.body();
+        // get user from database
+        userDetailService = RetrofitClient.createService(UserDetailService.class);
 
-                if(result != null) {
-                    result.stream().forEach(x -> groceryLists.add(x));
-                    //recycler view adapter instantiated here
-                    buildRecyclerView(layoutRoot);
+        loadGroceryLists(layoutRoot);
+        setUpAddButton(layoutRoot);
 
-                    //attaching touch helper to recycler view for swipe action itoms
-                    ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
-                    itemTouchHelper.attachToRecyclerView(mRecyclerView);
-                }
-            }
 
-            @Override
-            public void onFailure(Call<List<GroceryList>> call, Throwable t) {
-                Toast.makeText(getContext(), "Failed to connect", Toast.LENGTH_SHORT).show();
-            }
-        });
 
 //        FloatingActionButton addButton = layoutRoot.findViewById(R.id.fab);
 //        addButton.setOnClickListener(new View.OnClickListener() {
@@ -143,6 +133,90 @@ public class GroceryListsFragment extends Fragment {
         return layoutRoot;
     }
 
+    public void loadGroceryLists(View layoutRoot) {
+        Call<List<GroceryList>> call = groceryListService.findGroceryListsByUserDetailId(userId);
+        call.enqueue(new Callback<List<GroceryList>>() {
+            @Override
+            public void onResponse(Call<List<GroceryList>> call, Response<List<GroceryList>> response) {
+                List<GroceryList> result = response.body();
+                if(result != null) {
+                    result.stream().forEach(x -> groceryLists.add(x));
+                    //recycler view adapter instantiated here
+                    buildRecyclerView(layoutRoot);
+
+                    //attaching touch helper to recycler view for swipe action itoms
+                    ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+                    itemTouchHelper.attachToRecyclerView(mRecyclerView);
+                }
+            }
+            @Override
+            public void onFailure(Call<List<GroceryList>> call, Throwable t) {
+                Toast.makeText(getContext(), "Failed to connect", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void setUpAddButton(View layoutRoot) {
+
+        FloatingActionButton addButton = layoutRoot.findViewById(R.id.fab);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Create dialog
+                AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+                alert.setTitle("Enter Name of Grocery List");
+
+                // Set an EditText view to get user input
+                final EditText input = new EditText(getContext());
+                alert.setView(input);
+
+                alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        String name = input.getText().toString();
+                        GroceryList newGroceryList = new GroceryList();
+
+                        Call<UserDetail> callUser = userDetailService.findUserById(userId);
+                        callUser.enqueue(new Callback<UserDetail>() {
+                            @Override
+                            public void onResponse(Call<UserDetail> call, Response<UserDetail> response) {
+                                user = response.body();
+                                newGroceryList.setName(name);
+
+                                // send grocery list to grocery list fragment
+                                Bundle result = new Bundle();
+                                result.putSerializable("bundleKey", newGroceryList);
+                                getParentFragmentManager().setFragmentResult("requestKey", result);
+
+                                // switch to grocery list fragment
+                                FragmentManager fragmentManager = getParentFragmentManager();
+                                GroceryListFragment groceryListFragment = new GroceryListFragment();
+                                fragmentManager.beginTransaction()
+                                        .replace(R.id.fragment_container,groceryListFragment)
+                                        .addToBackStack(null)
+                                        .commit();
+                            }
+
+                            @Override
+                            public void onFailure(Call<UserDetail> call, Throwable t) {
+                                Toast.makeText(getContext(), "Failed to connect", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+
+                    }
+                });
+
+                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // Canceled.
+                    }
+                });
+                alert.show();
+            }
+        });
+
+    }
+
     //build recycler view
     public void buildRecyclerView(View layoutRoot){
 
@@ -153,6 +227,15 @@ public class GroceryListsFragment extends Fragment {
         myAdapter = new MyAdapter(layoutRoot.getContext(), groceryLists);
         mRecyclerView.setAdapter(myAdapter);
     }
+
+
+
+
+
+
+
+
+
 
     //attributes for deleting or archiving a list via swipe action
     GroceryList deletedList = null;
@@ -227,12 +310,5 @@ public class GroceryListsFragment extends Fragment {
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
         }
     };
-
-    public void sendInput(String input) {
-//        Log.d(MyGroceryListsActivity.class.toString(), "send input: "+ input);
-        newlistName = input;
-        GroceryList newList = new GroceryList();
-        newList.setName(input);
-    }
 }
 

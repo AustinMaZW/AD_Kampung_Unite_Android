@@ -3,9 +3,10 @@ package com.example.ad_project_kampung_unite.entities;
 import com.example.ad_project_kampung_unite.enums.GLStatus;
 import com.example.ad_project_kampung_unite.enums.HitchBuyRole;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class GroceryList {
+public class GroceryList implements Serializable {
     private int id;
     private String name;
     private HitchBuyRole role;
