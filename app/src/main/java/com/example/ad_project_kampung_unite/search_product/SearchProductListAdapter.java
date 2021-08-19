@@ -15,12 +15,14 @@ import com.example.ad_project_kampung_unite.ViewGroceryListActivity;
 import com.example.ad_project_kampung_unite.entities.Product;
 import com.google.android.material.chip.Chip;
 
+import java.util.List;
+
 public class SearchProductListAdapter extends RecyclerView.Adapter<SearchProductListAdapter.ViewHolder> {
 
-    private Product[] productList;
+    private List<Product> productList;
 
     // RecyclerView recyclerView;
-    public SearchProductListAdapter(Product[] productList) {
+    public SearchProductListAdapter(List<Product> productList) {
         this.productList = productList;
     }
     @Override
@@ -33,14 +35,14 @@ public class SearchProductListAdapter extends RecyclerView.Adapter<SearchProduct
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final Product product = productList[position];
+        final Product product = productList.get(position);
 //        holder.imageView.setImageURI(Uri.parse(productList[position].getImgURL()));
-        holder.productNameView.setText(productList[position].getProductName());
-        holder.productDescView.setText(productList[position].getProductDescription());
+        holder.productNameView.setText(productList.get(position).getProductName());
+        holder.productDescView.setText(productList.get(position).getProductDescription());
         holder.add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(view.getContext(),"clicked on "+holder.getAbsoluteAdapterPosition(),Toast.LENGTH_LONG).show();
+                Toast.makeText(view.getContext(),"Added "+ product.getProductName() +" to grocery list",Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -48,7 +50,7 @@ public class SearchProductListAdapter extends RecyclerView.Adapter<SearchProduct
 
     @Override
     public int getItemCount() {
-        return productList.length;
+        return productList.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentResultListener;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.ad_project_kampung_unite.entities.GroceryList;
 import com.example.ad_project_kampung_unite.search_product.SearchFragment;
 import com.google.android.material.chip.Chip;
 
@@ -28,10 +29,9 @@ public class GroceryListFragment extends Fragment {
         getParentFragmentManager().setFragmentResultListener("requestKey", this, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
-                // We use a String here, but any type that can be put in a Bundle is supported
-                String result = bundle.getString("bundleKey");
+                GroceryList newGroceryList = (GroceryList) bundle.getSerializable("bundleKey");
                 // Do something with the result
-                ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(result);
+                ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(newGroceryList.getName());
             }
         });
     }

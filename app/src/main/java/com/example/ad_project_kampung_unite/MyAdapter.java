@@ -1,14 +1,20 @@
 package com.example.ad_project_kampung_unite;
 
+import android.app.Activity;
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ad_project_kampung_unite.entities.GroceryList;
+import com.example.ad_project_kampung_unite.search_product.SearchFragment;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -37,23 +43,33 @@ public class MyAdapter extends RecyclerView.Adapter<MyHolder> {
     @Override
     public void onBindViewHolder(@NonNull MyHolder myholder, int i) {
         myholder.mGroceryListName.setText(lists.get(i).getName());
-        if(lists.get(i).getStatus() !=null) {
+        if(lists.get(i).getGroupPlanGL() != null) {
             myholder.mPickupDetail.setText(lists.get(i).getGroupPlanGL().getPickupDate().format(DateTimeFormatter.ISO_DATE));
         }
-
-//        myholder.mPickupDetail.setText((CharSequence) lists.get(i).getDate());
-        //.setImageResource to set image.
 
         myholder.setItemClickListener(new ItemClickListener() {
             @Override
             public void onItemClickLister(View v, int position) {
-                String gName = lists.get(position).getName();
-//                String gDetails = lists.get(position).getDate();
+                AppCompatActivity activity = (AppCompatActivity) v.getContext();
 
-//                Intent intent = new Intent(c, ViewGroceryListActivity.class);
-//                intent.putExtra("gName",gName);
-//                intent.putExtra("gDetails",gDetails);
-//                c.startActivity(intent);
+                // send grocery list object
+                GroceryList target = new GroceryList();
+                target = lists.get(position);
+
+                // send grocery list to grocery list fragment
+                Bundle result = new Bundle();
+                result.putSerializable("bundleKey", target);
+                activity.getSupportFragmentManager()
+                        .setFragmentResult("requestKey", result);
+
+                // go to grocery list view fragment
+                GroceryListFragment groceryListFragment = new GroceryListFragment();
+                activity.getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container,groceryListFragment)
+                        .addToBackStack(null)
+                        .commit();
+
             }
         });
     }
@@ -65,6 +81,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyHolder> {
 
     public void setGroceryList(List<GroceryList> groceryLists){
         this.lists = (ArrayList<GroceryList>) groceryLists;
+        notifyDataSetChanged();
+    }
+
+    public void add(GroceryList groceryList) {
+        this.lists.add(groceryList);
         notifyDataSetChanged();
     }
 }
