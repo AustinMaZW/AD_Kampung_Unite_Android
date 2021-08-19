@@ -11,6 +11,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
@@ -20,16 +21,14 @@ public interface GroceryListService {
     @GET("/grocerylists/{userDetailId}")
     Call<List<GroceryList>> findGroceryListsByUserDetailId(@Path("userDetailId") int userDetailId);
 
-    @PUT("grocerylists/{userDetailId}")
-    Call<StatusResponseEntity<GroceryList>> addGroceryList(@Body GroceryList groceryList);
+    @POST("grocerylists/new")
+    Call<GroceryList> addGroceryList(@Body GroceryList groceryList);
 
     @GET("grocerylists")
     Call<List<GroceryList>> getGroceryLists();
 
     @GET("groceries/{groceryListId}")
     Call<List<GroceryItem>> getGroceryItemByGroceryListId(@Path("groceryListId") int id);
-
-
 
 
 }

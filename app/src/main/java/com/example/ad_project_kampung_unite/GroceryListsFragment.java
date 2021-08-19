@@ -2,6 +2,7 @@ package com.example.ad_project_kampung_unite;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.os.Bundle;
 
@@ -10,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -71,6 +71,7 @@ public class GroceryListsFragment extends Fragment {
         sharedPreferences = getContext().getSharedPreferences("LoginCredentials",0);
         userId = Integer.valueOf(sharedPreferences.getString("userId","-1"));
 
+
         // get grocery lists from database
         groceryLists = new ArrayList<>();
         groceryListService = RetrofitClient.createService(GroceryListService.class);
@@ -79,7 +80,8 @@ public class GroceryListsFragment extends Fragment {
         userDetailService = RetrofitClient.createService(UserDetailService.class);
 
         loadGroceryLists(layoutRoot);
-        setUpAddButton(layoutRoot);
+        setUpAddButton(layoutRoot, userId);
+
 
 
 
@@ -157,8 +159,7 @@ public class GroceryListsFragment extends Fragment {
         });
     }
 
-    public void setUpAddButton(View layoutRoot) {
-
+    public void setUpAddButton(View layoutRoot, int userId) {
         FloatingActionButton addButton = layoutRoot.findViewById(R.id.fab);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,33 +169,49 @@ public class GroceryListsFragment extends Fragment {
                 alert.setTitle("Enter Name of Grocery List");
 
                 // Set an EditText view to get user input
-                final EditText input = new EditText(getContext());
+                EditText input = new EditText(getContext());
                 alert.setView(input);
 
                 alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         String name = input.getText().toString();
                         GroceryList newGroceryList = new GroceryList();
+                        System.out.println("user id: " + userId);
 
-                        Call<UserDetail> callUser = userDetailService.findUserById(userId);
-                        callUser.enqueue(new Callback<UserDetail>() {
+                        Call<UserDetail> userCall = userDetailService.findUserById(userId);
+                        userCall.enqueue(new Callback<UserDetail>() {
                             @Override
                             public void onResponse(Call<UserDetail> call, Response<UserDetail> response) {
-                                user = response.body();
-                                newGroceryList.setName(name);
+                                if(response.body() != null) {
+                                    user = response.body();
+                                    System.out.println("name: " + user.getFirstName());
+                                    newGroceryList.setName(name);
+                                    newGroceryList.setUserDetail(user);
+                                }
 
-                                // send grocery list to grocery list fragment
-                                Bundle result = new Bundle();
-                                result.putSerializable("bundleKey", newGroceryList);
-                                getParentFragmentManager().setFragmentResult("requestKey", result);
+                                // save new grocery list to database
+                                Call<GroceryList> groceryListCall = groceryListService.addGroceryList(newGroceryList);
+                                groceryListCall.enqueue(new Callback<GroceryList>() {
+                                    @Override
+                                    public void onResponse(Call<GroceryList> call, Response<GroceryList> response) {
+                                        System.out.println("connected");
 
-                                // switch to grocery list fragment
-                                FragmentManager fragmentManager = getParentFragmentManager();
-                                GroceryListFragment groceryListFragment = new GroceryListFragment();
-                                fragmentManager.beginTransaction()
-                                        .replace(R.id.fragment_container,groceryListFragment)
-                                        .addToBackStack(null)
-                                        .commit();
+                                        FragmentManager fragmentManager = getParentFragmentManager();
+                                        GroceryListFragment groceryListFragment = new GroceryListFragment();
+
+                                        // addtobackstack to go back to previous fragment
+                                        fragmentManager.beginTransaction()
+                                                .replace(R.id.fragment_container,groceryListFragment)
+                                                .addToBackStack(null)
+                                                .commit();
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<GroceryList> call, Throwable t) {
+                                        System.out.println("failed to connect");
+
+                                    }
+                                });
                             }
 
                             @Override
@@ -203,10 +220,8 @@ public class GroceryListsFragment extends Fragment {
                             }
                         });
 
-
                     }
                 });
-
                 alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         // Canceled.
@@ -215,6 +230,8 @@ public class GroceryListsFragment extends Fragment {
                 alert.show();
             }
         });
+
+
 
     }
 
