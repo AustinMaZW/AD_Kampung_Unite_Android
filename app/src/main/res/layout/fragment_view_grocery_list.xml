@@ -209,7 +209,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:text="@string/service_fees"
+                android:text="@string/service_fee"
                 android:textColor="@color/black"
                 android:textSize="16dp" />
             <RelativeLayout
@@ -267,7 +267,7 @@
                 android:text="@string/complete_payment"
                 android:textColor="@color/Kampong_Blue"
                 android:backgroundTint="@color/Kampong_Yellow"
-                app:layout_constraintWidth_percent="0.8"
+                app:layout_constraintWidth_percent="0.5"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

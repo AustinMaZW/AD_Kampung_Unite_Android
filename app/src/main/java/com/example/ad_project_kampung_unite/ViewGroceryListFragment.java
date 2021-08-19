@@ -30,7 +30,9 @@ import com.example.ad_project_kampung_unite.entities.Product;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -46,6 +48,11 @@ public class ViewGroceryListFragment extends Fragment {
     private GroceryListService groceryListService;
     private RecyclerView rvHitchRequests;
     private RecyclerView rvGroceryItems;
+    private LinearLayout llPaymentComponent;
+    private TextView tvSubtotalAmount;
+    private TextView tvGstAmount;
+    private TextView tvServicefeeAmount;
+    private TextView tvTotalAmount;
 
     public ViewGroceryListFragment() {
         // Required empty public constructor
@@ -72,18 +79,19 @@ public class ViewGroceryListFragment extends Fragment {
         rvGroceryItems.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext()));
 
         groceryListService = RetrofitClient.createService(GroceryListService.class);
-        getGroceryItemsFromServer();
+
+        //add condition if group plan status is shopping completed to show or hide this component
+        layoutRoot.findViewById(R.id.payment_component).setVisibility(View.GONE);
+        llPaymentComponent = layoutRoot.findViewById(R.id.payment_component);
+        getGroceryItemsFromServer(layoutRoot);
 
         //add condition if request is pending then below are 'invisible
         layoutRoot.findViewById(R.id.status_approved).setVisibility(View.GONE);
 
-        //add condition if group plan status is shopping completed to show or hide this component
-//        layoutRoot.findViewById(R.id.payment_component).setVisibility(View.GONE);
-
         return layoutRoot;
     }
 
-    private void getGroceryItemsFromServer(){
+    private void getGroceryItemsFromServer(View layoutRoot){
         Call<List<GroceryItem>> call = groceryListService.getGroceryItemByGroceryListId(30); //hard coded grocerylistid here, replace later
 
         call.enqueue(new Callback<List<GroceryItem>>() {
@@ -96,6 +104,24 @@ public class ViewGroceryListFragment extends Fragment {
 
                     GroceryListItemAdaptor groceryListItemAdaptor = new GroceryListItemAdaptor(groceryItemList);
                     rvGroceryItems.setAdapter(groceryListItemAdaptor);  //set the adaptor here
+
+                    if (llPaymentComponent != null) {
+                        // calculate total payment and load on screen
+                        Map<String, Double> totalPayment = calculateTotalPayment();
+
+                        tvSubtotalAmount = layoutRoot.findViewById(R.id.subtotal_amount);
+                        tvGstAmount = layoutRoot.findViewById(R.id.gst_amount);
+                        tvServicefeeAmount = layoutRoot.findViewById(R.id.service_fee_amount);
+                        tvTotalAmount = layoutRoot.findViewById(R.id.total_amount);
+
+                        tvSubtotalAmount.setText("$" + totalPayment.get("subtotal"));
+                        tvGstAmount.setText("$" + totalPayment.get("gst"));
+                        tvServicefeeAmount.setText("$" + totalPayment.get("servicefee"));
+                        tvTotalAmount.setText("$" + totalPayment.get("total"));
+
+                        llPaymentComponent.setVisibility(View.VISIBLE); // testing
+                    }
+
                 } else {
                     Log.e("Error", response.errorBody().toString());
                 }
@@ -159,5 +185,28 @@ public class ViewGroceryListFragment extends Fragment {
 //
 //        groceryItemList.add(new GroceryItem(1, 5, 8.4, p1, null));
 //        groceryItemList.add(new GroceryItem(1, 3, 5.4, p2, null));
+    }
+
+    private Map<String, Double> calculateTotalPayment() {
+        Map<String, Double> map = new HashMap<>();
+
+        double subtotal = 0;
+        for (GroceryItem groceryItem : groceryItemList) {
+            subtotal += groceryItem.getSubtotal();
+            map.put("subtotal", subtotal);
+        }
+
+        double gst = subtotal * 7 / 100;
+        gst = Math.round(gst * 100.0) / 100.0;
+        map.put("gst", gst);
+
+        double servicefee = subtotal * 5 / 100;
+        servicefee = Math.round(servicefee * 100.0) / 100.0;
+        map.put("servicefee", servicefee);
+
+        double total = subtotal + gst + servicefee;
+        map.put("total", total);
+
+        return map;
     }
 }
