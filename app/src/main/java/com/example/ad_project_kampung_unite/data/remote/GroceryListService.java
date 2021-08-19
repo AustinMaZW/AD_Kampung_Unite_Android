@@ -14,8 +14,8 @@ import retrofit2.http.Path;
 public interface GroceryListService {
 
     // The return value wraps the response in a Call object with the type of the expected result
-    @GET("/grocerylists")
-    Call<List<GroceryList>> getGroceryLists();
+    @GET("/grocerylists/{userDetailId}")
+    Call<List<GroceryList>> findGroceryListsByUserDetailId(@Path("userDetailId") int userDetailId);
 
     @GET("/groceries/{groceryListId}")
     Call<List<GroceryItem>> getGroceryItemByGroceryListId(@Path("groceryListId") int id);

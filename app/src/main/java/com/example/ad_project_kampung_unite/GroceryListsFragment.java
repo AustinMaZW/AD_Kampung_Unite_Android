@@ -2,6 +2,7 @@ package com.example.ad_project_kampung_unite;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.os.Bundle;
 
@@ -20,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.ad_project_kampung_unite.data.remote.GroceryListService;
 import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
@@ -47,6 +49,9 @@ public class GroceryListsFragment extends Fragment {
     private Button buttonAdd;
     private String newlistName;
 
+    SharedPreferences sharedPreferences;
+    int userId;
+
     public GroceryListsFragment() {
         // Required empty public constructor
     }
@@ -58,34 +63,38 @@ public class GroceryListsFragment extends Fragment {
         View layoutRoot = inflater.inflate(R.layout.fragment_grocery_lists, container, false);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("My Grocery Lists");
 
+        // Get user id
+        sharedPreferences = getContext().getSharedPreferences("LoginCredentials",0);
+        userId = Integer.valueOf(sharedPreferences.getString("userId","-1"));
+
         // get grocery lists from database
         groceryLists = new ArrayList<>();
         groceryListService = RetrofitClient.createService(GroceryListService.class);
 
-        Call<List<GroceryList>> call = groceryListService.getGroceryLists();
+        Call<List<GroceryList>> call = groceryListService.findGroceryListsByUserDetailId(userId);
         call.enqueue(new Callback<List<GroceryList>>() {
             @Override
             public void onResponse(Call<List<GroceryList>> call, Response<List<GroceryList>> response) {
                 List<GroceryList> result = response.body();
-                result.stream().forEach(x -> groceryLists.add(x));
-                //recycler view adapter instantiated here
-                buildRecyclerView(layoutRoot);
 
-                //attaching touch helper to recycler view for swipe action itoms
-                ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
-                itemTouchHelper.attachToRecyclerView(mRecyclerView);
+                if(result != null) {
+                    result.stream().forEach(x -> groceryLists.add(x));
+                    //recycler view adapter instantiated here
+                    buildRecyclerView(layoutRoot);
+
+                    //attaching touch helper to recycler view for swipe action itoms
+                    ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+                    itemTouchHelper.attachToRecyclerView(mRecyclerView);
+                }
             }
 
             @Override
             public void onFailure(Call<List<GroceryList>> call, Throwable t) {
-
+                Toast.makeText(getContext(), "Failed to connect", Toast.LENGTH_SHORT).show();
             }
         });
 
-        FloatingActionButton addButton = layoutRoot.findViewById(R.id.fab);
-
-
-
+//        FloatingActionButton addButton = layoutRoot.findViewById(R.id.fab);
 //        addButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
@@ -105,6 +114,7 @@ public class GroceryListsFragment extends Fragment {
 //                        } else {
 //                            name = input.getText().toString();
 //                        }
+//
 //                        mGroceryLists.add(new GroceryList());
 //
 //
@@ -130,8 +140,6 @@ public class GroceryListsFragment extends Fragment {
 //                alert.show();
 //            }
 //        });
-
-
         return layoutRoot;
     }
 
