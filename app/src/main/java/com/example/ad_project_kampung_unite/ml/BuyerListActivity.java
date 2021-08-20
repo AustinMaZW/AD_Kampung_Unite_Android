@@ -29,18 +29,16 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class BuyerListActivity extends AppCompatActivity implements View.OnClickListener{
     public static final String MLBASEURL = "http://10.0.2.2:5000";
     private GroupPlanService p;
+    private Recommendation recommendation;
     private Button doml;
     private Toolbar tbar;
     private List<GroupPlan> plans = new ArrayList<>();
     private List<Integer> planIds = new ArrayList<>();
     private FragmentManager fm;
+    private int hitcherDetailId = 37;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        planIds.add(19);
-        planIds.add(20);
-        planIds.add(21);
-        planIds.add(22);
         p = RetrofitClient.createService(GroupPlanService.class);
         setContentView(R.layout.activity_buyer_list);
         tbar = findViewById(R.id.toolbar_allbuyers);
@@ -80,16 +78,17 @@ public class BuyerListActivity extends AppCompatActivity implements View.OnClick
                         .build();
                 //create request interface object
                 GroupPlanService request = retrofit.create(GroupPlanService.class);
-                Call<List<Integer>> recommand = request.getRecommendId(2);
+                Call<Recommendation> recommand = request.getRecommendId(hitcherDetailId);
                 try{
-                    Response<List<Integer>> response = recommand.execute();
-                    planIds = response.body();
+                    Response<Recommendation> response = recommand.execute();
+                    recommendation = response.body();
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             BuyerRecycleFragment brv = new BuyerRecycleFragment();
                             FragmentTransaction trans = fm.beginTransaction();
-                            brv.setPlanId(planIds);
+                            brv.setRecommendation(recommendation);
+                            brv.setHitcherDetailId(hitcherDetailId);
                             trans.replace(R.id.lists_byrv,brv);
                             trans.commit();
                         }
@@ -101,6 +100,38 @@ public class BuyerListActivity extends AppCompatActivity implements View.OnClick
             }
         }).start();
     }
+//    public void requestForRecommendList(){
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                Retrofit retrofit = new Retrofit.Builder()
+//                        .baseUrl(MLBASEURL) //设置网络请求的Url地址
+//                        .addConverterFactory(GsonConverterFactory.create()) //设置数据解析器
+//                        .build();
+//                //create request interface object
+//                GroupPlanService request = retrofit.create(GroupPlanService.class);
+//                Call<List<Integer>> recommand = request.getRecommendId(hitcherDetailId);
+//                try{
+//                    Response<List<Integer>> response = recommand.execute();
+//                    planIds = response.body();
+//                    runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            BuyerRecycleFragment brv = new BuyerRecycleFragment();
+//                            FragmentTransaction trans = fm.beginTransaction();
+//                            brv.setPlanId(planIds);
+//                            brv.setHitcherDetailId(hitcherDetailId);
+//                            trans.replace(R.id.lists_byrv,brv);
+//                            trans.commit();
+//                        }
+//                    });
+//
+//                }catch (Exception e){
+//                    Log.e("Request Fail 1","Ml fail");
+//                }
+//            }
+//        }).start();
+//    }
     public void queryPlans() {
         new Thread(new Runnable() {
             @Override

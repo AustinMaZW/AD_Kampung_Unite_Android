@@ -18,15 +18,17 @@ import java.util.zip.Inflater;
 
 public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.ProductListViewHolder>{
     private List<Product> pList;
+    private List<Integer> planIds;
     private Context context;
 
     public ProductListAdapter(List<Product> pList) {
         this.pList = pList;
     }
 
-    public ProductListAdapter(List<Product> pList, Context context) {
+    public ProductListAdapter(List<Product> pList, Context context,List<Integer> planIds) {
         this.pList = pList;
         this.context = context;
+        this.planIds = planIds;
     }
 
     @NonNull

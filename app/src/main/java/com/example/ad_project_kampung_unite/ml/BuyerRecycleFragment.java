@@ -32,6 +32,13 @@ import retrofit2.Response;
  * create an instance of this fragment.
  */
 public class BuyerRecycleFragment extends Fragment {
+    private Recommendation recommendation;
+
+    public void setRecommendation(Recommendation recommendation) {
+        this.recommendation = recommendation;
+        this.planIds = recommendation.getPlandIds();
+    }
+
     private List<GroupPlan> plans;
     public void setPlans(List<GroupPlan> plans){
         this.plans = plans;
@@ -40,6 +47,12 @@ public class BuyerRecycleFragment extends Fragment {
     public void setPlanId(List<Integer> planId){
         this.planIds = planId;
     }
+    private int hitcherDetailId;
+
+    public void setHitcherDetailId(int hitcherDetailId) {
+        this.hitcherDetailId = hitcherDetailId;
+    }
+
     private RecyclerView recyclerView;
     private BuyerListAdapter myAdapter;
     private GroupPlanService p;
@@ -69,7 +82,7 @@ public class BuyerRecycleFragment extends Fragment {
         recyclerView = layoutRoot.findViewById(R.id.buerlistrv);
         LinearLayoutManager linear = new LinearLayoutManager(layoutRoot.getContext());
         recyclerView.setLayoutManager(linear);
-        myAdapter = new BuyerListAdapter(plans,layoutRoot.getContext());
+        myAdapter = new BuyerListAdapter(plans,layoutRoot.getContext(),planIds,hitcherDetailId);
         recyclerView.setAdapter(myAdapter);
 //        myAdapter.setRecyclerItemClickListener(new BuyerListAdapter.onRecyclerItemClickListener() {
 //            @Override
