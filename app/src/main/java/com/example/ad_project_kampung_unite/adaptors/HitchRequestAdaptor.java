@@ -2,6 +2,7 @@ package com.example.ad_project_kampung_unite.adaptors;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,6 +22,7 @@ import com.example.ad_project_kampung_unite.ViewGroceryListFragment;
 import com.example.ad_project_kampung_unite.data.remote.HitchRequestService;
 import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
 import com.example.ad_project_kampung_unite.entities.GroceryItem;
+import com.example.ad_project_kampung_unite.entities.GroceryList;
 import com.example.ad_project_kampung_unite.entities.GroupPlan;
 import com.example.ad_project_kampung_unite.entities.HitchRequest;
 
@@ -45,11 +48,13 @@ public class HitchRequestAdaptor extends RecyclerView.Adapter<HitchRequestAdapto
     }
 
     private List<HitchRequest> hitchRequests;
+    private GroceryList groceryList;
     private HitchRequestService hitchRequestService;
     private Context context;
 
-    public HitchRequestAdaptor(List<HitchRequest> hitchRequests){
+    public HitchRequestAdaptor(List<HitchRequest> hitchRequests, GroceryList groceryList){
         this.hitchRequests = hitchRequests;
+        this.groceryList = groceryList;
     }
 
     // inflate item row layout and returning the holder
@@ -94,9 +99,14 @@ public class HitchRequestAdaptor extends RecyclerView.Adapter<HitchRequestAdapto
                         cancelHitchRequestToServer(hitchRequests.get(position).getId());
 
                         FragmentManager fm = ((AppCompatActivity)context).getSupportFragmentManager();
-                        ViewGroceryListFragment ViewGLFragment = new ViewGroceryListFragment();
+                        Bundle result = new Bundle();
+                        result.putSerializable("bundleKey", groceryList);       //retain the grocerylist
+
+                        // refresh the view by calling it again
+                        ViewGroceryListFragment viewGroceryListFragment = new ViewGroceryListFragment();
+                        viewGroceryListFragment.setArguments(result);
                         fm.beginTransaction()
-                                .replace(R.id.fragment_container,ViewGLFragment)        //replaces fragment with itself (refreshes)
+                                .replace(R.id.fragment_container,viewGroceryListFragment,"VIEW_HITCHER_GL_FRAG")
                                 .addToBackStack(null)
                                 .commit();
                     }
