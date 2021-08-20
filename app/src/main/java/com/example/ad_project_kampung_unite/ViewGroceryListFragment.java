@@ -19,10 +19,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.example.ad_project_kampung_unite.R;
 import com.example.ad_project_kampung_unite.adaptors.GroceryListItemAdaptor;
 import com.example.ad_project_kampung_unite.adaptors.HitchRequestAdaptor;
 import com.example.ad_project_kampung_unite.data.remote.GroceryListService;
@@ -33,10 +31,9 @@ import com.example.ad_project_kampung_unite.entities.GroceryItem;
 import com.example.ad_project_kampung_unite.entities.GroceryList;
 import com.example.ad_project_kampung_unite.entities.GroupPlan;
 import com.example.ad_project_kampung_unite.entities.HitchRequest;
-import com.example.ad_project_kampung_unite.entities.Product;
 import com.example.ad_project_kampung_unite.enums.RequestStatus;
+import com.example.ad_project_kampung_unite.manage_grocery_list.EditGroceryListFragment;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -151,10 +148,20 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
 
         if(view.getId() == R.id.edit_groceries) {
             Log.i("Click", "clicked edit groceries");
-            GroceryListFragment groceryListFragment = new GroceryListFragment();
-            FragmentManager fragmentManager = getParentFragmentManager();
+
+            // send grocery list object
+            GroceryList target = groceryList;
+
+            // send grocery list to grocery list fragment
+            Bundle result = new Bundle();
+            result.putSerializable("bundleKey1", target);
+            System.out.println("result:" + result);
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            fragmentManager.setFragmentResult("requestKey1", result);
+
+            EditGroceryListFragment editGroceryListFragment = new EditGroceryListFragment();
             fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container,groceryListFragment)
+                    .replace(R.id.fragment_container, editGroceryListFragment)
                     .addToBackStack(null)
                     .commit();
         }
