@@ -59,14 +59,15 @@ public class MyGroceryListsAdapter extends RecyclerView.Adapter<MyGroceryListsHo
                 // send grocery list to grocery list fragment
                 Bundle result = new Bundle();
                 result.putSerializable("bundleKey", target);
-                activity.getSupportFragmentManager()
-                        .setFragmentResult("requestKey", result);
+//                activity.getSupportFragmentManager()
+//                        .setFragmentResult("requestKey", result);     //instead of setFragmentResult, directly setArguments in Frag
 
                 // go to grocery list view fragment
                 ViewGroceryListFragment viewGroceryListFragment = new ViewGroceryListFragment();
+                viewGroceryListFragment.setArguments(result);       //putting bundle inside frag
                 activity.getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.fragment_container,viewGroceryListFragment)
+                        .replace(R.id.fragment_container,viewGroceryListFragment,"VIEW_HITCHER_GL_FRAG")
                         .addToBackStack(null)
                         .commit();
             }
