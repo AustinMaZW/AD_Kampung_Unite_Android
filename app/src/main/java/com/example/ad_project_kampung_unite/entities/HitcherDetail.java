@@ -1,28 +1,26 @@
 package com.example.ad_project_kampung_unite.entities;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
 public class HitcherDetail {
     private int id;
-    private LocalDate prefDate;
-    private LocalTime prefPickupTimeFrom;
+    private LocalDateTime prefPickupTimeFrom;
     private String prefPickupLocation;
     private List<HitchRequest> hitchRequestList;
 
+    //test commit
+
     public HitcherDetail() {
     }
-
-    public HitcherDetail(LocalDate prefDate, LocalTime prefPickupTimeFrom, String prefPickupLocation) {
-        this.prefDate = prefDate;
+    public HitcherDetail(LocalDateTime prefPickupTimeFrom, String prefPickupLocation) {
         this.prefPickupTimeFrom = prefPickupTimeFrom;
         this.prefPickupLocation = prefPickupLocation;
     }
-
-    public HitcherDetail(int id, LocalDate prefDate, LocalTime prefPickupTimeFrom, String prefPickupLocation, List<HitchRequest> hitchRequestList) {
+    public HitcherDetail(int id, LocalDate prefDate, LocalDateTime prefPickupTimeFrom, String prefPickupLocation, List<HitchRequest> hitchRequestList) {
         this.id = id;
-        this.prefDate = prefDate;
         this.prefPickupTimeFrom = prefPickupTimeFrom;
         this.prefPickupLocation = prefPickupLocation;
         this.hitchRequestList = hitchRequestList;
@@ -36,19 +34,11 @@ public class HitcherDetail {
         this.id = id;
     }
 
-    public LocalDate getPrefDate() {
-        return prefDate;
-    }
-
-    public void setPrefDate(LocalDate prefDate) {
-        this.prefDate = prefDate;
-    }
-
-    public LocalTime getPrefPickupTimeFrom() {
+    public LocalDateTime getPrefPickupTimeFrom() {
         return prefPickupTimeFrom;
     }
 
-    public void setPrefPickupTimeFrom(LocalTime prefPickupTimeFrom) {
+    public void setPrefPickupTimeFrom(LocalDateTime prefPickupTimeFrom) {
         this.prefPickupTimeFrom = prefPickupTimeFrom;
     }
 

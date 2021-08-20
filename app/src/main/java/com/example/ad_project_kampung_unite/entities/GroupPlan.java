@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class GroupPlan {
-    private int Id;
+    private int id;
     private String planName;
     private String storeName;
     private LocalDate shoppingDate;
@@ -20,16 +20,15 @@ public class GroupPlan {
 
     public GroupPlan() {
     }
-
     public GroupPlan(String storeName, LocalDate shoppingDate, String pickupAddress, LocalDate pickupDate) {
         this.storeName = storeName;
         this.shoppingDate = shoppingDate;
         this.pickupAddress = pickupAddress;
         this.pickupDate = pickupDate;
     }
-
-    public GroupPlan(int id, String storeName, LocalDate shoppingDate, String pickupAddress, LocalDate pickupDate, GroupPlanStatus groupPlanStatus, CombinedPurchaseList combinedPurchaseList, List<AvailableTime> availableTimes, List<GroceryList> groceryLists, List<HitchRequest> groupPlan_hitchers) {
-        Id = id;
+    public GroupPlan(int id, String planName, String storeName, LocalDate shoppingDate, String pickupAddress, LocalDate pickupDate, GroupPlanStatus groupPlanStatus, CombinedPurchaseList combinedPurchaseList, List<AvailableTime> availableTimes, List<GroceryList> groceryLists, List<HitchRequest> groupPlan_hitchers) {
+        this.id = id;
+        this.planName = planName;
         this.storeName = storeName;
         this.shoppingDate = shoppingDate;
         this.pickupAddress = pickupAddress;
@@ -41,12 +40,20 @@ public class GroupPlan {
         this.groupPlan_hitchers = groupPlan_hitchers;
     }
 
+    public String getPlanName() {
+        return planName;
+    }
+
+    public void setPlanName(String planName) {
+        this.planName = planName;
+    }
+
     public int getId() {
-        return Id;
+        return id;
     }
 
     public void setId(int id) {
-        Id = id;
+        id = id;
     }
 
     public String getStoreName() {
@@ -121,16 +128,8 @@ public class GroupPlan {
         this.groupPlan_hitchers = groupPlan_hitchers;
     }
 
-    public String getPlanName() {
-        return planName;
-    }
-
-    public void setPlanName(String planName) {
-        this.planName = planName;
-    }
-
     public GroupPlan(int id, String planName, String storeName, LocalDate shoppingDate, String pickupAddress, LocalDate pickupDate, GroupPlanStatus groupPlanStatus) {
-        Id = id;
+        this.id = id;
         this.planName = planName;
         this.storeName = storeName;
         this.shoppingDate = shoppingDate;
