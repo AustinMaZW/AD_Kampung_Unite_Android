@@ -4,10 +4,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -56,6 +58,7 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
     private GroceryListService groceryListService;
     private GroupPlanService groupPlanService;
     private GroupPlan approvedGroupPlan;
+    private GroceryList groceryList;
 
     private Context context;
 
@@ -64,7 +67,7 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
     private RecyclerView rvHitchRequests,rvGroceryItems;
     private TextView rqStatusTitle, rqStatDescription, pickupStore, pickupLoc, pickupTime;
     private TextView tvSubtotalAmount, tvGstAmount, tvServicefeeAmount, tvTotalAmount;
-    private Button hitchRqButton, quitGroupBtn, btnCompletePayment;
+    private Button hitchRqButton, quitGroupBtn, btnCompletePayment, editListBtn;
     private LinearLayout llPaymentComponent;
 
     public ViewGroceryListFragment() {
@@ -77,9 +80,22 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         layoutRoot = inflater.inflate(R.layout.fragment_view_grocery_list, container, false);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Grocery List Name");     //need grocery list name passed from previous frag
+//        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Grocery List Name");     //need grocery list name passed from previous frag
 
         context = layoutRoot.getContext();
+
+        // receive grocery list from groceryListsFragment
+        getParentFragmentManager().setFragmentResultListener("requestKey", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
+                groceryList = (GroceryList) bundle.getSerializable("bundleKey");
+                // Do something with the result
+                ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(groceryList.getName());
+
+                getGroceryItemsFromServer();            //call to retrieve groceryitems
+                getHitchRequestsFromServer();           //call to retrieve requests
+            }
+        });
 
         rqStatusTitle = layoutRoot.findViewById(R.id.rqStat_title);
         rqStatDescription = layoutRoot.findViewById(R.id.rqStat_description);
@@ -88,10 +104,14 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
         pickupTime = layoutRoot.findViewById(R.id.pickup_time);
         hitchRqButton = layoutRoot.findViewById(R.id.hitch_rq_btn);
         quitGroupBtn = layoutRoot.findViewById(R.id.quit_group);
+        editListBtn = layoutRoot.findViewById(R.id.edit_groceries);
+        editListBtn.setOnClickListener(this);
 
-        getGroceryItemsFromServer();            //call to retrieve groceryitems
-        getHitchRequestsFromServer();           //call to retrieve requests
+//        getGroceryItemsFromServer();            //call to retrieve groceryitems
+//        getHitchRequestsFromServer();           //call to retrieve requests
         setQuitGroupBtn();       //for quitGroup
+
+
 
         return layoutRoot;
     }
@@ -110,7 +130,7 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
                         if (hitchRequest != null)
                             Log.i("HitchRequest", hitchRequest.toString());
                     } else {
-                        Log.e("Error", response.errorBody().toString());
+                        Log.e("getAcceptedHitchRequestByHitcherDetailId Error", response.errorBody().toString());
                     }
                 }
 
@@ -122,11 +142,21 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
                 }
             });
         }
+
+        if(view.getId() == R.id.edit_groceries) {
+            Log.i("Click", "clicked edit groceries");
+            GroceryListFragment groceryListFragment = new GroceryListFragment();
+            FragmentManager fragmentManager = getParentFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container,groceryListFragment)
+                    .addToBackStack(null)
+                    .commit();
+        }
     }
 
     private void getGroceryItemsFromServer(){
         groceryListService = RetrofitClient.createService(GroceryListService.class);
-        Call<List<GroceryItem>> call = groceryListService.getGroceryItemByGroceryListId(30); //hard coded grocerylistid here, replace later
+        Call<List<GroceryItem>> call = groceryListService.getGroceryItemByGroceryListId(groceryList.getId());
 
         call.enqueue(new Callback<List<GroceryItem>>() {
             @Override
@@ -134,7 +164,7 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
 
                 if (response.isSuccessful()) {
                     groceryItemList = response.body();
-                    Log.d("Success", String.valueOf(groceryItemList.get(0).getProduct().getProductName())); //for testing
+//                    Log.d("Success", String.valueOf(groceryItemList.get(0).getProduct().getProductName())); //for testing
 
                     buildGroceryItemRV();
                     // need to change condition | if group plan status is shopping completed
@@ -144,7 +174,7 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
                         buildPaymentComponents(totalPayment);
                     }
                 } else {
-                    Log.e("Error", response.errorBody().toString());
+                    Log.e("getGroceryItemByGroceryListId Error", response.errorBody().toString());
                 }
             }
 
@@ -161,7 +191,7 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
     //below code to be completed for hitch request
     private void getHitchRequestsFromServer(){
         hitchRequestService = RetrofitClient.createService(HitchRequestService.class);
-        Call<List<HitchRequest>> call = hitchRequestService.getHitchRequestsByGroceryListId(38);    //for test data 38 is pending status, 36 is approved, 249 is for quit list test
+        Call<List<HitchRequest>> call = hitchRequestService.getHitchRequestsByGroceryListId(groceryList.getId());    //for test data 38 is pending status, 36 is approved, 249 is for quit list test
         approvedGroupPlan = null;   //reset this upon new request
 
         call.enqueue(new Callback<List<HitchRequest>>() {
@@ -187,7 +217,7 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
                     }
 
                 } else {
-                    Log.e("Error", response.errorBody().toString());
+                    Log.e("getHitchRequestsByGroceryListId Error", response.errorBody().toString());
                 }
             }
 
@@ -203,7 +233,7 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
 
     private void quitGroupPlan(){
         groupPlanService = RetrofitClient.createService(GroupPlanService.class);
-        Call<Boolean> call = groupPlanService.quitGroupPlanByGroceryListId(249); //hard coded grocerylistid here, replace later
+        Call<Boolean> call = groupPlanService.quitGroupPlanByGroceryListId(groceryList.getId());
 
         call.enqueue(new Callback<Boolean>() {
             @Override
@@ -214,7 +244,7 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
                     Log.d("Success", result.toString()); //for testing
 
                 } else {
-                    Log.e("Error", response.errorBody().toString());
+                    Log.e("quitGroupPlanByGroceryListId Error", response.errorBody().toString());
                 }
             }
 

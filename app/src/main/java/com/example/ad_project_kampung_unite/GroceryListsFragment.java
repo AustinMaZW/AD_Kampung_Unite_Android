@@ -50,9 +50,6 @@ public class GroceryListsFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private MyAdapter myAdapter;
 
-    private Button buttonAdd;
-    private String newlistName;
-
     SharedPreferences sharedPreferences;
     int userId;
 
@@ -81,57 +78,6 @@ public class GroceryListsFragment extends Fragment {
 
         loadGroceryLists(layoutRoot);
         setUpAddButton(layoutRoot, userId);
-
-
-
-
-//        FloatingActionButton addButton = layoutRoot.findViewById(R.id.fab);
-//        addButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                // Create dialog
-//                AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
-//                alert.setTitle("Enter Name of Grocery List");
-//
-//                // Set an EditText view to get user input
-//                final EditText input = new EditText(getContext());
-//                alert.setView(input);
-//
-//                alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int whichButton) {
-//                        String name = "";
-//                        if(name == "") {
-//                            name = "My Grocery List";
-//                        } else {
-//                            name = input.getText().toString();
-//                        }
-//
-//                        mGroceryLists.add(new GroceryList());
-//
-//
-//                        // Do something with value!
-//                        Bundle result = new Bundle();
-//                        result.putString("bundleKey", name);
-//                        getParentFragmentManager().setFragmentResult("requestKey", result);
-//                        FragmentManager fragmentManager = getParentFragmentManager();
-//                        GroceryListFragment groceryListFragment = new GroceryListFragment();
-//                        fragmentManager.beginTransaction()
-//                                .replace(R.id.fragment_container,groceryListFragment)
-//                                .addToBackStack(null)
-//                                .commit();
-//                    }
-//                });
-//
-//                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int whichButton) {
-//                        // Canceled.
-//                    }
-//                });
-//
-//                alert.show();
-//            }
-//        });
-
 
         return layoutRoot;
     }

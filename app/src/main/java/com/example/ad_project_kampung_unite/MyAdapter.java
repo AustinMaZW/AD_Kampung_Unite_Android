@@ -1,6 +1,5 @@
 package com.example.ad_project_kampung_unite;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,19 +8,14 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ad_project_kampung_unite.entities.GroceryList;
-import com.example.ad_project_kampung_unite.search_product.SearchFragment;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-//Bridge between holder and list,
-//for each holder - inflate, populate with data, add onClickListener, direct to activity 'view list details'
 public class MyAdapter extends RecyclerView.Adapter<MyHolder> {
 
     Context c;
@@ -42,10 +36,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull MyHolder myholder, int i) {
-        myholder.mGroceryListName.setText(lists.get(i).getName());
+        GroceryList groceryList = lists.get(i);
+
+        myholder.mGroceryListName.setText(groceryList.getName());
         if(lists.get(i).getGroupPlanGL() != null) {
             myholder.mPickupDetail.setText(lists.get(i).getGroupPlanGL().getPickupDate().format(DateTimeFormatter.ISO_DATE));
         }
+
+        System.out.println(groceryList.getGroceryItems());
 
         myholder.setItemClickListener(new ItemClickListener() {
             @Override
@@ -53,8 +51,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyHolder> {
                 AppCompatActivity activity = (AppCompatActivity) v.getContext();
 
                 // send grocery list object
-                GroceryList target = new GroceryList();
-                target = lists.get(position);
+                GroceryList target = lists.get(position);
 
                 // send grocery list to grocery list fragment
                 Bundle result = new Bundle();
@@ -63,13 +60,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyHolder> {
                         .setFragmentResult("requestKey", result);
 
                 // go to grocery list view fragment
-                GroceryListFragment groceryListFragment = new GroceryListFragment();
+                ViewGroceryListFragment viewGroceryListFragment = new ViewGroceryListFragment();
                 activity.getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.fragment_container,groceryListFragment)
+                        .replace(R.id.fragment_container,viewGroceryListFragment)
                         .addToBackStack(null)
                         .commit();
-
             }
         });
     }
