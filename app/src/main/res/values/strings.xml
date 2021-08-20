@@ -10,6 +10,8 @@
     <string name="be_buyer">Become A Buyer</string>
     <string name="find_match">Find Match</string>
     <string name="logout">Logout</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="user_base_url">http://10.0.2.2:8080/user/</string>\
+    <string name="finish_shopping">Finish Shopping</string>
+    <string name="item_description">Item Description</string>
+    <string name="quantity">Quantity</string>
 </resources>

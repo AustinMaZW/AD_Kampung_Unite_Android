@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 sharedPreferences = getSharedPreferences(LOGIN_CREDENTIALS, MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 Integer userId = sharedPreferences.getInt(KEY_USERID, 0);
-                String url = "http://10.0.2.2:8080/user/logout/"+userId.toString();
+                String url =getResources().getString(R.string.user_base_url)+"/logout/"+userId.toString();
                 StringRequest logoutRequest = new StringRequest(url, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -92,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         Toast.makeText(getApplicationContext(), "Something went wrong :(", Toast.LENGTH_SHORT).show();
                     }
                 });
+
                 RequestQueue queue = Volley.newRequestQueue(this);
                 queue.add(logoutRequest);
 

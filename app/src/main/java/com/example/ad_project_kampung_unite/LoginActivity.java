@@ -56,7 +56,6 @@ public class LoginActivity extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences(LOGIN_CREDENTIALS, MODE_PRIVATE);
 
-
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,7 +109,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void loginRequest(UserDetail user) {
-        String url = "http://10.0.2.2:8080/user/";
+        String url = getResources().getString(R.string.user_base_url);
         httpClient.addInterceptor(logging);
         Retrofit.Builder builder = new Retrofit.Builder()
                 .baseUrl(url)
