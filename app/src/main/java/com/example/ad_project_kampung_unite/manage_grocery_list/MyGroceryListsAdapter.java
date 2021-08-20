@@ -1,4 +1,4 @@
-package com.example.ad_project_kampung_unite;
+package com.example.ad_project_kampung_unite.manage_grocery_list;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -10,32 +10,35 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.ad_project_kampung_unite.ItemClickListener;
+import com.example.ad_project_kampung_unite.R;
+import com.example.ad_project_kampung_unite.ViewGroceryListFragment;
 import com.example.ad_project_kampung_unite.entities.GroceryList;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyAdapter extends RecyclerView.Adapter<MyHolder> {
+public class MyGroceryListsAdapter extends RecyclerView.Adapter<MyGroceryListsHolder> {
 
     Context c;
     List<GroceryList> lists;
 
-    public MyAdapter(Context c, List<GroceryList> lists) {
+    public MyGroceryListsAdapter(Context c, List<GroceryList> lists) {
         this.c = c;
         this.lists = lists;
     }
 
     @NonNull
     @Override
-    public MyHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public MyGroceryListsHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
 
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.my_grocery_lists_items,null);
-        return new MyHolder(view);
+        return new MyGroceryListsHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyHolder myholder, int i) {
+    public void onBindViewHolder(@NonNull MyGroceryListsHolder myholder, int i) {
         GroceryList groceryList = lists.get(i);
 
         myholder.mGroceryListName.setText(groceryList.getName());
