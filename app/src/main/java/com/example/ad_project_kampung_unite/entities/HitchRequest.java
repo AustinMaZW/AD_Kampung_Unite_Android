@@ -5,7 +5,7 @@ import com.example.ad_project_kampung_unite.entities.enums.RequestStatus;
 import java.time.LocalDateTime;
 
 public class HitchRequest {
-    private int Id;
+    private int id;
     private LocalDateTime pickupTimeChosen;
     private boolean buyerConfirmTransaction;
     private boolean hitcherConfirmTransaction;
@@ -17,7 +17,7 @@ public class HitchRequest {
     }
 
     public HitchRequest(int id, LocalDateTime pickupTimeChosen, boolean buyerConfirmTransaction, boolean hitcherConfirmTransaction, RequestStatus requestStatus, GroupPlan groupPlan, HitcherDetail hitcherDetail) {
-        Id = id;
+        this.id = id;
         this.pickupTimeChosen = pickupTimeChosen;
         this.buyerConfirmTransaction = buyerConfirmTransaction;
         this.hitcherConfirmTransaction = hitcherConfirmTransaction;
@@ -27,11 +27,11 @@ public class HitchRequest {
     }
 
     public int getId() {
-        return Id;
+        return id;
     }
 
     public void setId(int id) {
-        Id = id;
+        this.id = id;
     }
 
     public LocalDateTime getPickupTimeChosen() {
@@ -80,5 +80,15 @@ public class HitchRequest {
 
     public void setHitcherDetail(HitcherDetail hitcherDetail) {
         this.hitcherDetail = hitcherDetail;
+    }
+
+    @Override
+    public String toString() {
+        return "HitchRequest{" +
+                "id=" + id +
+                ", buyerConfirmTransaction=" + buyerConfirmTransaction +
+                ", hitcherConfirmTransaction=" + hitcherConfirmTransaction +
+                ", requestStatus=" + requestStatus +
+                '}';
     }
 }

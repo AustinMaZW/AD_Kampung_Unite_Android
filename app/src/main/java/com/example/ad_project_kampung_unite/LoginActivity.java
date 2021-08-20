@@ -56,6 +56,7 @@ public class LoginActivity extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences(LOGIN_CREDENTIALS, MODE_PRIVATE);
 
+
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,9 +64,7 @@ public class LoginActivity extends AppCompatActivity {
                     String username = editText_username.getText().toString();
                     String pwd = editText_password.getText().toString();
                     UserDetail user = new UserDetail(username, pwd);
-
                     loginRequest(user);
-
 //                    //Start use of path variable to login
 //                    String loginUrl = "https://localhost:8080/user/login"+username+"&&"+pwd;
 //                    StringRequest loginRequest = new StringRequest(loginUrl, new Response.Listener<String>() {
@@ -118,7 +117,6 @@ public class LoginActivity extends AppCompatActivity {
         Retrofit retrofit = builder.build();
 
         UserDetailService userDetailService = retrofit.create(UserDetailService.class);
-        System.out.println(user);
         Call<UserDetail> call = userDetailService.login(user);
         call.enqueue(new Callback<UserDetail>() {
             @Override

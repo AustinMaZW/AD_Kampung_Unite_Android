@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 //each row is a separate grocery list
 public class MyHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    TextView mGroceryListName, mPickupDetail;
+    TextView mGroceryListName, mPickupDetail, mNumOfItems;
     ItemClickListener itemClickListener;
 
     MyHolder(@NonNull View itemView){
@@ -18,6 +18,7 @@ public class MyHolder extends RecyclerView.ViewHolder implements View.OnClickLis
 
         this.mGroceryListName = itemView.findViewById(R.id.grocerylistname);
         this.mPickupDetail = itemView.findViewById(R.id.pickupdetails);
+        this.mNumOfItems = itemView.findViewById(R.id.numItems);
 
         itemView.setOnClickListener(this);
     }

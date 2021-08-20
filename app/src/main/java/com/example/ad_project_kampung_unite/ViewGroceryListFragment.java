@@ -1,9 +1,15 @@
 package com.example.ad_project_kampung_unite;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -11,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -19,33 +26,49 @@ import com.example.ad_project_kampung_unite.R;
 import com.example.ad_project_kampung_unite.adaptors.GroceryListItemAdaptor;
 import com.example.ad_project_kampung_unite.adaptors.HitchRequestAdaptor;
 import com.example.ad_project_kampung_unite.data.remote.GroceryListService;
+import com.example.ad_project_kampung_unite.data.remote.GroupPlanService;
 import com.example.ad_project_kampung_unite.data.remote.HitchRequestService;
 import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
 import com.example.ad_project_kampung_unite.entities.GroceryItem;
 import com.example.ad_project_kampung_unite.entities.GroceryList;
 import com.example.ad_project_kampung_unite.entities.GroupPlan;
 import com.example.ad_project_kampung_unite.entities.HitchRequest;
-import com.example.ad_project_kampung_unite.entities.Product;
+import com.example.ad_project_kampung_unite.entities.enums.RequestStatus;
+
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-
-public class ViewGroceryListFragment extends Fragment {
+public class ViewGroceryListFragment extends Fragment implements View.OnClickListener {
 
     private List<GroupPlan> groupPlanList;
     private List<GroceryItem> groceryItemList = new ArrayList<>();
     private List<HitchRequest> hitchRequests = new ArrayList<>();
     private HitchRequestService hitchRequestService;
     private GroceryListService groceryListService;
-    private RecyclerView rvHitchRequests;
-    private RecyclerView rvGroceryItems;
+    private GroupPlanService groupPlanService;
+    private GroupPlan approvedGroupPlan;
+    private GroceryList groceryList;
+
+    private Context context;
+
+    //views here
+    private View layoutRoot;
+    private RecyclerView rvHitchRequests,rvGroceryItems;
+    private TextView rqStatusTitle, rqStatDescription, pickupStore, pickupLoc, pickupTime;
+    private TextView tvSubtotalAmount, tvGstAmount, tvServicefeeAmount, tvTotalAmount;
+    private Button hitchRqButton, quitGroupBtn, btnCompletePayment, editListBtn;
+    private LinearLayout llPaymentComponent;
 
     public ViewGroceryListFragment() {
         // Required empty public constructor
@@ -56,32 +79,84 @@ public class ViewGroceryListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View layoutRoot = inflater.inflate(R.layout.fragment_view_grocery_list, container, false);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Grocery List Name");     //need grocery list name passed from previous frag
+        layoutRoot = inflater.inflate(R.layout.fragment_view_grocery_list, container, false);
+//        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Grocery List Name");     //need grocery list name passed from previous frag
 
-        createDummyData(); //  fake data to be replaced with http request list with database
+        context = layoutRoot.getContext();
 
-        //recycler view for hitch requests
-        rvHitchRequests = layoutRoot.findViewById(R.id.rv_hitch_rq);
-        HitchRequestAdaptor hitchRequestAdaptor = new HitchRequestAdaptor(groupPlanList);
-        rvHitchRequests.setAdapter(hitchRequestAdaptor);    //move this and above line to http request method when added
-        rvHitchRequests.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext()));
+        // receive grocery list from groceryListsFragment
+        getParentFragmentManager().setFragmentResultListener("requestKey", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
+                groceryList = (GroceryList) bundle.getSerializable("bundleKey");
+                // Do something with the result
+                ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(groceryList.getName());
 
-        //recycler view for grocery items
-        rvGroceryItems = layoutRoot.findViewById(R.id.rv_grocery_list);
-        rvGroceryItems.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext()));
+                getGroceryItemsFromServer();            //call to retrieve groceryitems
+                getHitchRequestsFromServer();           //call to retrieve requests
+            }
+        });
 
-        groceryListService = RetrofitClient.createService(GroceryListService.class);
-        getGroceryItemsFromServer();
+        rqStatusTitle = layoutRoot.findViewById(R.id.rqStat_title);
+        rqStatDescription = layoutRoot.findViewById(R.id.rqStat_description);
+        pickupStore = layoutRoot.findViewById(R.id.pickup_store);
+        pickupLoc = layoutRoot.findViewById(R.id.pickup_location);
+        pickupTime = layoutRoot.findViewById(R.id.pickup_time);
+        hitchRqButton = layoutRoot.findViewById(R.id.hitch_rq_btn);
+        quitGroupBtn = layoutRoot.findViewById(R.id.quit_group);
+        editListBtn = layoutRoot.findViewById(R.id.edit_groceries);
+        editListBtn.setOnClickListener(this);
 
-        //add condition if request is pending then below are 'invisible
-        layoutRoot.findViewById(R.id.status_approved).setVisibility(View.GONE);
+//        getGroceryItemsFromServer();            //call to retrieve groceryitems
+//        getHitchRequestsFromServer();           //call to retrieve requests
+        setQuitGroupBtn();       //for quitGroup
+
+
 
         return layoutRoot;
     }
 
+
+    @Override
+    public void onClick(View view) {
+        if(view.getId() == R.id.complete_payment_btn) {
+            Log.i("Click", "clicked complete payment");
+            Call<HitchRequest> call = hitchRequestService.getAcceptedHitchRequestByHitcherDetailId(37); //hard coded hitcherDetailId here, replace later
+            call.enqueue(new Callback<HitchRequest>() {
+                @Override
+                public void onResponse(Call<HitchRequest> call, Response<HitchRequest> response) {
+                    if (response.isSuccessful()) {
+                        HitchRequest hitchRequest = response.body();
+                        if (hitchRequest != null)
+                            Log.i("HitchRequest", hitchRequest.toString());
+                    } else {
+                        Log.e("getAcceptedHitchRequestByHitcherDetailId Error", response.errorBody().toString());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<HitchRequest> call, Throwable t) {
+                    call.cancel();
+                    Log.w("Failure", "Failure!");
+                    t.printStackTrace();
+                }
+            });
+        }
+
+        if(view.getId() == R.id.edit_groceries) {
+            Log.i("Click", "clicked edit groceries");
+            GroceryListFragment groceryListFragment = new GroceryListFragment();
+            FragmentManager fragmentManager = getParentFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container,groceryListFragment)
+                    .addToBackStack(null)
+                    .commit();
+        }
+    }
+
     private void getGroceryItemsFromServer(){
-        Call<List<GroceryItem>> call = groceryListService.getGroceryItemByGroceryListId(30); //hard coded grocerylistid here, replace later
+        groceryListService = RetrofitClient.createService(GroceryListService.class);
+        Call<List<GroceryItem>> call = groceryListService.getGroceryItemByGroceryListId(groceryList.getId());
 
         call.enqueue(new Callback<List<GroceryItem>>() {
             @Override
@@ -89,12 +164,17 @@ public class ViewGroceryListFragment extends Fragment {
 
                 if (response.isSuccessful()) {
                     groceryItemList = response.body();
-                    Log.d("Success", String.valueOf(groceryItemList.get(0).getProduct().getProductName())); //for testing
+//                    Log.d("Success", String.valueOf(groceryItemList.get(0).getProduct().getProductName())); //for testing
 
-                    GroceryListItemAdaptor groceryListItemAdaptor = new GroceryListItemAdaptor(groceryItemList);
-                    rvGroceryItems.setAdapter(groceryListItemAdaptor);  //set the adaptor here
+                    buildGroceryItemRV();
+                    // need to change condition | if group plan status is shopping completed
+                    if (true) {
+                        // calculate total payment
+                        Map<String, Double> totalPayment = calculateTotalPayment();
+                        buildPaymentComponents(totalPayment);
+                    }
                 } else {
-                    Log.e("Error", response.errorBody().toString());
+                    Log.e("getGroceryItemByGroceryListId Error", response.errorBody().toString());
                 }
             }
 
@@ -109,52 +189,181 @@ public class ViewGroceryListFragment extends Fragment {
     }
 
     //below code to be completed for hitch request
-//    private void getHitchRequestsFromServer(){
-//        Call<List<HitchRequest>> call = hitchRequestService.getHitchRequestsByGroceryListId(36);    //hard coded grocerylistid here, replace later
-//
-//        call.enqueue(new Callback<List<HitchRequest>>() {
-//            @Override
-//            public void onResponse(Call<List<HitchRequest>> call, Response<List<HitchRequest>> response) {
-//
-//                if (response.isSuccessful()) {
-//                    hitchRequests = response.body();
-//                    Log.d("Success", String.valueOf(hitchRequests.get(0))); //continue here....
-//
-//                    GroceryListItemAdaptor groceryListItemAdaptor = new GroceryListItemAdaptor(groceryItemList);
-//                    rvGroceryItems.setAdapter(groceryListItemAdaptor);  //set the adaptor here
-//                } else {
-//                    Log.e("Error", response.errorBody().toString());
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<List<hitchRequests>> call, Throwable t) {
-//                // like no internet connection / the website doesn't exist
-//                call.cancel();
-//                Log.w("Failure", "Failure!");
-//                t.printStackTrace();
-//            }
-//        });
-//    }
+    private void getHitchRequestsFromServer(){
+        hitchRequestService = RetrofitClient.createService(HitchRequestService.class);
+        Call<List<HitchRequest>> call = hitchRequestService.getHitchRequestsByGroceryListId(groceryList.getId());    //for test data 38 is pending status, 36 is approved, 249 is for quit list test
+        approvedGroupPlan = null;   //reset this upon new request
 
-    //below code for initial UI testing, to be replaced with http call
-    private void createDummyData(){
+        call.enqueue(new Callback<List<HitchRequest>>() {
+            @Override
+            public void onResponse(Call<List<HitchRequest>> call, Response<List<HitchRequest>> response) {
 
-        groupPlanList = new ArrayList<>();
+                if (response.isSuccessful()) {
+                    hitchRequests = response.body();
+                    //logic if there is an approved request, then do following
+                    if(hitchRequests.size()==0){
+                        rqStatusTitle.setText("No request at this time");
+                        rqStatDescription.setText("Please find a group by clicking 'FIND ANOTHER GROUP'");
+                    }
+                    hitchRequests.stream().forEach(x->{
+                        if (x.getRequestStatus() == RequestStatus.ACCEPTED){
+                            updateApprovedStatUI(x);
+                        }
+                    });
+                    if(approvedGroupPlan==null){
+                        //remove views that aren't applicable to status == pending
+                        layoutRoot.findViewById(R.id.status_approved).setVisibility(View.GONE);
+                        buildHitchRequestRV();
+                    }
 
-        LocalDate d1 = LocalDate.of(2021, 8, 1);
-        LocalDate d2 = LocalDate.of(2021, 8, 15);
+                } else {
+                    Log.e("getHitchRequestsByGroceryListId Error", response.errorBody().toString());
+                }
+            }
 
-//        groupPlanList.add(new GroupPlan(1, "Giant",d1,"123 Canada St",d2));
-//        groupPlanList.add(new GroupPlan(2, "7-Eleven",d1,"321 MapleSyrup St",d2));
-//        groupPlanList.add(new GroupPlan(3, "FairPrice",d1,"Lalala St",d2));
+            @Override
+            public void onFailure(Call<List<HitchRequest>> call, Throwable t) {
+                // like no internet connection / the website doesn't exist
+                call.cancel();
+                Log.w("Failure", "Failure!");
+                t.printStackTrace();
+            }
+        });
+    }
 
-//        groceryItemList = new ArrayList<>();
-//
-//        Product p1 = new Product(1627923825,"Old Town 3IN1 Sugar Cane White Coffee", "15 x 36 g","Beverages","https://ssecomm.s3-ap-southeast-1.amazonaws.com/products/md/WPVi3KzqNyNsW7uGdcTMQqZmyiC2WH.0.jpg");
-//        Product p2 = new Product(1627923846,"Happy Family 2IN1 Kopi O With Sugar Mixture Bag","8 x 20 g","Beverages","https://ssecomm.s3-ap-southeast-1.amazonaws.com/products/md/yjwEFEKNPFnYIXrfN4s6wnfTAsdz5t.0.jpg");
-//
-//        groceryItemList.add(new GroceryItem(1, 5, 8.4, p1, null));
-//        groceryItemList.add(new GroceryItem(1, 3, 5.4, p2, null));
+    private void quitGroupPlan(){
+        groupPlanService = RetrofitClient.createService(GroupPlanService.class);
+        Call<Boolean> call = groupPlanService.quitGroupPlanByGroceryListId(groceryList.getId());
+
+        call.enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+
+                if (response.isSuccessful()) {
+                    Boolean result = response.body();
+                    Log.d("Success", result.toString()); //for testing
+
+                } else {
+                    Log.e("quitGroupPlanByGroceryListId Error", response.errorBody().toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+                // like no internet connection / the website doesn't exist
+                call.cancel();
+                Log.w("Failure", "Failure!");
+                t.printStackTrace();
+            }
+        });
+    }
+
+
+    private void updateApprovedStatUI(HitchRequest x) {
+        System.out.println("There is an accepted request, change layout");
+        approvedGroupPlan = x.getGroupPlan();
+        rqStatusTitle.setText("You found a buyer!");
+        rqStatDescription.setVisibility(View.GONE);
+        pickupStore.setText("Buyer will purchase from: " + approvedGroupPlan.getStoreName());
+        pickupLoc.setText("Pick up Location: " + approvedGroupPlan.getPickupAddress());
+
+        LocalDateTime pickupTimeFrom =  x.getPickupTimeChosen();
+        LocalTime pickupTimeTo = pickupTimeFrom.plusMinutes(30).toLocalTime();
+        DateTimeFormatter df1 = DateTimeFormatter.ofPattern("dd-MMM-yyyy h:mm a");
+        DateTimeFormatter df2 = DateTimeFormatter.ofPattern("h:mm a");
+        pickupTime.setText("Pick up from: " + pickupTimeFrom.format(df1) + " to " +
+                pickupTimeTo.format(df2));
+
+        hitchRqButton.setVisibility(View.GONE);
+    }
+
+    private void buildHitchRequestRV() {
+        //recycler view for hitch requests
+        rvHitchRequests = layoutRoot.findViewById(R.id.rv_hitch_rq);
+        HitchRequestAdaptor hitchRequestAdaptor = new HitchRequestAdaptor(hitchRequests);
+        rvHitchRequests.setAdapter(hitchRequestAdaptor);
+        rvHitchRequests.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext()));
+    }
+
+    private void buildGroceryItemRV() {
+        //recycler view for grocery items
+        rvGroceryItems = layoutRoot.findViewById(R.id.rv_grocery_list);
+        GroceryListItemAdaptor groceryListItemAdaptor = new GroceryListItemAdaptor(groceryItemList);
+        rvGroceryItems.setAdapter(groceryListItemAdaptor);  //set the adaptor here
+        rvGroceryItems.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext()));
+
+        //add condition if group plan status is shopping completed to show or hide this component
+//        layoutRoot.findViewById(R.id.payment_component).setVisibility(View.GONE);
+//        llPaymentComponent = layoutRoot.findViewById(R.id.payment_component);
+    }
+
+    private void buildPaymentComponents(Map<String, Double> totalPayment) {
+        //view pending payment parts
+        tvSubtotalAmount = layoutRoot.findViewById(R.id.subtotal_amount);
+        tvGstAmount = layoutRoot.findViewById(R.id.gst_amount);
+        tvServicefeeAmount = layoutRoot.findViewById(R.id.service_fee_amount);
+        tvTotalAmount = layoutRoot.findViewById(R.id.total_amount);
+
+        tvSubtotalAmount.setText("$" + totalPayment.get("subtotal"));
+        tvGstAmount.setText("$" + totalPayment.get("gst"));
+        tvServicefeeAmount.setText("$" + totalPayment.get("servicefee"));
+        tvTotalAmount.setText("$" + totalPayment.get("total"));
+
+        btnCompletePayment = layoutRoot.findViewById(R.id.complete_payment_btn);
+        btnCompletePayment.setOnClickListener(this);
+//        llPaymentComponent.setVisibility(View.VISIBLE); // testing
+    }
+
+    private void setQuitGroupBtn() {
+        quitGroupBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                builder.setMessage("Confirm Quit Group Plan?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                        quitGroupPlan();
+
+                        FragmentManager fm = ((AppCompatActivity)context).getSupportFragmentManager();
+                        ViewGroceryListFragment ViewGLFragment = new ViewGroceryListFragment();
+                        fm.beginTransaction()
+                                .replace(R.id.fragment_container,ViewGLFragment)        //replaces fragment with itself (refreshes)
+                                .addToBackStack(null)
+                                .commit();
+                    }
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        });
+    }
+
+    private Map<String, Double> calculateTotalPayment() {
+        Map<String, Double> map = new HashMap<>();
+
+        double subtotal = 0;
+        for (GroceryItem groceryItem : groceryItemList) {
+            subtotal += groceryItem.getSubtotal();
+            map.put("subtotal", subtotal);
+        }
+
+        double gst = subtotal * 7 / 100;
+        gst = Math.round(gst * 100.0) / 100.0;
+        map.put("gst", gst);
+
+        double servicefee = subtotal * 5 / 100;
+        servicefee = Math.round(servicefee * 100.0) / 100.0;
+        map.put("servicefee", servicefee);
+
+        double total = subtotal + gst + servicefee;
+        map.put("total", total);
+
+        return map;
     }
 }
