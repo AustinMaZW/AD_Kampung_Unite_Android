@@ -1,5 +1,6 @@
 package com.example.ad_project_kampung_unite;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -40,6 +41,7 @@ public class GroupDetailsFragment extends Fragment {
       private GroceryListService groceryListService;
 //    private GroupDetailsAdapter myAdapter;
 
+    MaterialButton combinedListButton;
 
     RecyclerView expanderRecyclerView;
     View layoutRoot;
@@ -55,6 +57,19 @@ public class GroupDetailsFragment extends Fragment {
         layoutRoot = inflater.inflate(R.layout.fragment_group_details, container, false);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Group Details");
 
+        //Button to link to Combined List Fragment
+        combinedListButton = layoutRoot.findViewById(R.id.combinedListButton);
+        combinedListButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fragmentManager = getParentFragmentManager();
+                CombinedListFragment combinedListFragment = new CombinedListFragment();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container,combinedListFragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
 
 
 //        //buyer can edit their own grocery list
