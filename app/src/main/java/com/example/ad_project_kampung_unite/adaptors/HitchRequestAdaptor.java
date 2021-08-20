@@ -99,16 +99,9 @@ public class HitchRequestAdaptor extends RecyclerView.Adapter<HitchRequestAdapto
                         cancelHitchRequestToServer(hitchRequests.get(position).getId());
 
                         FragmentManager fm = ((AppCompatActivity)context).getSupportFragmentManager();
-                        Bundle result = new Bundle();
-                        result.putSerializable("bundleKey", groceryList);       //retain the grocerylist
-
-                        // refresh the view by calling it again
-                        ViewGroceryListFragment viewGroceryListFragment = new ViewGroceryListFragment();
-                        viewGroceryListFragment.setArguments(result);
-                        fm.beginTransaction()
-                                .replace(R.id.fragment_container,viewGroceryListFragment,"VIEW_HITCHER_GL_FRAG")
-                                .addToBackStack(null)
-                                .commit();
+                        Fragment currentFrag = fm.findFragmentByTag("VIEW_HITCHER_GL_FRAG");
+                        fm.beginTransaction().detach(currentFrag).commitNow();
+                        fm.beginTransaction().attach(currentFrag).commitNow();
                     }
                 });
                 builder.setNegativeButton("No", new DialogInterface.OnClickListener() {

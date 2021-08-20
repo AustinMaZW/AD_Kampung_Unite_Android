@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_grocerylists:
                 //original code
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new GroceryListsFragment()).commit();
+                        new MyGroceryListsFragment()).commit();
 
                 //dev code - View hitcher grocery list (austin/ngu)
 //                FragmentManager fm = getSupportFragmentManager();
