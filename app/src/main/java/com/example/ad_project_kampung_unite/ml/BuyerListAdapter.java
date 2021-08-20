@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.ad_project_kampung_unite.R;
 import com.example.ad_project_kampung_unite.data.remote.GroupPlanService;
 import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
+import com.example.ad_project_kampung_unite.entities.AvailableTime;
 import com.example.ad_project_kampung_unite.entities.GroupPlan;
 import com.example.ad_project_kampung_unite.entities.Product;
 import com.google.gson.Gson;
@@ -33,6 +34,7 @@ import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -42,6 +44,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -53,6 +56,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyViewHolder> {
     private View view;
     private View root;
+    private Recommendation recommendation;
     private List<GroupPlan> plans;
     private List<Integer> planIds;
     private int hitcherDetailId;
@@ -60,11 +64,12 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
     private GroupPlanService groupPlanService;
     private List<Integer> requestIds = new ArrayList<>();
 
-    public BuyerListAdapter(List<GroupPlan> plans, Context context,List<Integer> planIds,int hitcherDetailId) {
+    public BuyerListAdapter(List<GroupPlan> plans, Context context,List<Integer> planIds,int hitcherDetailId,Recommendation recommendation) {
         this.plans = plans;
         this.context = context;
         this.planIds = planIds;
         this.hitcherDetailId = hitcherDetailId;
+        this.recommendation = recommendation;
     }
 
 
@@ -80,10 +85,21 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        holder.buyerName.setText(plans.get(position).getStoreName());
-        holder.pickUpDate.setText(plans.get(position).getPickupDate().toString());
-        holder.timeSlot.setText(plans.get(position).getPickupDate().toString());
-        holder.location.setText(plans.get(position).getPickupAddress());
+        DecimalFormat df = new DecimalFormat("0.00%");
+        holder.buyerName.setText(String.format("%s (Similarity %s)",plans.get(position).getStoreName(),df.format(recommendation.getProduct_score().get(position))));
+        holder.pickUpDate.setText(String.format("Pick Up: %tF",plans.get(position).getPickupDate()));
+        List<AvailableTime> slos = plans.get(position).getAvailableTimes();
+        if(slos != null){
+            String slots = slos.stream().map(AvailableTime::getPickupSlots).map(LocalTime::toString).reduce((x,y) -> x.concat(String.format(" , ",y))).toString();
+            holder.timeSlot.setText(slots);
+        }else{
+            holder.timeSlot.setText("No Available time");
+        }
+//        List<String> slots = slos.stream().map(AvailableTime::getPickupSlots).map(LocalTime::toString).collect(Collectors.toList());
+
+
+
+        holder.location.setText(String.format("Address: %s (Distance: %.2f)",plans.get(position).getPickupAddress(),recommendation.getDistance().get(position)));
         holder.sendRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

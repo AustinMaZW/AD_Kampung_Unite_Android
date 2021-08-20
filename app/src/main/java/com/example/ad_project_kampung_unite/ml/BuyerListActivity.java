@@ -61,6 +61,7 @@ public class BuyerListActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View v) {
         int id = v.getId();
         if(id == R.id.doml){
+
             requestForRecommendList();
 
 
@@ -68,70 +69,37 @@ public class BuyerListActivity extends AppCompatActivity implements View.OnClick
             Log.e("Back","Back to previous");
         }
     }
-    public void requestForRecommendList(){
-        new Thread(new Runnable() {
+    public void requestForRecommendList() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(MLBASEURL) //设置网络请求的Url地址
+                .addConverterFactory(GsonConverterFactory.create()) //设置数据解析器
+                .build();
+        //create request interface object
+        GroupPlanService request = retrofit.create(GroupPlanService.class);
+        Call<Recommendation> recommand = request.getRecommendId(hitcherDetailId);
+        recommand.enqueue(new Callback<Recommendation>() {
             @Override
-            public void run() {
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(MLBASEURL) //设置网络请求的Url地址
-                        .addConverterFactory(GsonConverterFactory.create()) //设置数据解析器
-                        .build();
-                //create request interface object
-                GroupPlanService request = retrofit.create(GroupPlanService.class);
-                Call<Recommendation> recommand = request.getRecommendId(hitcherDetailId);
-                try{
-                    Response<Recommendation> response = recommand.execute();
-                    recommendation = response.body();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            BuyerRecycleFragment brv = new BuyerRecycleFragment();
-                            FragmentTransaction trans = fm.beginTransaction();
-                            brv.setRecommendation(recommendation);
-                            brv.setHitcherDetailId(hitcherDetailId);
-                            trans.replace(R.id.lists_byrv,brv);
-                            trans.commit();
-                        }
-                    });
-
-                }catch (Exception e){
-                    Log.e("Request Fail 1","Ml fail");
-                }
+            public void onResponse(Call<Recommendation> call, Response<Recommendation> response) {
+                recommendation = response.body();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        BuyerRecycleFragment brv = new BuyerRecycleFragment();
+                        FragmentTransaction trans = fm.beginTransaction();
+                        brv.setRecommendation(recommendation);
+                        brv.setHitcherDetailId(hitcherDetailId);
+                        trans.replace(R.id.lists_byrv, brv);
+                        trans.commit();
+                    }
+                });
             }
-        }).start();
+
+            @Override
+            public void onFailure(Call<Recommendation> call, Throwable t) {
+                Log.e("Machine Learning", "Fail");
+            }
+        });
     }
-//    public void requestForRecommendList(){
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                Retrofit retrofit = new Retrofit.Builder()
-//                        .baseUrl(MLBASEURL) //设置网络请求的Url地址
-//                        .addConverterFactory(GsonConverterFactory.create()) //设置数据解析器
-//                        .build();
-//                //create request interface object
-//                GroupPlanService request = retrofit.create(GroupPlanService.class);
-//                Call<List<Integer>> recommand = request.getRecommendId(hitcherDetailId);
-//                try{
-//                    Response<List<Integer>> response = recommand.execute();
-//                    planIds = response.body();
-//                    runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            BuyerRecycleFragment brv = new BuyerRecycleFragment();
-//                            FragmentTransaction trans = fm.beginTransaction();
-//                            brv.setPlanId(planIds);
-//                            brv.setHitcherDetailId(hitcherDetailId);
-//                            trans.replace(R.id.lists_byrv,brv);
-//                            trans.commit();
-//                        }
-//                    });
-//
-//                }catch (Exception e){
-//                    Log.e("Request Fail 1","Ml fail");
-//                }
-//            }
-//        }).start();
-//    }
     public void queryPlans() {
         new Thread(new Runnable() {
             @Override

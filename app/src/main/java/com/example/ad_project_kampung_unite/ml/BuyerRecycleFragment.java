@@ -82,7 +82,7 @@ public class BuyerRecycleFragment extends Fragment {
         recyclerView = layoutRoot.findViewById(R.id.buerlistrv);
         LinearLayoutManager linear = new LinearLayoutManager(layoutRoot.getContext());
         recyclerView.setLayoutManager(linear);
-        myAdapter = new BuyerListAdapter(plans,layoutRoot.getContext(),planIds,hitcherDetailId);
+        myAdapter = new BuyerListAdapter(plans,layoutRoot.getContext(),planIds,hitcherDetailId,recommendation);
         recyclerView.setAdapter(myAdapter);
 //        myAdapter.setRecyclerItemClickListener(new BuyerListAdapter.onRecyclerItemClickListener() {
 //            @Override
