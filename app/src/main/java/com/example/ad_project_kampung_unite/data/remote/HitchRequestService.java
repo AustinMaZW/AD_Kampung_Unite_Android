@@ -17,4 +17,7 @@ public interface HitchRequestService {
 
     @GET("hitchrequest/accepted/{hitcherDetailId}")
     Call<HitchRequest> getAcceptedHitchRequestByHitcherDetailId(@Path("hitcherDetailId") int id);
+
+    @GET("hitchrequest/groupplan/{groupplanId}")
+    Call<List<HitchRequest>> getHitchRequestsByGroupId(@Path("groupplanId") int id);
 }
