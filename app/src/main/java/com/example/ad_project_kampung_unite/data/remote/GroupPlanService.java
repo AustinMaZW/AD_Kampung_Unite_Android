@@ -1,6 +1,5 @@
 package com.example.ad_project_kampung_unite.data.remote;
 
-import com.example.ad_project_kampung_unite.entities.GroceryList;
 import com.example.ad_project_kampung_unite.entities.GroupPlan;
 import com.example.ad_project_kampung_unite.entities.Product;
 import com.example.ad_project_kampung_unite.ml.Recommendation;
@@ -19,8 +18,8 @@ public interface GroupPlanService {
     Call<Boolean> quitGroupPlanByGroceryListId(@Path("groceryListId") int id);
 
 
-    //    @GET("/native/{id}")
-//    Call<List<Integer>> getRecommendId(@Path("id") int id);
+    @GET("/native/{id}")
+    Call<List<Integer>> getRecommendIds(@Path("id") int id);
 
     @GET("/native/{id}")
     Call<Recommendation> getRecommendId(@Path("id") int id);

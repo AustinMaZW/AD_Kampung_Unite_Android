@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.PopupWindow;
 
-import com.example.ad_project_kampung_unite.MyAdapter;
+
 import com.example.ad_project_kampung_unite.R;
 import com.example.ad_project_kampung_unite.data.remote.GroupPlanService;
 import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;

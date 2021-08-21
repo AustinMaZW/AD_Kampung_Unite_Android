@@ -9,14 +9,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
+
 
 import com.example.ad_project_kampung_unite.R;
 import com.example.ad_project_kampung_unite.data.remote.GroupPlanService;
 import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
 import com.example.ad_project_kampung_unite.entities.GroupPlan;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 

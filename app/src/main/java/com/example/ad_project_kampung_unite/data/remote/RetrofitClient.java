@@ -74,13 +74,13 @@ public class RetrofitClient {
         }
     }
 
-    public static class LocalDateTimeDeserializer implements JsonDeserializer<LocalDateTime> {
-
-        @Override
-        public LocalDateTime deserialize(JsonElement jsonElement, Type typeOF, JsonDeserializationContext context) throws JsonParseException {
-            return LocalDateTime.parse(jsonElement.getAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss").withLocale(Locale.ENGLISH));
-        }
-    }
+//    public static class LocalDateTimeDeserializer implements JsonDeserializer<LocalDateTime> {
+//
+//        @Override
+//        public LocalDateTime deserialize(JsonElement jsonElement, Type typeOF, JsonDeserializationContext context) throws JsonParseException {
+//            return LocalDateTime.parse(jsonElement.getAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss").withLocale(Locale.ENGLISH));
+//        }
+//    }
 
     public static class NullOnEmptyConverterFactory extends Converter.Factory {
         @Override
