@@ -1,7 +1,7 @@
 package com.example.ad_project_kampung_unite.entities;
 
-import com.example.ad_project_kampung_unite.enums.GLStatus;
-import com.example.ad_project_kampung_unite.enums.HitchBuyRole;
+import com.example.ad_project_kampung_unite.entities.enums.GLStatus;
+import com.example.ad_project_kampung_unite.entities.enums.HitchBuyRole;
 
 import java.io.Serializable;
 import java.util.List;
