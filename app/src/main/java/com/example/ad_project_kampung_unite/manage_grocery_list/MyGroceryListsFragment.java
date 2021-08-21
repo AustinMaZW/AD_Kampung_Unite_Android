@@ -184,7 +184,7 @@ public class MyGroceryListsFragment extends Fragment {
     public void buildRecyclerView(View layoutRoot){
 
         mRecyclerView = layoutRoot.findViewById(R.id.recyclerview);
-        mRecyclerView.setHasFixedSize(true);
+//        mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext(), LinearLayoutManager.VERTICAL,false));
 
         myGroceryListsAdapter = new MyGroceryListsAdapter(layoutRoot.getContext(), groceryLists);
