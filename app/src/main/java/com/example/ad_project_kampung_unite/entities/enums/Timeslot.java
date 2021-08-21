@@ -1,4 +1,4 @@
-package com.example.ad_project_kampung_unite.enums;
+package com.example.ad_project_kampung_unite.entities.enums;
 
 public enum Timeslot {
 	TS1("8"),
