@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="3dp"
-    app:cardElevation="1dp"
+    app:cardElevation="0dp"
     app:cardUseCompatPadding="true">
 
     <RelativeLayout
@@ -68,6 +68,7 @@
                 android:text="Requests: "
                 android:textColor="@color/black"
                 android:textSize="14dp" />
+
             <TextView
                 android:id="@+id/group_plan_hitch_requests"
                 android:layout_width="wrap_content"
