@@ -11,9 +11,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AD_Project_Kampung_Unite"
         android:usesCleartextTraffic="true">
-        <activity
-            android:name=".ml.HitcherDetailActivity"
-            android:exported="true" />
+<!--        <activity-->
+<!--            android:name=".ml.HitcherDetailActivity"-->
+<!--            android:exported="true" />-->
         <activity
             android:name=".ml.BuyerListActivity"
             android:exported="true" >
