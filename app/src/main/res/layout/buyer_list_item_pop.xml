@@ -23,16 +23,37 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center">
-        <androidx.appcompat.widget.AppCompatButton
+<!--        <androidx.appcompat.widget.AppCompatButton-->
+<!--            android:id="@+id/cancelPopBtn"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="50dp"-->
+<!--            android:text="Cancel"/>-->
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/cancelPopBtn"
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
-            android:text="Cancel"/>
-        <androidx.appcompat.widget.AppCompatButton
+            android:layout_gravity="center"
+            android:backgroundTint="@color/cardview_shadow_start_color"
+            android:gravity="center"
+            android:text="Cancel"
+            android:textColor="@color/Kampong_Blue"
+            android:layout_marginRight="10dp"/>
+<!--        <androidx.appcompat.widget.AppCompatButton-->
+<!--            android:id="@+id/goToSlot"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="50dp"-->
+<!--            android:text="Select slot"/>-->
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/goToSlot"
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
-            android:text="Select slot"/>
+            android:layout_gravity="center"
+            android:backgroundTint="@color/Kampong_Yellow"
+            android:gravity="center"
+            android:text="Select slot"
+            android:textColor="@color/Kampong_Blue" />
 
     </LinearLayout>
 

@@ -45,21 +45,18 @@ public class HitcherDetailActivity extends AppCompatActivity implements View.OnC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hitcher_detail);
+        Log.e("Hitcher Detail","yes_4");
         intent_buyerList = new Intent(this,BuyerListActivity.class);
 //        drawer = findViewById(R.id.drawer_layout);
         toolbar = findViewById(R.id.toolbar_hdmenu);
 //        setSupportActionBar(toolbar);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.e("Toolbar","Clicked");
-            }
-        });
+        toolbar.setNavigationOnClickListener(this);
         pickUpDate = findViewById(R.id.pick_up_date);
         location = findViewById(R.id.locationAd);
         timeSlot = findViewById(R.id.timeSlot_);
         submitBtn = findViewById(R.id.submitBtn);
         submitBtn.setOnClickListener(this);
+        Log.e("Hitcher Detail","yes_5");
     }
 
 
@@ -69,7 +66,7 @@ public class HitcherDetailActivity extends AppCompatActivity implements View.OnC
         if(id == R.id.submitBtn){
             saveHitcherDetail();
         }else if(id == R.id.toolbar_hdmenu){
-
+            Log.e("Toolbar","Clicked");
         }else {
 
         }

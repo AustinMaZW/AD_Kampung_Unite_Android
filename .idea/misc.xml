@@ -41,16 +41,20 @@
         <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/layout/fragment_grocery_details_edit.xml" value="0.2630208333333333" />
         <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/layout/fragment_grocery_list.xml" value="0.2630208333333333" />
         <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/layout/fragment_grocery_lists.xml" value="0.2630208333333333" />
-        <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/layout/fragment_group_details.xml" value="0.2630208333333333" />
-        <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/layout/fragment_groups.xml" value="0.2630208333333333" />
-        <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/layout/fragment_search.xml" value="0.2630208333333333" />
-        <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/layout/fragment_view_grocery_list.xml" value="0.20833333333333334" />
+        <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/layout/fragment_group_details.xml" value="0.22" />
+        <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/layout/fragment_groups.xml" value="0.2" />
+        <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/layout/fragment_search.xml" value="0.25" />
+        <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/layout/fragment_view_grocery_list.xml" value="0.2" />
+        <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/layout/grocerylist_groceryitem.xml" value="0.22" />
+        <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/layout/group_details_collapse_items.xml" value="0.19635416666666666" />
+        <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/layout/hitch_request_item.xml" value="0.25" />
         <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/layout/indiv_grocery_list_item.xml" value="0.2046875" />
         <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/layout/items_group_details_collapse.xml" value="0.2630208333333333" />
         <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/layout/items_group_details_expand.xml" value="0.2630208333333333" />
         <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/layout/items_group_details_list.xml" value="0.2630208333333333" />
         <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/layout/items_my_grocery_lists.xml" value="0.2630208333333333" />
         <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/layout/my_grocery_lists_items.xml" value="0.2630208333333333" />
+        <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/layout/my_group_lists_items.xml" value="0.22" />
         <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/layout/recycle_view_buyer_item.xml" value="0.2046875" />
         <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/menu/drawer_menu.xml" value="0.2630208333333333" />
         <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.22083333333333333" />

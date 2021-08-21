@@ -147,12 +147,11 @@
                 android:id="@+id/edit_groceries"
                 android:layout_width="70dp"
                 android:layout_height="40dp"
-                android:text="Edit"
-                android:textSize="8sp"
-                android:textColor="@color/Kampong_Blue"
-                android:backgroundTint="@color/Kampong_Yellow"
                 android:layout_alignParentRight="true"
-                />
+                android:backgroundTint="@color/Kampong_Yellow"
+                android:text="Edit"
+                android:textColor="@color/Kampong_Blue"
+                android:textSize="8sp" />
         </RelativeLayout>
 
     </LinearLayout>

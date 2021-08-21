@@ -82,12 +82,14 @@
             android:paddingLeft="20dp"
             android:layout_marginBottom="20dp"
             android:text="12:00:00"/>
-
-        <androidx.appcompat.widget.AppCompatButton
+        <com.google.android.material.button.MaterialButton
+            style="@style/Widget.MaterialComponents.Button"
             android:id="@+id/submitBtn"
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:text="Submit"/>
+            android:text="Submit"
+            android:textColor="@color/Kampong_Blue"
+            android:backgroundTint="@color/Kampong_Yellow" />
 
     </LinearLayout>
 
