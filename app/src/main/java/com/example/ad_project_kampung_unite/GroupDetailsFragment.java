@@ -1,5 +1,6 @@
 package com.example.ad_project_kampung_unite;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,12 +13,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.example.ad_project_kampung_unite.adaptors.GroceryListItemAdaptor;
 import com.example.ad_project_kampung_unite.data.remote.GroceryListService;
 import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
 import com.example.ad_project_kampung_unite.entities.GroceryItem;
 import com.example.ad_project_kampung_unite.entities.GroceryList;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -30,11 +33,15 @@ import retrofit2.Response;
 
 public class GroupDetailsFragment extends Fragment {
 
+
+
     private List<GroceryItem> buyerGroceryItemList = new ArrayList<>();
 
       private RecyclerView rvBuyerGrocery;
       private GroceryListService groceryListService;
 //    private GroupDetailsAdapter myAdapter;
+
+    MaterialButton combinedListButton;
 
     RecyclerView expanderRecyclerView;
     View layoutRoot;
@@ -49,6 +56,23 @@ public class GroupDetailsFragment extends Fragment {
         // Inflate the layout for this fragment
         layoutRoot = inflater.inflate(R.layout.fragment_group_details, container, false);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Group Details");
+
+        //Button to link to Combined List Fragment
+        combinedListButton = layoutRoot.findViewById(R.id.combinedListButton);
+        combinedListButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //navigate to CombinedList Fragment
+                FragmentManager fragmentManager = getParentFragmentManager();
+                CombinedListFragment combinedListFragment = new CombinedListFragment();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container,combinedListFragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
 
 //        //buyer can edit their own grocery list
         //pending to-do: pass buyer id to 'grocery list' fragment
