@@ -86,9 +86,12 @@ public class HitchRequest {
     public String toString() {
         return "HitchRequest{" +
                 "id=" + id +
+                ", pickupTimeChosen=" + pickupTimeChosen +
                 ", buyerConfirmTransaction=" + buyerConfirmTransaction +
                 ", hitcherConfirmTransaction=" + hitcherConfirmTransaction +
                 ", requestStatus=" + requestStatus +
+                ", groupPlan=" + groupPlan +
+                ", hitcherDetail=" + hitcherDetail +
                 '}';
     }
 }

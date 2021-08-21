@@ -6,6 +6,9 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -26,12 +29,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
     private static final String BASE_URL = "http://10.0.2.2:8080/";
-    private static final String TEST_URL = "https://jsonplaceholder.typicode.com/";
 
     private static final Gson gson = new GsonBuilder()
-//            .setDateFormat("yyyy-MM-dd")  //didn't work for me
             .registerTypeAdapter(LocalDate.class, new LocalDateDeserializer())
             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
+            .registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer())
             .create();
 
     private static Retrofit.Builder builder = new Retrofit.Builder()
@@ -74,6 +77,26 @@ public class RetrofitClient {
         }
     }
 
+    // convert Date object to json to pass in http request
+    public static class LocalDateSerializer implements JsonSerializer<LocalDate> {
+        private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        @Override
+        public JsonElement serialize(LocalDate localDate, Type srcType, JsonSerializationContext context) {
+            return new JsonPrimitive(formatter.format(localDate));
+        }
+    }
+
+    public static class LocalDateTimeSerializer implements JsonSerializer <LocalDateTime> {
+        private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+
+        @Override
+        public JsonElement serialize(LocalDateTime localDateTime, Type srcType, JsonSerializationContext context) {
+            return new JsonPrimitive(formatter.format(localDateTime));
+        }
+    }
+
+    // convert empty response body to null
     public static class NullOnEmptyConverterFactory extends Converter.Factory {
         @Override
         public Converter<ResponseBody, ?> responseBodyConverter(Type type, Annotation[] annotations, Retrofit retrofit) {

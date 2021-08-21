@@ -65,7 +65,7 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
     private View layoutRoot;
     private RecyclerView rvHitchRequests,rvGroceryItems;
     private TextView rqStatusTitle, rqStatDescription, pickupStore, pickupLoc, pickupTime;
-    private TextView tvSubtotalAmount, tvGstAmount, tvServicefeeAmount, tvTotalAmount;
+    private TextView tvSubtotalAmount, tvGstAmount, tvServicefeeAmount, tvTotalAmount, tvPaymentStatus;
     private Button hitchRqButton, quitGroupBtn, btnCompletePayment, editListBtn;
     private LinearLayout llPaymentComponent;
 
@@ -117,6 +117,8 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
         editListBtn = layoutRoot.findViewById(R.id.edit_groceries);
         editListBtn.setOnClickListener(this);
 
+        tvPaymentStatus = layoutRoot.findViewById(R.id.payment_status);
+        tvPaymentStatus.setVisibility(View.GONE);
 
         return layoutRoot;
     }
@@ -135,7 +137,7 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
                         if (hitchRequest != null) {
                             Log.i("HitchRequest", hitchRequest.toString());
                             hitchRequest.setHitcherConfirmTransaction(CONFIRMED);
-
+                            updateConrirmTransaction(hitchRequest);
                         }
                     } else {
                         Log.e("getAcceptedHitchRequestByHitcherDetailId Error", response.errorBody().toString());
@@ -388,5 +390,35 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
         map.put("total", total);
 
         return map;
+    }
+
+    private void updateConrirmTransaction(HitchRequest hitchRequest) {
+        Call<Void> call = hitchRequestService.updateHitchRequest(hitchRequest);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    if (hitchRequest.isBuyerConfirmTransaction()) {
+                        tvPaymentStatus.setText(R.string.payment_status_complete);
+                        tvPaymentStatus.setTextColor(getResources().getColor(R.color.Kampong_Green, null));
+                    }
+                    else {
+                        tvPaymentStatus.setText(R.string.payment_status_waiting_buyer);
+                        tvPaymentStatus.setTextColor(getResources().getColor(R.color.yellow, null));
+                    }
+                    tvPaymentStatus.setVisibility(View.VISIBLE);
+                    layoutRoot.findViewById(R.id.button_container).setVisibility(View.GONE);
+                }
+                else {
+                    Log.e("updateHitchRequest Error", response.errorBody().toString());
+                }
+            }
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                call.cancel();
+                Log.w("Failure", "Failure!");
+                t.printStackTrace();
+            }
+        });
     }
 }

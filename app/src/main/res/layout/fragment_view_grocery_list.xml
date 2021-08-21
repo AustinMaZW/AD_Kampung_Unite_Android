@@ -277,28 +277,13 @@
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp">
+            android:layout_height="wrap_content">
             <TextView
                 android:id="@+id/payment_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
                 android:layout_marginStart="10dp"
-                android:text="@string/payment_status_complete"
-                android:textColor="@color/Kampong_Green"
-                android:textSize="16dp" />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="0dp">
-            <TextView
-                android:id="@+id/payment_status_2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:text="@string/payment_status_waiting_buyer"
-                android:textColor="@color/yellow"
                 android:textSize="16dp" />
         </LinearLayout>
 
