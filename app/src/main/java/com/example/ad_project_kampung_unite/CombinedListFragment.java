@@ -52,8 +52,9 @@ public class CombinedListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View combinedListView = inflater.inflate(R.layout.fragment_combined_list, container, false);
+        //Get groupPlanID from sharedpreferences using Key groupPlanId
         sharedPreferences = getActivity().getSharedPreferences("groupPlan",MODE_PRIVATE);
-        Integer groupPlanID = sharedPreferences.getInt("groupPlanId", 18);
+        Integer groupPlanID = sharedPreferences.getInt("groupPlanId", 0);
         String url = getResources().getString(R.string.cpl_base_url)+"getlist/_id="+groupPlanID;
 
         StringRequest getListRequest = new StringRequest(url, new Response.Listener<String>() {
