@@ -65,10 +65,6 @@ public class GroupDetailsFragment extends Fragment {
 //            }
 //        });
 
-        //recycler view for grocery items
-        rvBuyerGrocery = layoutRoot.findViewById(R.id.recyclerviewGroupDetails);
-        rvBuyerGrocery.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext()));
-
         groceryListService = RetrofitClient.createService(GroceryListService.class);
         getGroceryItemsFromServer();
 
@@ -95,6 +91,10 @@ public class GroupDetailsFragment extends Fragment {
                     buyerGroceryItemList = response.body();
                     Log.d("Success", String.valueOf(buyerGroceryItemList.get(0).getProduct().getProductName())); //for testing
 
+                    //recycler view for grocery items
+                    rvBuyerGrocery = layoutRoot.findViewById(R.id.recyclerviewGroupDetails);
+                    rvBuyerGrocery.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext()));
+
                     GroceryListItemAdaptor groceryListItemAdaptor = new GroceryListItemAdaptor(buyerGroceryItemList);
                     rvBuyerGrocery.setAdapter(groceryListItemAdaptor);  //set the adaptor here
                 } else {
@@ -111,17 +111,7 @@ public class GroupDetailsFragment extends Fragment {
             }
         });
     }
-//    public void createMyList(){
-//
-//        mGroceryLists = new ArrayList<>();
-//
-//        mGroceryLists.add(new GroceryList("August Group Buy", "","","3","pending"));
-//        mGroceryLists.add(new GroceryList("July Group Buy","19 Jul 2021", "0900", "10","completed"));
-//        mGroceryLists.add(new GroceryList("July Group Buy 1", "", "", "10", "pending"));
-//        mGroceryLists.add(new GroceryList("Week 3 groceries", "12 Jul 2021", "0900", "15", "accepted"));
-//        mGroceryLists.add(new GroceryList("June Group Buy", "19 June 2021", "0900", "15", "completed"));
-//    }
-//
+
 //    //build recycler view
 //    public void buildRecyclerView(View layoutRoot){
 //
