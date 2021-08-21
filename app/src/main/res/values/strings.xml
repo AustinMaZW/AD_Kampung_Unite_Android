@@ -17,4 +17,6 @@
     <string name="service_fee">Service fee 5%</string>
     <string name="total">Total</string>
     <string name="complete_payment">Complete Payment</string>
+    <string name="payment_status_complete">*Payment is completed</string>
+    <string name="payment_status_waiting_buyer">*Buyer\'s confirmation for payment complete is still pending</string>
 </resources>

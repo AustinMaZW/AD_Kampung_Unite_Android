@@ -15,11 +15,12 @@ public class GroceryList implements Serializable {
     private List<GroceryItem> groceryItems;
     private UserDetail userDetail;
     private GroupPlan groupPlanGL;
+    private HitcherDetail hitcherDetail;
 
     public GroceryList() {
     }
 
-    public GroceryList(int id, String name, HitchBuyRole role, GLStatus status, String cancelReason, List<GroceryItem> groceryItems, UserDetail userDetail, GroupPlan groupPlanGL) {
+    public GroceryList(int id, String name, HitchBuyRole role, GLStatus status, String cancelReason, List<GroceryItem> groceryItems, UserDetail userDetail, GroupPlan groupPlanGL, HitcherDetail hitcherDetail) {
         this.id = id;
         this.name = name;
         this.role = role;
@@ -28,6 +29,7 @@ public class GroceryList implements Serializable {
         this.groceryItems = groceryItems;
         this.userDetail = userDetail;
         this.groupPlanGL = groupPlanGL;
+        this.hitcherDetail = hitcherDetail;
     }
 
     public int getId() {
@@ -93,4 +95,8 @@ public class GroceryList implements Serializable {
     public void setGroupPlanGL(GroupPlan groupPlanGL) {
         this.groupPlanGL = groupPlanGL;
     }
+
+    public HitcherDetail getHitcherDetail() { return hitcherDetail; }
+
+    public void setHitcherDetail(HitcherDetail hitcherDetail) { this.hitcherDetail = hitcherDetail; }
 }

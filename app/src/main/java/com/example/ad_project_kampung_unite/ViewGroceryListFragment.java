@@ -51,6 +51,8 @@ import retrofit2.Response;
 
 public class ViewGroceryListFragment extends Fragment implements View.OnClickListener {
 
+    private static final boolean CONFIRMED = true;
+
     private List<GroupPlan> groupPlanList;
     private List<GroceryItem> groceryItemList = new ArrayList<>();
     private List<HitchRequest> hitchRequests = new ArrayList<>();
@@ -121,14 +123,17 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
     public void onClick(View view) {
         if(view.getId() == R.id.complete_payment_btn) {
             Log.i("Click", "clicked complete payment");
-            Call<HitchRequest> call = hitchRequestService.getAcceptedHitchRequestByHitcherDetailId(37); //hard coded hitcherDetailId here, replace later
+            Call<HitchRequest> call = hitchRequestService.getAcceptedHitchRequestByHitcherDetailId(groceryList.getHitcherDetail().getId());
             call.enqueue(new Callback<HitchRequest>() {
                 @Override
                 public void onResponse(Call<HitchRequest> call, Response<HitchRequest> response) {
                     if (response.isSuccessful()) {
                         HitchRequest hitchRequest = response.body();
-                        if (hitchRequest != null)
+                        if (hitchRequest != null) {
                             Log.i("HitchRequest", hitchRequest.toString());
+                            hitchRequest.setHitcherConfirmTransaction(CONFIRMED);
+
+                        }
                     } else {
                         Log.e("getAcceptedHitchRequestByHitcherDetailId Error", response.errorBody().toString());
                     }
@@ -213,7 +218,7 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
                     if(approvedGroupPlan==null){
                         //remove views that aren't applicable to status == pending
                         layoutRoot.findViewById(R.id.status_approved).setVisibility(View.GONE);
-                        buildHitchRequestRV();
+//                        buildHitchRequestRV();
                     }
 
                 } else {
