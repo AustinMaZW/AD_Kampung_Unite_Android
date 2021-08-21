@@ -1,4 +1,4 @@
-package com.example.ad_project_kampung_unite;
+package com.example.ad_project_kampung_unite.manage_grocery_list;
 
 import android.view.View;
 import android.widget.TextView;
@@ -6,14 +6,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.ad_project_kampung_unite.ItemClickListener;
+import com.example.ad_project_kampung_unite.R;
+
 //Holder for individual rows in 'My Grocery Lists' recyclerview
 //each row is a separate grocery list
-public class MyHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+public class MyGroceryListsHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     TextView mGroceryListName, mPickupDetail, mNumOfItems;
     ItemClickListener itemClickListener;
 
-    MyHolder(@NonNull View itemView){
+    MyGroceryListsHolder(@NonNull View itemView){
         super(itemView);
 
         this.mGroceryListName = itemView.findViewById(R.id.grocerylistname);

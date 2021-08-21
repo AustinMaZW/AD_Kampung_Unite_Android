@@ -4,28 +4,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".GroceryListsFragment">
+    tools:context=".manage_grocery_list.MyGroceryListsFragment">
+
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:id="@+id/recyclerview"
-            />
+            android:layout_weight="1" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"
-            android:contentDescription="add"
-            android:src="@drawable/ic_add_black_24"
+            android:layout_margin="16dp"
             android:backgroundTint="@color/teal_200"
-            android:layout_margin="16dp"/>
+            android:contentDescription="add"
+            android:src="@drawable/ic_add_black_24" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </FrameLayout>

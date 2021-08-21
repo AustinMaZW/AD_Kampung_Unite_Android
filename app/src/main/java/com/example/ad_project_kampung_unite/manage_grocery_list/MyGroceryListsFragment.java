@@ -1,4 +1,4 @@
-package com.example.ad_project_kampung_unite;
+package com.example.ad_project_kampung_unite.manage_grocery_list;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -18,16 +18,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.ad_project_kampung_unite.R;
 import com.example.ad_project_kampung_unite.data.remote.GroceryListService;
 import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
 import com.example.ad_project_kampung_unite.data.remote.UserDetailService;
 import com.example.ad_project_kampung_unite.entities.GroceryList;
 import com.example.ad_project_kampung_unite.entities.UserDetail;
-import com.example.ad_project_kampung_unite.search_product.SearchFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -40,7 +39,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class GroceryListsFragment extends Fragment {
+public class MyGroceryListsFragment extends Fragment {
 
     private List<GroceryList> groceryLists;
     private UserDetail user;
@@ -48,12 +47,12 @@ public class GroceryListsFragment extends Fragment {
     UserDetailService userDetailService;
 
     private RecyclerView mRecyclerView;
-    private MyAdapter myAdapter;
+    private MyGroceryListsAdapter myGroceryListsAdapter;
 
     SharedPreferences sharedPreferences;
     int userId;
 
-    public GroceryListsFragment() {
+    public MyGroceryListsFragment() {
         // Required empty public constructor
     }
 
@@ -142,11 +141,11 @@ public class GroceryListsFragment extends Fragment {
                                         System.out.println("connected");
 
                                         FragmentManager fragmentManager = getParentFragmentManager();
-                                        GroceryListFragment groceryListFragment = new GroceryListFragment();
+                                        EditGroceryListFragment editGroceryListFragment = new EditGroceryListFragment();
 
                                         // addtobackstack to go back to previous fragment
                                         fragmentManager.beginTransaction()
-                                                .replace(R.id.fragment_container,groceryListFragment)
+                                                .replace(R.id.fragment_container, editGroceryListFragment)
                                                 .addToBackStack(null)
                                                 .commit();
                                     }
@@ -184,11 +183,11 @@ public class GroceryListsFragment extends Fragment {
     public void buildRecyclerView(View layoutRoot){
 
         mRecyclerView = layoutRoot.findViewById(R.id.recyclerview);
-        mRecyclerView.setHasFixedSize(true);
+//        mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext(), LinearLayoutManager.VERTICAL,false));
 
-        myAdapter = new MyAdapter(layoutRoot.getContext(), groceryLists);
-        mRecyclerView.setAdapter(myAdapter);
+        myGroceryListsAdapter = new MyGroceryListsAdapter(layoutRoot.getContext(), groceryLists);
+        mRecyclerView.setAdapter(myGroceryListsAdapter);
     }
 
 
@@ -226,7 +225,7 @@ public class GroceryListsFragment extends Fragment {
                     deletedListName = deletedList.getName().toString();
 
                     groceryLists.remove(position);
-                    myAdapter.notifyItemRemoved(position);
+                    myGroceryListsAdapter.notifyItemRemoved(position);
 
                     Snackbar.make(mRecyclerView, deletedListName, Snackbar.LENGTH_LONG)
                             .setAction("Undo", new View.OnClickListener(){
@@ -234,7 +233,7 @@ public class GroceryListsFragment extends Fragment {
                                 @Override
                                 public void onClick(View v) {
                                     groceryLists.add(position, deletedList);
-                                    myAdapter.notifyItemInserted(position);
+                                    myGroceryListsAdapter.notifyItemInserted(position);
                                 }
                             }).show();
                     break;
@@ -244,7 +243,7 @@ public class GroceryListsFragment extends Fragment {
                     archivedLists.add(archiveList);
 
                     groceryLists.remove(position);
-                    myAdapter.notifyItemRemoved(position);
+                    myGroceryListsAdapter.notifyItemRemoved(position);
 
                     Snackbar.make(mRecyclerView, archivedListName, Snackbar.LENGTH_LONG)
                             .setAction("Undo", new View.OnClickListener(){
@@ -253,7 +252,7 @@ public class GroceryListsFragment extends Fragment {
                                 public void onClick(View v) {
                                     archivedLists.remove(archivedLists.lastIndexOf(archiveList));
                                     groceryLists.add(position, archiveList);
-                                    myAdapter.notifyItemInserted(position);
+                                    myGroceryListsAdapter.notifyItemInserted(position);
                                 }
                             }).show();
                     break;
@@ -263,9 +262,9 @@ public class GroceryListsFragment extends Fragment {
         public void onChildDraw (Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive){
 
             new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
-                    .addSwipeLeftBackgroundColor(ContextCompat.getColor(GroceryListsFragment.this.getContext(), R.color.Kampong_Blue))
+                    .addSwipeLeftBackgroundColor(ContextCompat.getColor(MyGroceryListsFragment.this.getContext(), R.color.Kampong_Blue))
                     .addSwipeLeftActionIcon(R.drawable.ic_baseline_delete_24)
-                    .addSwipeRightBackgroundColor(ContextCompat.getColor(GroceryListsFragment.this.getContext(), R.color.Kampong_Yellow))
+                    .addSwipeRightBackgroundColor(ContextCompat.getColor(MyGroceryListsFragment.this.getContext(), R.color.Kampong_Yellow))
                     .addSwipeRightActionIcon(R.drawable.ic_baseline_archive_24)
                     .create()
                     .decorate();
