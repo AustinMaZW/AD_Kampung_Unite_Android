@@ -62,6 +62,8 @@ public class GroupDetailsFragment extends Fragment {
         combinedListButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                //navigate to CombinedList Fragment
                 FragmentManager fragmentManager = getParentFragmentManager();
                 CombinedListFragment combinedListFragment = new CombinedListFragment();
                 fragmentManager.beginTransaction()

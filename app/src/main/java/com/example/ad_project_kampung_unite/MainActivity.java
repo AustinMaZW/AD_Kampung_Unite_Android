@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 sharedPreferences = getSharedPreferences(LOGIN_CREDENTIALS, MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 Integer userId = sharedPreferences.getInt(KEY_USERID, 0);
-                String url =getResources().getString(R.string.user_base_url)+"/logout/"+userId.toString();
+                String url =getResources().getString(R.string.user_base_url)+"logout/_id="+userId.toString();
                 StringRequest logoutRequest = new StringRequest(url, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -96,7 +96,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 RequestQueue queue = Volley.newRequestQueue(this);
                 queue.add(logoutRequest);
-
                 editor.clear();
                 editor.apply();
                 Intent logout = new Intent(MainActivity.this, LoginActivity.class);
