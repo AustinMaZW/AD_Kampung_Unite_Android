@@ -46,9 +46,9 @@ public class HitcherDetailActivity extends AppCompatActivity implements View.OnC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hitcher_detail);
         intent_buyerList = new Intent(this,BuyerListActivity.class);
-        drawer = findViewById(R.id.drawer_layout);
+//        drawer = findViewById(R.id.drawer_layout);
         toolbar = findViewById(R.id.toolbar_hdmenu);
-        setSupportActionBar(toolbar);
+//        setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
