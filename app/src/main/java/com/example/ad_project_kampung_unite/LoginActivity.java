@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.ad_project_kampung_unite.model.UserDetail;
+import com.example.ad_project_kampung_unite.entities.UserDetail;
 import com.example.ad_project_kampung_unite.service.UserDetailService;
 
 import org.json.JSONArray;
@@ -108,7 +108,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void loginRequest(UserDetail user) {
-        String url = "http://10.0.2.2:8080/user/";
+        String url = getResources().getString(R.string.user_base_url);
         httpClient.addInterceptor(logging);
         Retrofit.Builder builder = new Retrofit.Builder()
                 .baseUrl(url)
@@ -128,10 +128,10 @@ public class LoginActivity extends AppCompatActivity {
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString(KEY_USERNAME, editText_username.getText().toString());
                     editor.putString(KEY_PASSWORD, editText_password.getText().toString());
-                    editor.putString(KEY_USERID, response.body().getId().toString());
+                    editor.putInt(KEY_USERID, response.body().getId());
                     editor.putString(KEY_AUTHENTICATION, auth);
                     editor.commit();
-                    System.out.println(auth);
+//                    System.out.println(auth);
                     if (auth != "invalidLogin"){
                         Toast.makeText(LoginActivity.this, "Successful Login", Toast.LENGTH_SHORT).show();
                     }
@@ -165,36 +165,39 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private void authenticateRequest(UserDetail user) {
-        String url = "https://localhost:8080/user/";
-        Retrofit.Builder builder = new Retrofit.Builder()
-                .baseUrl(url)
-                .addConverterFactory(GsonConverterFactory.create());
-        Retrofit retrofit = builder.build();
-
-        UserDetailService userDetailService = retrofit.create(UserDetailService.class);
-        Call<UserDetail> call = userDetailService.login(user);
-        call.enqueue(new Callback<UserDetail>() {
-            @Override
-            public void onResponse(Call<UserDetail> call, Response<UserDetail> response) {
-                Toast.makeText(LoginActivity.this, "Successful Login"+ response.body().getAuthentication(), Toast.LENGTH_SHORT).show();
-                if(response.body().getAuthentication() != null){
-                    auth = response.body().getAuthentication();
-                    System.out.println(auth);
-                }
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString(KEY_USERNAME, editText_username.getText().toString());
-                editor.putString(KEY_PASSWORD, editText_password.getText().toString());
-                editor.putString(KEY_AUTHENTICATION, auth);
-                editor.commit();
-            }
-
-            @Override
-            public void onFailure(Call<UserDetail> call, Throwable t) {
-                Toast.makeText(LoginActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
+    /*
+    AuthenticateRequest
+     */
+//    private void authenticateRequest(UserDetail user) {
+//        String url = "https://localhost:8080/user/";
+//        Retrofit.Builder builder = new Retrofit.Builder()
+//                .baseUrl(url)
+//                .addConverterFactory(GsonConverterFactory.create());
+//        Retrofit retrofit = builder.build();
+//
+//        UserDetailService userDetailService = retrofit.create(UserDetailService.class);
+//        Call<UserDetail> call = userDetailService.login(user);
+//        call.enqueue(new Callback<UserDetail>() {
+//            @Override
+//            public void onResponse(Call<UserDetail> call, Response<UserDetail> response) {
+//                Toast.makeText(LoginActivity.this, "Successful Login"+ response.body().getAuthentication(), Toast.LENGTH_SHORT).show();
+//                if(response.body().getAuthentication() != null){
+//                    auth = response.body().getAuthentication();
+//                    System.out.println(auth);
+//                }
+//                SharedPreferences.Editor editor = sharedPreferences.edit();
+//                editor.putString(KEY_USERNAME, editText_username.getText().toString());
+//                editor.putString(KEY_PASSWORD, editText_password.getText().toString());
+//                editor.putString(KEY_AUTHENTICATION, auth);
+//                editor.commit();
+//            }
+//
+//            @Override
+//            public void onFailure(Call<UserDetail> call, Throwable t) {
+//                Toast.makeText(LoginActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//    }
 
     private void parseArray(JSONArray jsonArray) {
         for (int i = 0; i < jsonArray.length(); i++) {

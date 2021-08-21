@@ -6,8 +6,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-//Holder for individual rows in 'My Grocery Lists' recyclerview
-//each row is a separate grocery list
 public class MyGroupPlansHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     public TextView mGroupPlanName, mGroupPlanItemCount, mGroupPlanRequests;
