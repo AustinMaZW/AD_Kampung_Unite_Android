@@ -60,8 +60,10 @@
         <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Kampung_Unite_Android/app/src/main/res/layout/fragment_grocery_list.xml" value="0.20520833333333333" />
         <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Kampung_Unite_Android/app/src/main/res/layout/fragment_grocery_lists.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Kampung_Unite_Android/app/src/main/res/layout/fragment_group_details.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Kampung_Unite_Android/app/src/main/res/layout/fragment_groups.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Kampung_Unite_Android/app/src/main/res/layout/fragment_view_grocery_list.xml" value="0.4" />
+        <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Kampung_Unite_Android/app/src/main/res/layout/fragment_groups.xml" value="0.264" />
+        <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Kampung_Unite_Android/app/src/main/res/layout/fragment_view_grocery_list.xml" value="0.264" />
+        <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Kampung_Unite_Android/app/src/main/res/layout/group_details_collapse_items.xml" value="0.536" />
+        <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Kampung_Unite_Android/app/src/main/res/layout/group_details_expand_items.xml" value="0.19114583333333332" />
         <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Kampung_Unite_Android/app/src/main/res/layout/hitch_request_item.xml" value="0.20520833333333333" />
         <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Kampung_Unite_Android/app/src/main/res/layout/indiv_grocery_list_item.xml" value="0.4" />
         <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Kampung_Unite_Android/app/src/main/res/layout/my_grocery_lists_items.xml" value="0.20520833333333333" />

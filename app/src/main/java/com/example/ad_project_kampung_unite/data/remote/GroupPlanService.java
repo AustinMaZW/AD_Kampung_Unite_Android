@@ -1,5 +1,7 @@
 package com.example.ad_project_kampung_unite.data.remote;
 
+import com.example.ad_project_kampung_unite.entities.GroceryList;
+import com.example.ad_project_kampung_unite.entities.GroupPlan;
 import com.example.ad_project_kampung_unite.entities.GroupPlan;
 import com.example.ad_project_kampung_unite.entities.Product;
 import com.example.ad_project_kampung_unite.ml.Recommendation;
@@ -16,6 +18,9 @@ import retrofit2.http.Query;
 public interface GroupPlanService {
     @GET("groupplan/quit/{groceryListId}")
     Call<Boolean> quitGroupPlanByGroceryListId(@Path("groceryListId") int id);
+
+    @GET("groupplan/{userDetailId}")
+    Call<List<GroupPlan>> findGroupPlansByUserDetailId(@Path("userDetailId") int id);
 
 
     @GET("/native/{id}")
