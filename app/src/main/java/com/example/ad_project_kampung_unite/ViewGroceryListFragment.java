@@ -19,10 +19,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.example.ad_project_kampung_unite.R;
 import com.example.ad_project_kampung_unite.adaptors.GroceryListItemAdaptor;
 import com.example.ad_project_kampung_unite.adaptors.HitchRequestAdaptor;
 import com.example.ad_project_kampung_unite.data.remote.GroceryListService;
@@ -33,10 +31,9 @@ import com.example.ad_project_kampung_unite.entities.GroceryItem;
 import com.example.ad_project_kampung_unite.entities.GroceryList;
 import com.example.ad_project_kampung_unite.entities.GroupPlan;
 import com.example.ad_project_kampung_unite.entities.HitchRequest;
-import com.example.ad_project_kampung_unite.entities.Product;
 import com.example.ad_project_kampung_unite.enums.RequestStatus;
+import com.example.ad_project_kampung_unite.manage_grocery_list.EditGroceryListFragment;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -86,18 +83,27 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
 
         context = layoutRoot.getContext();
 
-        // receive grocery list from groceryListsFragment
-        getParentFragmentManager().setFragmentResultListener("requestKey", this, new FragmentResultListener() {
-            @Override
-            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
-                groceryList = (GroceryList) bundle.getSerializable("bundleKey");
-                // Do something with the result
-                ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(groceryList.getName());
+        // old code to receive grocerylist, but couldnt make it work for refresh purposes
+//        getParentFragmentManager().setFragmentResultListener("requestKey", this, new FragmentResultListener() {
+//            @Override
+//            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
+//                groceryList = (GroceryList) bundle.getSerializable("bundleKey");
+//                // Do something with the result
+//                ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(groceryList.getName());
+//
+//                getGroceryItemsFromServer();            //call to retrieve groceryitems
+//                getHitchRequestsFromServer();           //call to retrieve requests
+//            }
+//        });
 
-                getGroceryItemsFromServer();            //call to retrieve groceryitems
-                getHitchRequestsFromServer();           //call to retrieve requests
-            }
-        });
+        //new code to get result in bundle
+        Bundle bundle = getArguments();
+        if(bundle!=null){
+            groceryList = (GroceryList) bundle.getSerializable("bundleKey");
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(groceryList.getName());
+            getGroceryItemsFromServer();            //call to retrieve groceryitems
+            getHitchRequestsFromServer();           //call to retrieve requests
+        }
 
         rqStatusTitle = layoutRoot.findViewById(R.id.rqStat_title);
         rqStatDescription = layoutRoot.findViewById(R.id.rqStat_description);
@@ -106,13 +112,10 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
         pickupTime = layoutRoot.findViewById(R.id.pickup_time);
         hitchRqButton = layoutRoot.findViewById(R.id.hitch_rq_btn);
         quitGroupBtn = layoutRoot.findViewById(R.id.quit_group);
+
+        setQuitGroupBtn();       //for quitGroup
         editListBtn = layoutRoot.findViewById(R.id.edit_groceries);
         editListBtn.setOnClickListener(this);
-
-//        getGroceryItemsFromServer();            //call to retrieve groceryitems
-//        getHitchRequestsFromServer();           //call to retrieve requests
-        setQuitGroupBtn();       //for quitGroup
-
 
 
         return layoutRoot;
@@ -150,10 +153,20 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
 
         if(view.getId() == R.id.edit_groceries) {
             Log.i("Click", "clicked edit groceries");
-            GroceryListFragment groceryListFragment = new GroceryListFragment();
-            FragmentManager fragmentManager = getParentFragmentManager();
+
+            // send grocery list object
+            GroceryList target = groceryList;
+
+            // send grocery list to grocery list fragment
+            Bundle result = new Bundle();
+            result.putSerializable("bundleKey1", target);
+            System.out.println("result:" + result);
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            fragmentManager.setFragmentResult("requestKey1", result);
+
+            EditGroceryListFragment editGroceryListFragment = new EditGroceryListFragment();
             fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container,groceryListFragment)
+                    .replace(R.id.fragment_container, editGroceryListFragment)
                     .addToBackStack(null)
                     .commit();
         }
@@ -285,7 +298,7 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
     private void buildHitchRequestRV() {
         //recycler view for hitch requests
         rvHitchRequests = layoutRoot.findViewById(R.id.rv_hitch_rq);
-        HitchRequestAdaptor hitchRequestAdaptor = new HitchRequestAdaptor(hitchRequests);
+        HitchRequestAdaptor hitchRequestAdaptor = new HitchRequestAdaptor(hitchRequests, groceryList);
         rvHitchRequests.setAdapter(hitchRequestAdaptor);
         rvHitchRequests.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext()));
     }
@@ -330,12 +343,17 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
                         dialog.dismiss();
                         quitGroupPlan();
 
+                        try {
+                            Thread.sleep(500);      //need to wait or database hasn't updated...
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
                         FragmentManager fm = ((AppCompatActivity)context).getSupportFragmentManager();
-                        ViewGroceryListFragment ViewGLFragment = new ViewGroceryListFragment();
-                        fm.beginTransaction()
-                                .replace(R.id.fragment_container,ViewGLFragment)        //replaces fragment with itself (refreshes)
-                                .addToBackStack(null)
-                                .commit();
+
+                        Fragment currentFrag = fm.findFragmentByTag("VIEW_HITCHER_GL_FRAG");
+                        fm.beginTransaction().detach(currentFrag).commitNow();
+                        fm.beginTransaction().attach(currentFrag).commitNow();
                     }
                 });
                 builder.setNegativeButton("No", new DialogInterface.OnClickListener() {

@@ -12,9 +12,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.widget.Toast;
 
-import com.example.ad_project_kampung_unite.model.UserDetail;
+import com.example.ad_project_kampung_unite.manage_grocery_list.MyGroceryListsFragment;
 import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -45,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    new GroceryListsFragment()).commit();
+                    new MyGroceryListsFragment()).commit();
             navigationView.setCheckedItem(R.id.nav_grocerylists);
         }
     }
@@ -55,16 +54,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (item.getItemId()) {
             case R.id.nav_grocerylists:
                 //original code
-//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-//                        new GroceryListsFragment()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new MyGroceryListsFragment()).commit();
 
                 //dev code - View hitcher grocery list (austin/ngu)
-                FragmentManager fm = getSupportFragmentManager();
-                ViewGroceryListFragment ViewGLFragment = new ViewGroceryListFragment();
-                fm.beginTransaction()
-                        .replace(R.id.fragment_container,ViewGLFragment)
-                        .addToBackStack(null)
-                        .commit();
+//                FragmentManager fm = getSupportFragmentManager();
+//                ViewGroceryListFragment ViewGLFragment = new ViewGroceryListFragment();
+//                fm.beginTransaction()
+//                        .replace(R.id.fragment_container,ViewGLFragment)
+//                        .addToBackStack(null)
+//                        .commit();
                 break;
             case R.id.nav_groups:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
