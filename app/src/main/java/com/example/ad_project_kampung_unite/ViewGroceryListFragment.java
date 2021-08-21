@@ -233,7 +233,7 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
                     if(approvedGroupPlan==null){
                         //remove views that aren't applicable to status == pending
                         layoutRoot.findViewById(R.id.status_approved).setVisibility(View.GONE);
-//                        buildHitchRequestRV();
+                        buildHitchRequestRV();
                     }
 
                 } else {
