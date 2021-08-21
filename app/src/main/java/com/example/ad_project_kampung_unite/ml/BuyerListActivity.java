@@ -5,6 +5,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -40,19 +41,21 @@ public class BuyerListActivity extends AppCompatActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         p = RetrofitClient.createService(GroupPlanService.class);
         setContentView(R.layout.activity_buyer_list);
+        Intent intent = getIntent();
+        recommendation = (Recommendation)intent.getSerializableExtra("recommendation");
         tbar = findViewById(R.id.toolbar_allbuyers);
         doml = findViewById(R.id.doml);
-        doml.setOnClickListener(this);
+//        doml.setOnClickListener(this);
 
         this.fm = getSupportFragmentManager();
-////        BuyerRecycleFragment brv = (BuyerRecycleFragment)fm.findFragmentById(R.id.lists_byrv);
-//        BuyerRecycleFragment brv = new BuyerRecycleFragment();
-//        FragmentTransaction trans = fm.beginTransaction();
-////        brv.setPlans(plans);
-//        brv.setPlanId(planIds);
-//        trans.replace(R.id.lists_byrv,brv);
-////        trans.addToBackStack(null);
-//        trans.commit();
+//        BuyerRecycleFragment brv = (BuyerRecycleFragment)fm.findFragmentById(R.id.lists_byrv);
+        BuyerRecycleFragment brv = new BuyerRecycleFragment();
+        FragmentTransaction trans = fm.beginTransaction();
+        brv.setRecommendation(recommendation);
+        brv.setHitcherDetailId(hitcherDetailId);
+        trans.replace(R.id.lists_byrv,brv);
+//        trans.addToBackStack(null);
+        trans.commit();
 
     }
 

@@ -1,9 +1,10 @@
 package com.example.ad_project_kampung_unite.ml;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Recommendation {
+public class Recommendation implements Serializable {
     private List<Double> distance;
     private List<Integer> plandIds;
     private List<Double> product_score;

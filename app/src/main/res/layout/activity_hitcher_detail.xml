@@ -51,7 +51,8 @@
             android:drawableLeft="@drawable/canlendar_input"
             android:drawablePadding="20dp"
             android:paddingLeft="20dp"
-            android:layout_marginBottom="20dp"/>
+            android:layout_marginBottom="20dp"
+            android:text="2021-10-29"/>
         <EditText
             android:id="@+id/locationAd"
             android:layout_width="200dp"
@@ -63,7 +64,8 @@
             android:drawableLeft="@drawable/location_input"
             android:drawablePadding="20dp"
             android:paddingLeft="20dp"
-            android:layout_marginBottom="20dp"/>
+            android:layout_marginBottom="20dp"
+            android:text="220 Prince Edward Road, Singapore, Singapore"/>
         <EditText
             android:id="@+id/timeSlot_"
             android:layout_width="200dp"
@@ -75,7 +77,8 @@
             android:drawableLeft="@drawable/time_to_slot"
             android:drawablePadding="20dp"
             android:paddingLeft="20dp"
-            android:layout_marginBottom="20dp"/>
+            android:layout_marginBottom="20dp"
+            android:text="12:00:00"/>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/submitBtn"

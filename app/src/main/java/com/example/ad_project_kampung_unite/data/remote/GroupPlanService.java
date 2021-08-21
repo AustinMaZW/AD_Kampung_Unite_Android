@@ -24,6 +24,7 @@ public interface GroupPlanService {
     @GET("/native/{id}")
     Call<Recommendation> getRecommendId(@Path("id") int id);
 
+
     @POST("groupplan/listplans")
     Call<List<GroupPlan>> getPlans(@Body List<Integer> planIds);
 
