@@ -148,6 +148,12 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 else{
                     Toast.makeText(LoginActivity.this, "Enter Valid Username / Password", Toast.LENGTH_SHORT).show();
+
+                    //login without password - temp addition to delete
+                    Intent main = new Intent(LoginActivity.this, MainActivity.class);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString(KEY_USERID, "3");
+                    startActivity(main);
                 }
             }
 
