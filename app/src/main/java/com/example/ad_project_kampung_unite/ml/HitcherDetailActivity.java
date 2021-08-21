@@ -2,6 +2,7 @@ package com.example.ad_project_kampung_unite.ml;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -31,6 +32,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HitcherDetailActivity extends AppCompatActivity implements View.OnClickListener{
     public static final String MLBASEURL = "http://10.0.2.2:5000";
+    private DrawerLayout drawer;
     private Recommendation recommendation;
     private Toolbar toolbar;
     private EditText pickUpDate,location,timeSlot;
@@ -44,7 +46,9 @@ public class HitcherDetailActivity extends AppCompatActivity implements View.OnC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hitcher_detail);
         intent_buyerList = new Intent(this,BuyerListActivity.class);
+        drawer = findViewById(R.id.drawer_layout);
         toolbar = findViewById(R.id.toolbar_hdmenu);
+        setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,18 +109,6 @@ public class HitcherDetailActivity extends AppCompatActivity implements View.OnC
                 Log.e("Request","Fail in Request to Create Hitcher Detail");
             }
         });
-
-
-
-//        try{
-//            Response<Integer> respons = create.execute();
-//            id = respons.body();
-//            if(id >= 0){
-//                getRecommendList(id);
-//            }
-//        }catch (Exception e){
-//            Log.e("Request","Fail in Request to Create Hitcher Detail");
-//        }
     }
     private List<Integer> getRecommendList(int id){
         List<Integer> ids = new ArrayList<>();

@@ -44,6 +44,7 @@ public class BuyerListActivity extends AppCompatActivity implements View.OnClick
         Intent intent = getIntent();
         recommendation = (Recommendation)intent.getSerializableExtra("recommendation");
         tbar = findViewById(R.id.toolbar_allbuyers);
+        tbar.setOnClickListener(this);
         doml = findViewById(R.id.doml);
 //        doml.setOnClickListener(this);
 
@@ -68,7 +69,8 @@ public class BuyerListActivity extends AppCompatActivity implements View.OnClick
 
 
         }else if(id == R.id.toolbar_allbuyers){
-            Log.e("Back","Back to previous");
+            Intent back = new Intent(this,HitcherDetailActivity.class);
+            startActivity(back);
         }
     }
     public void requestForRecommendList() {
