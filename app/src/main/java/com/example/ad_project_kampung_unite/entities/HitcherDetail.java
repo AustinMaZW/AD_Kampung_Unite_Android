@@ -15,7 +15,10 @@ public class HitcherDetail {
 
     public HitcherDetail() {
     }
-
+    public HitcherDetail(LocalDateTime prefPickupTimeFrom, String prefPickupLocation) {
+        this.prefPickupTimeFrom = prefPickupTimeFrom;
+        this.prefPickupLocation = prefPickupLocation;
+    }
     public HitcherDetail(int id, LocalDate prefDate, LocalDateTime prefPickupTimeFrom, String prefPickupLocation, List<HitchRequest> hitchRequestList) {
         this.id = id;
         this.prefPickupTimeFrom = prefPickupTimeFrom;
