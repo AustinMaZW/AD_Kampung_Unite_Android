@@ -1,30 +1,29 @@
 package com.example.ad_project_kampung_unite.manage_grocery_list;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentResultListener;
-import androidx.fragment.app.FragmentTransaction;
+
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.ad_project_kampung_unite.R;
-import com.example.ad_project_kampung_unite.adaptors.GroceryListItemAdaptor;
 import com.example.ad_project_kampung_unite.data.remote.GroceryItemService;
-import com.example.ad_project_kampung_unite.data.remote.GroceryListService;
 import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
 import com.example.ad_project_kampung_unite.entities.GroceryItem;
 import com.example.ad_project_kampung_unite.entities.GroceryList;
-import com.example.ad_project_kampung_unite.entities.HitchRequest;
+import com.example.ad_project_kampung_unite.ml.HitcherDetailActivity;
 import com.example.ad_project_kampung_unite.search_product.SearchFragment;
 import com.example.ad_project_kampung_unite.search_product.SearchProductListAdapter;
 import com.google.android.material.chip.Chip;
@@ -43,6 +42,8 @@ public class EditGroceryListFragment extends Fragment {
     private GroceryList groceryList;
     private List<GroceryItem> groceryItems;
     private View layoutRoot;
+    private Button findMatch;
+    private Context context_;
 
     public EditGroceryListFragment() {
         // Empty constructor
@@ -53,7 +54,7 @@ public class EditGroceryListFragment extends Fragment {
                              ViewGroup container,
                              Bundle savedInstanceState) {
         layoutRoot = inflater.inflate(R.layout.fragment_grocery_list, container, false);
-
+        context_ = this.getContext();
         getParentFragmentManager().setFragmentResultListener("requestKey1", this, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
@@ -63,7 +64,19 @@ public class EditGroceryListFragment extends Fragment {
                 getGroceryItems();
             }
         });
+        findMatch = layoutRoot.findViewById(R.id.hitcherButton);
+        findMatch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Jump to HitcherDetail Activity
+                Log.e("Find match","yes");
+                Intent intent = new Intent(context_, HitcherDetailActivity.class);
+                Log.e("Find match","yes_2");
+                startActivity(intent);
+                Log.e("Find match","yes_3");
 
+            }
+        });
         addButton = layoutRoot.findViewById(R.id.add);
         setUpBtns();
 

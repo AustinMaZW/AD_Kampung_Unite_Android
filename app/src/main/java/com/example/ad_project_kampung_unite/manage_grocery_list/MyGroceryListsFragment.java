@@ -65,8 +65,7 @@ public class MyGroceryListsFragment extends Fragment {
 
         // Get user id
         sharedPreferences = getContext().getSharedPreferences("LoginCredentials",0);
-        userId = Integer.valueOf(sharedPreferences.getString("userId","-1"));
-
+        userId = sharedPreferences.getInt("userId", -1);
 
         // get grocery lists from database
         groceryLists = new ArrayList<>();
@@ -184,7 +183,7 @@ public class MyGroceryListsFragment extends Fragment {
     public void buildRecyclerView(View layoutRoot){
 
         mRecyclerView = layoutRoot.findViewById(R.id.recyclerview);
-        mRecyclerView.setHasFixedSize(true);
+//        mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext(), LinearLayoutManager.VERTICAL,false));
 
         myGroceryListsAdapter = new MyGroceryListsAdapter(layoutRoot.getContext(), groceryLists);

@@ -1,14 +1,16 @@
 package com.example.ad_project_kampung_unite.entities;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class UserDetail extends UserLogin{
+public class UserDetail extends UserLogin implements Serializable{
     private int id;
     private String firstName;
     private String lastName;
     private String role;
     private String phoneNumber;
     private String homeAddress;
+    private String authentication;
     private List<GroceryList> grocerylists;
 
     public UserDetail(String username, String password, int id, String firstName, String lastName, String role, String phoneNumber, String homeAddress) {
@@ -19,6 +21,10 @@ public class UserDetail extends UserLogin{
         this.role = role;
         this.phoneNumber = phoneNumber;
         this.homeAddress = homeAddress;
+    }
+
+    public UserDetail(String username, String password) {
+        super(username, password);
     }
 
     public int getId() {
@@ -67,6 +73,14 @@ public class UserDetail extends UserLogin{
 
     public void setHomeAddress(String homeAddress) {
         this.homeAddress = homeAddress;
+    }
+
+    public String getAuthentication() {
+        return authentication;
+    }
+
+    public void setAuthentication(String authentication) {
+        this.authentication = authentication;
     }
 
     public List<GroceryList> getGrocerylists() {
