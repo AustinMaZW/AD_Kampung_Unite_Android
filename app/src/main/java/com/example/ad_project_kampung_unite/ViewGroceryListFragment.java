@@ -344,7 +344,7 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
                             e.printStackTrace();
                         }
 
-                        FragmentManager fm = ((AppCompatActivity)context).getSupportFragmentManager();
+                        FragmentManager fm = ((AppCompatActivity)context).getSupportFragmentManager();     //below to refresh ui
 
                         Fragment currentFrag = fm.findFragmentByTag("VIEW_HITCHER_GL_FRAG");
                         fm.beginTransaction().detach(currentFrag).commitNow();

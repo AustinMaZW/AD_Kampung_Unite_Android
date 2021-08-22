@@ -1,7 +1,9 @@
 package com.example.ad_project_kampung_unite;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -12,12 +14,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.example.ad_project_kampung_unite.adaptors.GroceryListItemAdaptor;
 import com.example.ad_project_kampung_unite.data.remote.GroceryListService;
+import com.example.ad_project_kampung_unite.data.remote.HitchRequestService;
 import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
 import com.example.ad_project_kampung_unite.entities.GroceryItem;
 import com.example.ad_project_kampung_unite.entities.GroceryList;
+import com.example.ad_project_kampung_unite.entities.HitchRequest;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -32,9 +37,10 @@ public class GroupDetailsFragment extends Fragment {
 
     private List<GroceryItem> buyerGroceryItemList = new ArrayList<>();
 
-      private RecyclerView rvBuyerGrocery;
-      private GroceryListService groceryListService;
+    private RecyclerView rvBuyerGrocery;
+    private GroceryListService groceryListService;
 //    private GroupDetailsAdapter myAdapter;
+    private Button acceptHrqBtn; //just for testing purposes, delete later
 
     RecyclerView expanderRecyclerView;
     View layoutRoot;
@@ -72,6 +78,41 @@ public class GroupDetailsFragment extends Fragment {
         groceryListService = RetrofitClient.createService(GroceryListService.class);
         getGroceryItemsFromServer();
 
+        //below are test codes for Austin (accept hrq)
+        acceptHrqBtn = layoutRoot.findViewById(R.id.accept_hitchrq); //only for testing, this view should be in hrq recycle view of this frag
+        acceptHrqBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                builder.setMessage("Approve this request?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                        approveHitchRqToServer();
+
+                        try {
+                            Thread.sleep(500);      //need to wait or database hasn't updated...
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+                        //below code to refresh ui with new data
+//                        FragmentManager fm = ((AppCompatActivity)context).getSupportFragmentManager();
+//                        Fragment currentFrag = fm.findFragmentByTag("VIEW_HITCHER_GL_FRAG");  //replace this with appropriate frag tag
+//                        fm.beginTransaction().detach(currentFrag).commitNow();
+//                        fm.beginTransaction().attach(currentFrag).commitNow();
+                    }
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        });
+
 //        //input dummy data
 //        createMyList();
 //        //recycler view adapter instantiated here
@@ -83,6 +124,7 @@ public class GroupDetailsFragment extends Fragment {
 
         return layoutRoot;
     }
+
 
     private void getGroceryItemsFromServer(){
         Call<List<GroceryItem>> call = groceryListService.getGroceryItemByGroceryListId(30); //hard coded grocerylistid here, replace later
@@ -104,6 +146,35 @@ public class GroupDetailsFragment extends Fragment {
 
             @Override
             public void onFailure(Call<List<GroceryItem>> call, Throwable t) {
+                // like no internet connection / the website doesn't exist
+                call.cancel();
+                Log.w("Failure", "Failure!");
+                t.printStackTrace();
+            }
+        });
+    }
+
+
+    private void approveHitchRqToServer() {
+        HitchRequestService hitchRequestService = RetrofitClient.createService(HitchRequestService.class);
+        Call<Boolean> call = hitchRequestService.approveHitchRq(290); //hard coded hitchRqId here, replace later
+
+        call.enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+
+                if (response.isSuccessful()) {
+                    Boolean status = response.body();
+                    Log.d("Success", status.toString()); //for testing
+
+                    //logic to change any UI here, but shouldn't need since other parts of this frag should've handled it
+                } else {
+                    Log.e("Error", response.errorBody().toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
                 // like no internet connection / the website doesn't exist
                 call.cancel();
                 Log.w("Failure", "Failure!");

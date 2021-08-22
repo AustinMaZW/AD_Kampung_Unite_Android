@@ -15,6 +15,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+//this activity was used to test retrofit, should delete
 public class TestActivity extends AppCompatActivity {
     PostService postService;
 
