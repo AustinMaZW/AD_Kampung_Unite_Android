@@ -22,7 +22,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    EditText registerUsername,
+    EditText
+            registerUsername,
             registerPassword,
             registerPassword2,
             registerFirstName,
@@ -31,8 +32,6 @@ public class RegisterActivity extends AppCompatActivity {
             registerAddress;
 
     Button registerCreateButton;
-
-
 
     private static HttpLoggingInterceptor logging = new HttpLoggingInterceptor()
             .setLevel(HttpLoggingInterceptor.Level.BASIC);
@@ -66,6 +65,9 @@ public class RegisterActivity extends AppCompatActivity {
                     userDetail.setPhoneNumber(registerPhoneNumber.getText().toString());
                     userDetail.setHomeAddress(registerAddress.getText().toString());
                 }
+                else{
+                    Toast.makeText(RegisterActivity.this, "Please retype correct password", Toast.LENGTH_SHORT).show();
+                }
 
                 boolean isComplete = checkFormCompletion(userDetail);
 
@@ -83,9 +85,14 @@ public class RegisterActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<UserDetail> call, Response<UserDetail> response) {
                             if (response.isSuccessful()){
-                                Toast.makeText(RegisterActivity.this, "Registration Success", Toast.LENGTH_SHORT).show();
-                                Intent login = new Intent(RegisterActivity.this, LoginActivity.class);
-                                startActivity(login);
+                                if(response.body().getId() != 0){
+                                    Toast.makeText(RegisterActivity.this, "Registration Success", Toast.LENGTH_SHORT).show();
+                                    Intent login = new Intent(RegisterActivity.this, LoginActivity.class);
+                                    startActivity(login);
+                                }
+                                else{
+                                    Toast.makeText(RegisterActivity.this, "Username"+ registerUsername.getText().toString() +"already Exists", Toast.LENGTH_SHORT).show();
+                                }
                             }
                         }
 
