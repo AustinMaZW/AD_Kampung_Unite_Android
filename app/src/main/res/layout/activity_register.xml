@@ -46,11 +46,24 @@
         android:id="@+id/registerPassword"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:hint="Password"
-        android:layout_marginTop="10dp"
+        android:inputType="textPassword"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/registerUsername"
+        app:layout_constraintWidth_percent="0.8" />
+
+    <EditText
+        android:id="@+id/registerPassword2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:hint="Retype Password"
+        android:inputType="textPassword"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/registerPassword"
         app:layout_constraintWidth_percent="0.8" />
 
     <EditText
@@ -62,7 +75,7 @@
         app:layout_constraintHorizontal_bias="0.165"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/registerPassword"
+        app:layout_constraintTop_toBottomOf="@+id/registerPassword2"
         app:layout_constraintWidth_percent="0.4" />
 
     <EditText
@@ -74,7 +87,7 @@
         app:flow_verticalAlign="@id/registerPassword"
         app:layout_constraintHorizontal_bias="0.02"
         app:layout_constraintWidth_percent="0.4"
-        app:layout_constraintTop_toBottomOf="@id/registerPassword"
+        app:layout_constraintTop_toBottomOf="@id/registerPassword2"
         app:layout_constraintLeft_toRightOf="@+id/registerFirstName"
         app:layout_constraintRight_toRightOf="parent"
         />
@@ -83,7 +96,7 @@
         android:id="@+id/registerPhoneNumber"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Password"
+        android:hint="Phone Number"
         android:layout_marginTop="10dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -113,7 +126,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="50dp"/>
+        android:layout_marginBottom="40dp"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

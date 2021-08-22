@@ -22,6 +22,9 @@ public class UserDetail extends UserLogin{
         this.homeAddress = homeAddress;
     }
 
+    public UserDetail() {
+    }
+
     public UserDetail(String username, String password) {
         super(username, password);
     }
