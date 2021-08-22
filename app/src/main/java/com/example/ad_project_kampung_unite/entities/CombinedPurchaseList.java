@@ -8,7 +8,7 @@ public class CombinedPurchaseList {
 	private double productUnitPrice;
 	private GroupPlan groupPlan;
 	private String productName;
-
+	private Product product;
 
 	public CombinedPurchaseList() {
 	}
@@ -84,4 +84,8 @@ public class CombinedPurchaseList {
 	public void setGroupPlan(GroupPlan groupPlan) {
 		this.groupPlan = groupPlan;
 	}
+
+	public Product getProduct() { return product; }
+
+	public void setProduct(Product product) { this.product = product; }
 }
