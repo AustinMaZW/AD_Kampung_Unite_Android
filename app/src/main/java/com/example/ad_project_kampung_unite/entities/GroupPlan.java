@@ -20,7 +20,12 @@ public class GroupPlan {
 
     public GroupPlan() {
     }
-
+    public GroupPlan(String storeName, LocalDate shoppingDate, String pickupAddress, LocalDate pickupDate) {
+        this.storeName = storeName;
+        this.shoppingDate = shoppingDate;
+        this.pickupAddress = pickupAddress;
+        this.pickupDate = pickupDate;
+    }
     public GroupPlan(int id, String planName, String storeName, LocalDate shoppingDate, String pickupAddress, LocalDate pickupDate, GroupPlanStatus groupPlanStatus, CombinedPurchaseList combinedPurchaseList, List<AvailableTime> availableTimes, List<GroceryList> groceryLists, List<HitchRequest> groupPlan_hitchers) {
         this.id = id;
         this.planName = planName;
@@ -121,5 +126,15 @@ public class GroupPlan {
 
     public void setGroupPlan_hitchers(List<HitchRequest> groupPlan_hitchers) {
         this.groupPlan_hitchers = groupPlan_hitchers;
+    }
+
+    public GroupPlan(int id, String planName, String storeName, LocalDate shoppingDate, String pickupAddress, LocalDate pickupDate, GroupPlanStatus groupPlanStatus) {
+        this.id = id;
+        this.planName = planName;
+        this.storeName = storeName;
+        this.shoppingDate = shoppingDate;
+        this.pickupAddress = pickupAddress;
+        this.pickupDate = pickupDate;
+        this.groupPlanStatus = groupPlanStatus;
     }
 }

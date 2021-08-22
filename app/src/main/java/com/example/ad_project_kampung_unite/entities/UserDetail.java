@@ -1,8 +1,9 @@
 package com.example.ad_project_kampung_unite.entities;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class UserDetail extends UserLogin{
+public class UserDetail extends UserLogin implements Serializable{
     private int id;
     private String firstName;
     private String lastName;

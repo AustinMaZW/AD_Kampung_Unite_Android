@@ -39,9 +39,8 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Expandab
     private List<HitchRequest> hitchRequestsList;
     private List<GroceryItem> groceryItemList;
 
-    public ExpandableRecyclerViewAdapter(List<HitchRequest> hitchRequestsList, List<GroceryItem> groceryItemList){
+    public ExpandableRecyclerViewAdapter(List<HitchRequest> hitchRequestsList){
         this.hitchRequestsList = hitchRequestsList;
-        this.groceryItemList = groceryItemList;
     }
 
     // inflate item row layout and returning the holder
@@ -51,7 +50,7 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Expandab
         LayoutInflater inflater = LayoutInflater.from(context);
 
         // Inflate the custom layout
-        View groceryListView = inflater.inflate(R.layout.group_details_collapse_items, parent, false);
+        View groceryListView = inflater.inflate(R.layout.group_details_collapse_items, null);
 
         // Return a new holder instance
         ExpandableRecyclerViewAdapter.ViewHolder viewHolder = new ExpandableRecyclerViewAdapter.ViewHolder(groceryListView);
@@ -62,7 +61,7 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Expandab
     @Override
     public void onBindViewHolder(ExpandableRecyclerViewAdapter.ViewHolder holder, int position) {
         // Get the data model based on position
-        GroceryItem groceryItem = groceryItemList.get(position);
+        HitchRequest hitchRequest = hitchRequestsList.get(position);
 
         // Set item views based on your views and data model
         TextView name = holder.name;
@@ -70,7 +69,7 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Expandab
         TextView itemcount = holder.itemcount;
 
 //        name.setText(list.getName());
-        pickuptime.setText(hitchRequestsList.get(position).getPickupTimeChosen().toString());
+        pickuptime.setText(hitchRequest.getPickupTimeChosen().toString());
 //        itemcount.setText((int) list.getGroceryItems().stream().count());
     }
 
