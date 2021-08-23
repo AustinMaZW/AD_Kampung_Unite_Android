@@ -87,12 +87,11 @@
                     android:id="@+id/quit_group"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
-                    android:text="QUIT GROUP"
-                    android:textSize="9sp"
-                    android:textColor="@color/Kampong_Blue"
-                    android:background="@android:color/transparent"
                     android:layout_alignParentRight="true"
-                    />
+                    android:background="@android:color/transparent"
+                    android:text="QUIT GROUP"
+                    android:textColor="@color/Kampong_Blue"
+                    android:textSize="9sp" />
             </RelativeLayout>
 
         </LinearLayout>
@@ -115,12 +114,11 @@
             android:id="@+id/hitch_rq_btn"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:text="FIND ANOTHER GROUP"
-            android:textSize="9sp"
-            android:textColor="@color/Kampong_Blue"
-            android:background="@android:color/transparent"
             android:layout_alignParentRight="true"
-            />
+            android:background="@android:color/transparent"
+            android:text="FIND ANOTHER GROUP"
+            android:textColor="@color/Kampong_Blue"
+            android:textSize="9sp" />
     </RelativeLayout>
 
     <LinearLayout

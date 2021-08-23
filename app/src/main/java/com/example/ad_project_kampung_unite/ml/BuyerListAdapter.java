@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -23,6 +24,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.ad_project_kampung_unite.MainActivity;
 import com.example.ad_project_kampung_unite.R;
 import com.example.ad_project_kampung_unite.data.remote.GroupPlanService;
 import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
@@ -97,7 +99,7 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
         }
 //        List<String> slots = slos.stream().map(AvailableTime::getPickupSlots).map(LocalTime::toString).collect(Collectors.toList());
 
-
+        System.out.print("shit");
 
         holder.location.setText(String.format("Address: %s (Distance: %.2f)",plans.get(position).getPickupAddress(),recommendation.getDistance().get(position)));
         holder.sendRequest.setOnClickListener(new View.OnClickListener() {
@@ -202,6 +204,9 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
                         sendRequest(planIds.get(position),hitcherDetailId,pickUpTime);
                         dialog.dismiss();
                         popupWindow_.dismiss();
+                        Intent backToMain = new Intent(context, MainActivity.class);
+                        backToMain.putExtra("hitcherDetail",false);
+                        context.startActivity(backToMain);
                     }
                 }).setNegativeButton("Back", new DialogInterface.OnClickListener() {
             @Override

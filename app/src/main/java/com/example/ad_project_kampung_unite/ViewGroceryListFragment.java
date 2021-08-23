@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentResultListener;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -34,6 +35,7 @@ import com.example.ad_project_kampung_unite.entities.HitchRequest;
 import com.example.ad_project_kampung_unite.entities.enums.GroupPlanStatus;
 import com.example.ad_project_kampung_unite.entities.enums.RequestStatus;
 import com.example.ad_project_kampung_unite.manage_grocery_list.EditGroceryListFragment;
+import com.example.ad_project_kampung_unite.ml.HitcherDetailFragment;
 
 
 import java.time.LocalDateTime;
@@ -114,6 +116,7 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
         pickupLoc = layoutRoot.findViewById(R.id.pickup_location);
         pickupTime = layoutRoot.findViewById(R.id.pickup_time);
         hitchRqButton = layoutRoot.findViewById(R.id.hitch_rq_btn);
+        hitchRqButton.setOnClickListener(this);
         quitGroupBtn = layoutRoot.findViewById(R.id.quit_group);
 
         setQuitGroupBtn();       //for quitGroup
@@ -126,6 +129,15 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
 
     @Override
     public void onClick(View view) {
+        if(view.getId() == R.id.hitch_rq_btn){
+            FragmentManager fm = getParentFragmentManager();
+            Log.e("Hitcher Detail","yes_5");
+            HitcherDetailFragment hitcerDetail = new HitcherDetailFragment();
+            FragmentTransaction trans = fm.beginTransaction();
+            trans.replace(R.id.fragment_container,hitcerDetail);
+            trans.addToBackStack(null);
+            trans.commit();
+        }
         if(view.getId() == R.id.complete_payment_btn) {
             Log.i("Click", "clicked complete payment");
             if (acceptedHitchRequest != null) {
