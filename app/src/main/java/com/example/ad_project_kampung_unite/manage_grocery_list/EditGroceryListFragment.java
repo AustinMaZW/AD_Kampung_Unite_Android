@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentResultListener;
 
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,6 +25,7 @@ import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
 import com.example.ad_project_kampung_unite.entities.GroceryItem;
 import com.example.ad_project_kampung_unite.entities.GroceryList;
 import com.example.ad_project_kampung_unite.ml.HitcherDetailActivity;
+import com.example.ad_project_kampung_unite.ml.HitcherDetailFragment;
 import com.example.ad_project_kampung_unite.search_product.SearchFragment;
 import com.example.ad_project_kampung_unite.search_product.SearchProductListAdapter;
 import com.google.android.material.chip.Chip;
@@ -69,11 +71,15 @@ public class EditGroceryListFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 //Jump to HitcherDetail Activity
-                Log.e("Find match","yes");
-                Intent intent = new Intent(context_, HitcherDetailActivity.class);
-                Log.e("Find match","yes_2");
-                startActivity(intent);
-                Log.e("Find match","yes_3");
+                FragmentManager fm = getParentFragmentManager();
+                Log.e("Hitcher Detail","yes_5");
+                HitcherDetailFragment hitcerDetail = new HitcherDetailFragment();
+                FragmentTransaction trans = fm.beginTransaction();
+                trans.replace(R.id.fragment_container,hitcerDetail);
+                trans.addToBackStack(null);
+                trans.commit();
+//                Intent intent = new Intent(context_, HitcherDetailActivity.class);
+//                startActivity(intent);
 
             }
         });

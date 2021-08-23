@@ -1,5 +1,12 @@
 package com.example.ad_project_kampung_unite;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,12 +14,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
-
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.view.MenuItem;
-import android.widget.Toast;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -20,6 +22,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.ad_project_kampung_unite.manage_grocery_list.MyGroceryListsFragment;
+import com.example.ad_project_kampung_unite.ml.HitcherDetailFragment;
 import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -52,6 +55,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                     new MyGroceryListsFragment()).commit();
             navigationView.setCheckedItem(R.id.nav_grocerylists);
+        }
+        Intent back = getIntent();
+        boolean hd = back.getBooleanExtra("hitcherDetail",false);
+        if(hd){
+            FragmentManager fm = getSupportFragmentManager();
+            HitcherDetailFragment hitcerDetail = new HitcherDetailFragment();
+            FragmentTransaction trans = fm.beginTransaction();
+            trans.replace(R.id.fragment_container,hitcerDetail);
+            trans.addToBackStack(null);
+            trans.commit();
         }
     }
 
