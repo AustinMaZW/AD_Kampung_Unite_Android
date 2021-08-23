@@ -90,8 +90,8 @@ public class RegisterActivity extends AppCompatActivity {
                                     Intent login = new Intent(RegisterActivity.this, LoginActivity.class);
                                     startActivity(login);
                                 }
-                                else{
-                                    Toast.makeText(RegisterActivity.this, "Username"+ registerUsername.getText().toString() +"already Exists", Toast.LENGTH_SHORT).show();
+                                if(response.body().getId() == 0){
+                                    Toast.makeText(RegisterActivity.this, "Username "+ registerUsername.getText().toString() +" already Exists", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }

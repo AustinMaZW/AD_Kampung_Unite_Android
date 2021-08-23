@@ -9,6 +9,7 @@ public class CombinedPurchaseList {
 	private GroupPlan groupPlan;
 	private String productName;
 	private Product product;
+	private boolean isPurchased;
 
 	public CombinedPurchaseList() {
 	}
@@ -22,7 +23,16 @@ public class CombinedPurchaseList {
 		this.groupPlan = groupPlan;
 	}
 
-	public CombinedPurchaseList(int id, int productId, String productName, int quantity){
+	public CombinedPurchaseList(int id, int productId, String productName, int quantity, GroupPlan groupPlan, Product product ){
+		this.id = id;
+		this.productId = productId;
+		this.productName = productName;
+		this.quantity = quantity;
+		this.groupPlan = groupPlan;
+		this.product = product;
+	}
+
+	public CombinedPurchaseList(int id, int productId, String productName, int quantity ){
 		this.id = id;
 		this.productId = productId;
 		this.productName = productName;
@@ -88,4 +98,12 @@ public class CombinedPurchaseList {
 	public Product getProduct() { return product; }
 
 	public void setProduct(Product product) { this.product = product; }
+
+	public boolean isPurchased() {
+		return isPurchased;
+	}
+
+	public void setPurchased(boolean purchased) {
+		isPurchased = purchased;
+	}
 }
