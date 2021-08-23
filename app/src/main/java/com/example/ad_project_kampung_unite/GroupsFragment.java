@@ -77,7 +77,7 @@ public class GroupsFragment extends Fragment {
 
                 if (response.isSuccessful()) {
                     groupPlanList = response.body();
-                    Log.d("Success", String.valueOf(groupPlanList.get(0).getPlanName())); //for testing
+//                    Log.d("Success", String.valueOf(groupPlanList.get(0).getPlanName())); //for testing
 
                     GroupPlanItemAdapter groupPlanItemAdapter = new GroupPlanItemAdapter(context, (ArrayList<GroupPlan>) groupPlanList);
                     rvGroupPlan.setAdapter(groupPlanItemAdapter);  //set the adaptor here
