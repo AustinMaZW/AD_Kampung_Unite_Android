@@ -51,7 +51,6 @@ public class BuyerListActivity extends AppCompatActivity implements View.OnClick
         tbar.setOnClickListener(this);
         doml = findViewById(R.id.doml);
         back = new Intent(this, MainActivity.class);
-//        doml.setOnClickListener(this);
 
         this.fm = getSupportFragmentManager();
 //        BuyerRecycleFragment brv = (BuyerRecycleFragment)fm.findFragmentById(R.id.lists_byrv);
@@ -60,7 +59,7 @@ public class BuyerListActivity extends AppCompatActivity implements View.OnClick
         brv.setRecommendation(recommendation);
         brv.setHitcherDetailId(hitcherDetailId);
         trans.replace(R.id.lists_byrv,brv);
-//        trans.addToBackStack(null);
+        trans.addToBackStack(null);
         trans.commit();
 
     }

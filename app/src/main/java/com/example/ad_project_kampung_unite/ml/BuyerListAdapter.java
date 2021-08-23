@@ -99,7 +99,7 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
         }
 //        List<String> slots = slos.stream().map(AvailableTime::getPickupSlots).map(LocalTime::toString).collect(Collectors.toList());
 
-
+        System.out.print("shit");
 
         holder.location.setText(String.format("Address: %s (Distance: %.2f)",plans.get(position).getPickupAddress(),recommendation.getDistance().get(position)));
         holder.sendRequest.setOnClickListener(new View.OnClickListener() {
