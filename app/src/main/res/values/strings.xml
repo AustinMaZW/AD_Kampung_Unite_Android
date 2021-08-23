@@ -26,5 +26,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="qty">Qty</string>
     <string name="discount">Discount</string>
+    <string name="subtotal_excl_disc">Subtotal (Excl. Discount)</string>
     <string name="submit">Submit</string>
 </resources>
