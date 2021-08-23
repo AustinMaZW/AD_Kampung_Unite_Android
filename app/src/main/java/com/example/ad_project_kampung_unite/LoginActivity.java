@@ -61,10 +61,10 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (loginBtn != null) {
-//                    String username = editText_username.getText().toString();
-//                    String pwd = editText_password.getText().toString();
-//                    UserDetail user = new UserDetail(username, pwd);
-//                    loginRequest(user);
+                    String username = editText_username.getText().toString();
+                    String pwd = editText_password.getText().toString();
+                    UserDetail user = new UserDetail(username, pwd);
+                    loginRequest(user);
 //                    //Start use of path variable to login
 //                    String loginUrl = "https://localhost:8080/user/login"+username+"&&"+pwd;
 //                    StringRequest loginRequest = new StringRequest(loginUrl, new Response.Listener<String>() {
@@ -100,8 +100,8 @@ public class LoginActivity extends AppCompatActivity {
 //                    String authenticateUrl = "https://localhost:8080/user/authenticate";
 
 //                    use this for easy no login required
-                    Intent main = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(main);
+//                    Intent main = new Intent(LoginActivity.this, MainActivity.class);
+//                    startActivity(main);
                 }
             }
         });

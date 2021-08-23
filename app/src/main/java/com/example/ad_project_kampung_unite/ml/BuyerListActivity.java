@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 
 
+import com.example.ad_project_kampung_unite.MainActivity;
 import com.example.ad_project_kampung_unite.R;
 import com.example.ad_project_kampung_unite.data.remote.GroupPlanService;
 import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
@@ -35,17 +36,21 @@ public class BuyerListActivity extends AppCompatActivity implements View.OnClick
     private List<GroupPlan> plans = new ArrayList<>();
     private List<Integer> planIds = new ArrayList<>();
     private FragmentManager fm;
-    private int hitcherDetailId = 37;
+    private int hitcherDetailId;
+    private Intent back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         p = RetrofitClient.createService(GroupPlanService.class);
+
         setContentView(R.layout.activity_buyer_list);
         Intent intent = getIntent();
+        hitcherDetailId = intent.getIntExtra("hitcherDetailId",0);
         recommendation = (Recommendation)intent.getSerializableExtra("recommendation");
         tbar = findViewById(R.id.toolbar_allbuyers);
         tbar.setOnClickListener(this);
         doml = findViewById(R.id.doml);
+        back = new Intent(this, MainActivity.class);
 //        doml.setOnClickListener(this);
 
         this.fm = getSupportFragmentManager();
@@ -64,13 +69,25 @@ public class BuyerListActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View v) {
         int id = v.getId();
         if(id == R.id.doml){
-
             requestForRecommendList();
-
-
         }else if(id == R.id.toolbar_allbuyers){
-            Intent back = new Intent(this,HitcherDetailActivity.class);
-            startActivity(back);
+            Call<Integer> rm = p.removeHitcherDetail(hitcherDetailId);
+            rm.enqueue(new Callback<Integer>() {
+                @Override
+                public void onResponse(Call<Integer> call, Response<Integer> response) {
+                    int _id = response.body();
+                    System.out.println(_id);
+                    back.putExtra("hitcherDetail",false);
+                    startActivity(back);
+                }
+
+                @Override
+                public void onFailure(Call<Integer> call, Throwable t) {
+                    System.out.println(hitcherDetailId);
+                    System.out.println("False");
+                }
+            });
+
         }
     }
     public void requestForRecommendList() {

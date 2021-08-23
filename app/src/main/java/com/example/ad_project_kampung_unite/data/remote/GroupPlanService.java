@@ -38,4 +38,7 @@ public interface GroupPlanService {
 
     @GET("hitchrequest/savereq")
     Call<Integer> saveRequest(@Query("planId") int planId, @Query("hitcherDetailId") int hitcherDetailId, @Query("pickUpTime") String pickUpTime);
+
+    @GET("HitcherDetail/removedetail")
+    Call<Integer> removeHitcherDetail(@Query("hdid") int hdid);
 }
