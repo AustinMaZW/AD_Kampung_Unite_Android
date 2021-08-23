@@ -9,6 +9,7 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface GroceryItemService {
     @GET("groceries/{groceryListId}")
@@ -25,4 +26,9 @@ public interface GroceryItemService {
 
     @POST("groceries/save/all")
     Call<Boolean> saveAll(@Body List<GroceryItem> list);
+
+    @GET("groceries/save")
+    Call<Integer> addGroceryItemToGroceryList (@Query("productId") int productId, @Query("quantity") int quantity, @Query("groceryListId")  int groceryListId);
+
+
 }
