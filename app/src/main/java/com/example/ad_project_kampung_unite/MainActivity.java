@@ -88,6 +88,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new GroupsFragment()).commit();
                 break;
+            // test, later delete
+            case R.id.nav_update_price:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new UpdatePriceFragment()).commit();
+                break;
             case R.id.nav_logout:
                 //logout request
                 sharedPreferences = getSharedPreferences(LOGIN_CREDENTIALS, MODE_PRIVATE);

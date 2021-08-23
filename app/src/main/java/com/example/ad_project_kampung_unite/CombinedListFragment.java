@@ -55,7 +55,7 @@ public class CombinedListFragment extends Fragment {
         //Get groupPlanID from sharedpreferences using Key groupPlanId
         sharedPreferences = getActivity().getSharedPreferences("groupPlan",MODE_PRIVATE);
         Integer groupPlanID = sharedPreferences.getInt("groupPlanId", 0);
-        String url = getResources().getString(R.string.cpl_base_url)+"getlist/_id="+groupPlanID;
+        String url = getResources().getString(R.string.cpl_base_url)+"getlist/"+groupPlanID;
 
         StringRequest getListRequest = new StringRequest(url, new Response.Listener<String>() {
             @Override

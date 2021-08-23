@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:text="Request Sent to buyers!"
             android:textColor="@color/black"
-            android:textSize="18dp"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
         <TextView
@@ -39,7 +39,7 @@
             android:layout_marginTop="5dp"
             android:text="Pending buyer confirmation"
             android:textColor="@color/black"
-            android:textSize="14dp" />
+            android:textSize="14sp" />
 
         <LinearLayout
             android:id="@+id/status_approved"
@@ -56,7 +56,7 @@
                 android:layout_marginTop="5dp"
                 android:text="Buyer will be purchasing from: "
                 android:textColor="@color/black"
-                android:textSize="12dp" />
+                android:textSize="12sp" />
 
 
             <TextView
@@ -67,7 +67,7 @@
                 android:layout_marginTop="5dp"
                 android:text="Pickup Location: "
                 android:textColor="@color/black"
-                android:textSize="12dp" />
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/pickup_time"
@@ -77,7 +77,7 @@
                 android:layout_marginTop="5dp"
                 android:text="Pickup between: "
                 android:textColor="@color/black"
-                android:textSize="12dp" />
+                android:textSize="12sp" />
 
             <RelativeLayout
                 android:layout_width="wrap_content"
@@ -133,7 +133,7 @@
             android:layout_marginLeft="10dp"
             android:text="My Grocery List Summary"
             android:textColor="@color/black"
-            android:textSize="18dp"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
         <RelativeLayout
@@ -178,7 +178,7 @@
                 android:layout_marginStart="10dp"
                 android:text="@string/subtotal"
                 android:textColor="@color/black"
-                android:textSize="16dp" />
+                android:textSize="16sp" />
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -189,7 +189,7 @@
                     android:layout_height="wrap_content"
                     android:text="$0.00"
                     android:textColor="@color/black"
-                    android:textSize="14dp"
+                    android:textSize="14sp"
                     android:layout_alignParentRight="true" />
             </RelativeLayout>
         </LinearLayout>
@@ -204,7 +204,7 @@
                 android:layout_marginStart="10dp"
                 android:text="@string/gst"
                 android:textColor="@color/black"
-                android:textSize="16dp" />
+                android:textSize="16sp" />
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -215,7 +215,7 @@
                     android:layout_height="wrap_content"
                     android:text="$0.00"
                     android:textColor="@color/black"
-                    android:textSize="14dp"
+                    android:textSize="14sp"
                     android:layout_alignParentRight="true" />
             </RelativeLayout>
         </LinearLayout>
@@ -230,7 +230,7 @@
                 android:layout_marginStart="10dp"
                 android:text="@string/service_fee"
                 android:textColor="@color/black"
-                android:textSize="16dp" />
+                android:textSize="16sp" />
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -241,7 +241,7 @@
                     android:layout_height="wrap_content"
                     android:text="$0.00"
                     android:textColor="@color/black"
-                    android:textSize="14dp"
+                    android:textSize="14sp"
                     android:layout_alignParentRight="true" />
             </RelativeLayout>
         </LinearLayout>
@@ -257,7 +257,7 @@
                 android:text="@string/total"
                 android:textColor="@color/black"
                 android:textStyle="bold"
-                android:textSize="20dp" />
+                android:textSize="20sp" />
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -268,9 +268,20 @@
                     android:layout_height="wrap_content"
                     android:text="$0.00"
                     android:textColor="@color/black"
-                    android:textSize="14dp"
+                    android:textSize="14sp"
                     android:layout_alignParentRight="true" />
             </RelativeLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/payment_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_marginStart="10dp"
+                android:textSize="16sp" />
         </LinearLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -292,7 +303,6 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </LinearLayout>
 </LinearLayout>
 </ScrollView>
