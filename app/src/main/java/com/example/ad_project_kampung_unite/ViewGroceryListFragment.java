@@ -181,10 +181,13 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
 //                    Log.d("Success", String.valueOf(groceryItemList.get(0).getProduct().getProductName())); //for testing
 
                     buildGroceryItemRV();
-                    if (groceryList.getGroupPlanGL().getGroupPlanStatus() == GroupPlanStatus.SHOPPINGCOMPLETED) {
-                        // view pending payment parts
-                        Map<String, Double> totalPayment = calculateTotalPayment();
-                        buildPaymentComponents(totalPayment);
+
+                    if(groceryList.getGroupPlanGL() != null) {
+                        if (groceryList.getGroupPlanGL().getGroupPlanStatus() == GroupPlanStatus.SHOPPINGCOMPLETED) {
+                            // view pending payment parts
+                            Map<String, Double> totalPayment = calculateTotalPayment();
+                            buildPaymentComponents(totalPayment);
+                        }
                     }
                 } else {
                     Log.e("getGroceryItemByGroceryListId Error", response.errorBody().toString());

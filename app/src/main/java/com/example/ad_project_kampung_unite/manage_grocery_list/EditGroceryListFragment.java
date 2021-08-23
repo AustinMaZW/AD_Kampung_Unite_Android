@@ -45,6 +45,7 @@ public class EditGroceryListFragment extends Fragment {
     private List<GroceryItem> groceryItems;
     private View layoutRoot;
     private Button findMatch;
+    private Button startGroup;
     private Context context_;
 
     public EditGroceryListFragment() {
@@ -130,11 +131,36 @@ public class EditGroceryListFragment extends Fragment {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // send grocery list to grocery list fragment
+                Bundle result = new Bundle();
+                result.putSerializable("editToSearchKey", groceryList);
+
                 // switch to search fragment
                 FragmentManager fragmentManager = getParentFragmentManager();
                 SearchFragment searchFragment = new SearchFragment();
+                searchFragment.setArguments(result);
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragment_container,searchFragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
+        startGroup = layoutRoot.findViewById(R.id.buyerButton);
+        startGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // send grocery list to grocery list fragment
+                Bundle result = new Bundle();
+                result.putSerializable("editToBuyerDetailKey", groceryList);
+
+                // switch to buyer details fragment
+                FragmentManager fragmentManager = getParentFragmentManager();
+                BuyerFragment buyerFragment = new BuyerFragment();
+                buyerFragment.setArguments(result);
+                buyerFragment.setArguments(result);
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container,buyerFragment)
                         .addToBackStack(null)
                         .commit();
             }
