@@ -18,4 +18,7 @@ public interface GroceryItemService {
 
     @GET("groceries/hitcher/{groupId}")
     Call<List<GroceryItem>> getHitcherGroceryItemsByGroupId(@Path("groupId") int groupId);
+
+    @GET("groceries/groupplan/hitcheritems/{hitchRequestIds}")
+    Call<List<List<GroceryItem>>> findGroceryItemsByHitchRequests(@Path("hitchRequestIds") List<Integer> hitchRequestIds);
 }

@@ -30,5 +30,4 @@ public interface GroceryListService {
     @GET("groceries/{groceryListId}")
     Call<List<GroceryItem>> getGroceryItemByGroceryListId(@Path("groceryListId") int id);
 
-
 }
