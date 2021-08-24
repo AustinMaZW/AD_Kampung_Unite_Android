@@ -182,8 +182,11 @@ public class GroupDetailsFragment extends Fragment {
             public void onClick(View v) {
 
                 //navigate to CombinedList Fragment
+                Bundle bundle = new Bundle();
+                bundle.putInt("gpId", groupId);
                 FragmentManager fragmentManager = getParentFragmentManager();
                 CombinedListFragment combinedListFragment = new CombinedListFragment();
+                combinedListFragment.setArguments(bundle);
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragment_container,combinedListFragment)
                         .addToBackStack(null)
@@ -279,10 +282,10 @@ public class GroupDetailsFragment extends Fragment {
 
                     getGroupPlanFromServer();
                     //inflate recycler view for all hitch requests and grocery items
-                    if(groupStatus=="Available")
+/*                    if(groupStatus=="Available")
                         initiateExpanderForActiveList();
                     else
-                        initiateExpanderForArchivedList();
+                        initiateExpanderForArchivedList();*/    //move to inside of getGroupPlanFromServer() method
 
                 } else {
                     Log.e("Error", response.errorBody().toString());
@@ -311,7 +314,10 @@ public class GroupDetailsFragment extends Fragment {
                     groupPlan = response.body();
 
                     //inflate recycler view for all hitch requests and grocery items
-                    initiateExpander();
+                    if(groupStatus=="Available")
+                        initiateExpanderForActiveList();
+                    else
+                        initiateExpanderForArchivedList(); //invisible
                 } else {
                     Log.e("getGroupPlanById Error", response.errorBody().toString());
                 }
@@ -398,7 +404,7 @@ public class GroupDetailsFragment extends Fragment {
 
         ArchivedGroupExpandableRecyclerViewAdapter expandableCategoryRecyclerViewAdapter =
                 new ArchivedGroupExpandableRecyclerViewAdapter(layoutRoot.getContext(), hitchRequestList,
-                        childListHolder);
+                        childListHolder, groupPlan.getGroupPlanStatus());
 
         rvHitchRequests.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext()));
         rvHitchRequests.setAdapter(expandableCategoryRecyclerViewAdapter);
