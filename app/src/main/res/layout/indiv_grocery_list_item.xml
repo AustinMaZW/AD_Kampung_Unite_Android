@@ -31,6 +31,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:paddingLeft="5dp"
+            android:paddingRight="20dp"
             android:layout_marginTop="5dp"
             android:text="item name here"
             android:textColor="@color/black"
@@ -39,7 +40,7 @@
             app:layout_constraintRight_toLeftOf="@id/item_amount"
             app:layout_constraintTop_toTopOf="parent"
             android:inputType="textMultiLine"
-            android:maxLines="2"
+            android:maxLines="3"
             android:scrollHorizontally="false"
 
             />
