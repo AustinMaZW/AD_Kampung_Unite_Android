@@ -61,10 +61,24 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (loginBtn != null) {
-//                    String username = editText_username.getText().toString();
-//                    String pwd = editText_password.getText().toString();
-//                    UserDetail user = new UserDetail(username, pwd);
-//                    loginRequest(user);
+                    String username = editText_username.getText().toString();
+                    String pwd = editText_password.getText().toString();
+                    UserDetail user = new UserDetail(username, pwd);
+                    if (!user.getUsername().matches("") | !user.getPassword().matches("")){
+                        loginRequest(user);
+                    }else
+                        Toast.makeText(LoginActivity.this, "Please enter Username / Password", Toast.LENGTH_SHORT).show();
+
+                    //use this for easy no login required
+//                    Intent main = new Intent(LoginActivity.this, MainActivity.class);
+//                    startActivity(main);
+
+                    //login without password - temp addition to delete
+//                    Intent main = new Intent(LoginActivity.this, MainActivity.class);
+//                    SharedPreferences.Editor editor = sharedPreferences.edit();
+//                    editor.putString(KEY_USERID, "3");
+//                    startActivity(main);
+
 //                    //Start use of path variable to login
 //                    String loginUrl = "https://localhost:8080/user/login"+username+"&&"+pwd;
 //                    StringRequest loginRequest = new StringRequest(loginUrl, new Response.Listener<String>() {
@@ -96,12 +110,9 @@ public class LoginActivity extends AppCompatActivity {
 //                    queue.add(loginRequest);
 //                    //End use of pathvariable to login
 
-
 //                    String authenticateUrl = "https://localhost:8080/user/authenticate";
 
-//                    use this for easy no login required
-                    Intent main = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(main);
+
                 }
             }
         });
@@ -122,6 +133,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<UserDetail> call, Response<UserDetail> response) {
                 if (response.isSuccessful()){
+                    System.out.println(response.body());
                     if(response.body().getAuthentication() != null){
                         auth = response.body().getAuthentication();
                     }
@@ -149,11 +161,7 @@ public class LoginActivity extends AppCompatActivity {
                 else{
                     Toast.makeText(LoginActivity.this, "Enter Valid Username / Password", Toast.LENGTH_SHORT).show();
 
-                    //login without password - temp addition to delete
-                    Intent main = new Intent(LoginActivity.this, MainActivity.class);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString(KEY_USERID, "3");
-                    startActivity(main);
+
                 }
             }
 
