@@ -31,7 +31,8 @@ public interface GroceryItemService {
     @GET("groceries/save")
     Call<Integer> addGroceryItemToGroceryList (@Query("productId") int productId, @Query("quantity") int quantity, @Query("groceryListId")  int groceryListId);
 
-
+    @GET("groceries/update")
+    Call<Integer> updateGroceryItemInGroceryList (@Query("groceryListId") int groceryItemId, @Query("quantity") int quantity);
 
     @GET("groceries/groupplan/hitcheritems")
     Call<List<List<GroceryItem>>> findGroceryItemsByHitchRequests(@Query("array") List<Integer> hitchRequestIds);

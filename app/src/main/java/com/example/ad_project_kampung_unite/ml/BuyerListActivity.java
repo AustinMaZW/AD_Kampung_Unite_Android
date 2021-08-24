@@ -76,7 +76,7 @@ public class BuyerListActivity extends AppCompatActivity implements View.OnClick
                 public void onResponse(Call<Integer> call, Response<Integer> response) {
                     int _id = response.body();
                     System.out.println(_id);
-                    back.putExtra("hitcherDetail",false);
+                    back.putExtra("hitcherDetail",true);
                     startActivity(back);
                 }
 
