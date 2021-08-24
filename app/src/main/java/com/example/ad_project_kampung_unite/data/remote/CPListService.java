@@ -19,4 +19,7 @@ public interface CPListService {
 
     @POST("cplist/save/all")
     Call<Boolean> saveAll(@Body List<CombinedPurchaseList> list);
+
+    @POST("cplist/update")
+    Call<List<CombinedPurchaseList>> update(@Body List<CombinedPurchaseList> combinedPurchaseList);
 }
