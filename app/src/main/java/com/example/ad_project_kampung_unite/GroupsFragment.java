@@ -69,7 +69,7 @@ public class GroupsFragment extends Fragment {
         return layoutRoot;
     }
     private void getGroupPlansFromServer(){
-        Call<List<GroupPlan>> call = gpService.findGroupPlansByUserDetailId(3); //hard coded userid here, replace later
+        Call<List<GroupPlan>> call = gpService.findGroupPlansByUserDetailId(1); //hard coded userid here, replace later
 
         call.enqueue(new Callback<List<GroupPlan>>() {
             @Override
