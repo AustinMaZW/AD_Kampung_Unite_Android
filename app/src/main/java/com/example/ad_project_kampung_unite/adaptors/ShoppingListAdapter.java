@@ -43,7 +43,7 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
 
         holder.itemName.setText(item.getProductName());
         holder.itemQty.setText(String.valueOf(item.getQuantity()));
-        System.out.println(item);
+//        System.out.println(item);
         if (item.isPurchasedStatus()){
             holder.checkBox.setChecked(item.isPurchasedStatus());
         }

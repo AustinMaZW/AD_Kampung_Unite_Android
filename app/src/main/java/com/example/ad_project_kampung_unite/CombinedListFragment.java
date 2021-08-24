@@ -124,7 +124,7 @@ public class CombinedListFragment extends Fragment {
                     public void onResponse(Call<List<CombinedPurchaseList>> call, retrofit2.Response<List<CombinedPurchaseList>> response) {
                         if (response.isSuccessful()){
                             Toast.makeText(getActivity().getApplicationContext(), "List updated", Toast.LENGTH_SHORT).show();
-                            System.out.println(response.body());
+//                            System.out.println(response.body());
                             //redirect to enter unit price
 //                            FragmentManager fragmentManager = getParentFragmentManager();
 //                            UpdatePriceFragment updatePriceFragment = new UpdatePriceFragment();
