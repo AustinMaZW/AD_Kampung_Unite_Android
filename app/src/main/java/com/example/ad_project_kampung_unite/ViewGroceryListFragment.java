@@ -133,6 +133,7 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
             FragmentManager fm = getParentFragmentManager();
             Log.e("Hitcher Detail","yes_5");
             HitcherDetailFragment hitcerDetail = new HitcherDetailFragment();
+//            hitcerDetail.setgList(groceryList);
             FragmentTransaction trans = fm.beginTransaction();
             trans.replace(R.id.fragment_container,hitcerDetail);
             trans.addToBackStack(null);

@@ -33,8 +33,6 @@ public class RetrofitClient {
     private static final Gson gson = new GsonBuilder()
             .registerTypeAdapter(LocalDate.class, new LocalDateDeserializer())
             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
-            .registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
-            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer())
             .create();
 
     private static Retrofit.Builder builder = new Retrofit.Builder()

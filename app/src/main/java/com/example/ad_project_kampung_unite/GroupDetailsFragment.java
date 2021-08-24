@@ -1,5 +1,7 @@
 package com.example.ad_project_kampung_unite;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.os.Bundle;
 
@@ -16,19 +18,31 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
-import com.example.ad_project_kampung_unite.adaptors.ExpandableRecyclerViewAdapter;
+import com.example.ad_project_kampung_unite.adaptors.ActiveGroupExpandableRecyclerViewAdapter;
+import com.example.ad_project_kampung_unite.adaptors.ArchivedGroupExpandableRecyclerViewAdapter;
 import com.example.ad_project_kampung_unite.adaptors.GroceryListItemAdaptor;
 import com.example.ad_project_kampung_unite.data.remote.GroceryItemService;
 import com.example.ad_project_kampung_unite.data.remote.GroupPlanService;
 import com.example.ad_project_kampung_unite.data.remote.HitchRequestService;
 import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
+import com.example.ad_project_kampung_unite.entities.CombinedPurchaseList;
 import com.example.ad_project_kampung_unite.entities.GroceryItem;
 import com.example.ad_project_kampung_unite.entities.GroupPlan;
+import com.example.ad_project_kampung_unite.entities.GroupPlan;
+import com.example.ad_project_kampung_unite.entities.enums.GroupPlanStatus;
+import com.example.ad_project_kampung_unite.entities.enums.RequestStatus;
 import com.google.android.material.button.MaterialButton;
 import com.example.ad_project_kampung_unite.entities.HitchRequest;
 import com.google.android.material.snackbar.Snackbar;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.security.acl.Group;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +55,7 @@ import retrofit2.Response;
 public class GroupDetailsFragment extends Fragment {
 
     private int groupId;
+    private String groupStatus;
     private List<GroceryItem> buyerGroceryItemList = new ArrayList<>();
     private List<GroceryItem> hitcherGroceryItemList = new ArrayList<>();
 
@@ -50,15 +65,14 @@ public class GroupDetailsFragment extends Fragment {
     List<Integer> hitchids = new ArrayList<>();
     private GroupPlan groupPlan;
 
-      private RecyclerView rvBuyerGrocery,rvHitchRequests;
-      private GroceryItemService groceryItemService;
-      private HitchRequestService hitchRequestService;
-      private GroupPlanService groupPlanService;
-//    private GroupDetailsAdapter myAdapter;
+    private RecyclerView rvBuyerGrocery,rvHitchRequests;
+    private ImageButton editBtn;
+    private MaterialButton closeRequestBtn, combinedListBtn;
 
-    MaterialButton combinedListButton;
-//
-//    RecyclerView expanderRecyclerView;
+    private GroupPlanService groupPlanService;
+    private GroceryItemService groceryItemService;
+    private HitchRequestService hitchRequestService;
+
     View layoutRoot;
 
     public GroupDetailsFragment() {
@@ -74,10 +88,96 @@ public class GroupDetailsFragment extends Fragment {
 
         Bundle bundle = getArguments();
         groupId = bundle.getInt("gpId");
+        groupStatus = bundle.getString("gpStatus");
+
+        //if group status is not "available", buyer cannot edit their own grocery list
+        editBtn = layoutRoot.findViewById(R.id.groupDetails_buyerEditBtn);
+        if(groupStatus!="Available"){
+            editBtn.setVisibility(View.GONE);
+        }
+        //buyer can edit their own grocery list
+        //pending to-do: pass buyer id to 'grocery list' fragment
+        else{
+              editBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    FragmentManager fragmentManager = getParentFragmentManager();
+//                    GroceryListFragment groceryListFragment = new GroceryListFragment();
+//                    fragmentManager.beginTransaction()
+//                            .replace(R.id.fragment_container,groceryListFragment)
+//                            .addToBackStack(null)
+//                            .commit();
+                }
+            });
+        }
+
+        groceryItemService = RetrofitClient.createService(GroceryItemService.class);
+        getBuyerGroceryItemsFromServer();
+
+        hitchRequestService = RetrofitClient.createService(HitchRequestService.class);
+        getHitchRequestsFromServer();
+
+        groupPlanService = RetrofitClient.createService(GroupPlanService.class);
+
+        closeRequestBtn = layoutRoot.findViewById(R.id.closeRequestButton);
+        if(groupStatus!="Available"){
+            closeRequestBtn.setVisibility(View.INVISIBLE);
+        }
+        else{
+            closeRequestBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // Create dialog to confirm close requests
+                    AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+                    alert.setMessage("Stop accepting hitch request for this group plan?");
+
+                    alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            //Create second dialog to confirm rejecting all pending purchase requests, before closing the group plan request
+                            alert.setMessage("Reject all pending requests and close requests?");
+                            alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    //change Group plan status to "closed" and update pending requests status to "rejected"
+                                    //change all hitch request with status "Pending approval" to "Rejected"
+                                    hitchRequestList.stream().forEach(x->{
+                                        if(x.getRequestStatus().equals(RequestStatus.PENDING)){
+                                            x.setRequestStatus(RequestStatus.REJECTED);
+                                            updateHitchRequestStatusToServer(x);
+                                        }
+                                    });
+                                    Toast.makeText(getContext(), "Stopped accepting new hitch requests", Toast.LENGTH_LONG).show();
+                                    //change group plan status to Closed
+                                    System.out.println(GroupPlanStatus.CLOSED);
+                                    updateGroupPlanStatusToServer(groupId,GroupPlanStatus.CLOSED);
+
+                                    FragmentManager fm = ((AppCompatActivity)layoutRoot.getContext()).getSupportFragmentManager();
+                                    Fragment currentFrag = fm.findFragmentByTag("GROUP_DETAILS_FRAG");
+                                    fm.beginTransaction().detach(currentFrag).commitNow();
+                                    fm.beginTransaction().attach(currentFrag).commitNow();
+
+                                    closeRequestBtn.setVisibility(View.INVISIBLE);
+                                }
+                            });
+                            alert.show();
+                        }
+                    });
+
+                    alert.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                        }
+                    });
+
+                    alert.show();
+                }
+            });
+        }
 
         //Button to link to Combined List Fragment
-        combinedListButton = layoutRoot.findViewById(R.id.combinedListButton);
-        combinedListButton.setOnClickListener(new View.OnClickListener() {
+        combinedListBtn = layoutRoot.findViewById(R.id.combinedListButton);
+        combinedListBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -91,28 +191,6 @@ public class GroupDetailsFragment extends Fragment {
             }
         });
 
-
-//        //buyer can edit their own grocery list
-        //pending to-do: pass buyer id to 'grocery list' fragment
-//        FloatingActionButton editButton = layoutRoot.findViewById(R.id.groupDetails_buyerEditBtn);
-//        editButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                FragmentManager fragmentManager = getParentFragmentManager();
-//                GroceryListFragment groceryListFragment = new GroceryListFragment();
-//                fragmentManager.beginTransaction()
-//                        .replace(R.id.fragment_container,groceryListFragment)
-//                        .addToBackStack(null)
-//                        .commit();
-//            }
-//        });
-
-
-        groceryItemService = RetrofitClient.createService(GroceryItemService.class);
-        getBuyerGroceryItemsFromServer();
-
-        hitchRequestService = RetrofitClient.createService(HitchRequestService.class);
-        getHitchRequestsFromServer();
 
         return layoutRoot;
     }
@@ -201,7 +279,10 @@ public class GroupDetailsFragment extends Fragment {
 
                     getGroupPlanFromServer();
                     //inflate recycler view for all hitch requests and grocery items
-//                    initiateExpander(); // move to inside of getGroupPlanFromServer() method
+                    if(groupStatus=="Available")
+                        initiateExpanderForActiveList();
+                    else
+                        initiateExpanderForArchivedList();
 
                 } else {
                     Log.e("Error", response.errorBody().toString());
@@ -246,12 +327,62 @@ public class GroupDetailsFragment extends Fragment {
         });
     }
 
-    private void initiateExpander() {
+    private void updateHitchRequestStatusToServer(HitchRequest hitchRequest){
+        Call<HitchRequest> call = hitchRequestService.updateHitchRequest(hitchRequest);
+
+        call.enqueue(new Callback<HitchRequest>() {
+            @Override
+            public void onResponse(Call<HitchRequest> call, Response<HitchRequest> response) {
+
+                if (response.isSuccessful()) {
+                    Log.d("Success, hitchrequests updated", String.valueOf(hitchRequest)); //for testing
+
+                } else {
+                    Log.e("Error", response.errorBody().toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<HitchRequest> call, Throwable t) {
+                // like no internet connection / the website doesn't exist
+                call.cancel();
+                Log.w("Failure", "Failure!");
+                t.printStackTrace();
+            }
+        });
+    }
+
+    private void updateGroupPlanStatusToServer(int id, GroupPlanStatus myUpdatedGPStatus){
+        Call<Void> call = groupPlanService.updateGroupPlanStatus(id, myUpdatedGPStatus);
+
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+
+                if (response.isSuccessful()) {
+                    Log.d("Success, hitchrequests updated", response.toString()); //for testing
+
+                } else {
+                    Log.e("Error", response.errorBody().toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                // like no internet connection / the website doesn't exist
+                call.cancel();
+                Log.w("Failure", "Failure!");
+                t.printStackTrace();
+            }
+        });
+    }
+
+    private void initiateExpanderForActiveList() {
 
         rvHitchRequests = layoutRoot.findViewById(R.id.groupDetails_expandableRecyclerView);
 
-        ExpandableRecyclerViewAdapter expandableCategoryRecyclerViewAdapter =
-                new ExpandableRecyclerViewAdapter(layoutRoot.getContext(), hitchRequestList,
+        ActiveGroupExpandableRecyclerViewAdapter expandableCategoryRecyclerViewAdapter =
+                new ActiveGroupExpandableRecyclerViewAdapter(layoutRoot.getContext(), hitchRequestList,
                         childListHolder, groupPlan.getGroupPlanStatus());
 
         rvHitchRequests.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext()));
@@ -261,6 +392,20 @@ public class GroupDetailsFragment extends Fragment {
         itemTouchHelper.attachToRecyclerView(rvHitchRequests);
     }
 
+    private void initiateExpanderForArchivedList() {
+
+        rvHitchRequests = layoutRoot.findViewById(R.id.groupDetails_expandableRecyclerView);
+
+        ArchivedGroupExpandableRecyclerViewAdapter expandableCategoryRecyclerViewAdapter =
+                new ArchivedGroupExpandableRecyclerViewAdapter(layoutRoot.getContext(), hitchRequestList,
+                        childListHolder);
+
+        rvHitchRequests.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext()));
+        rvHitchRequests.setAdapter(expandableCategoryRecyclerViewAdapter);
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(rvHitchRequests);
+    }
 
 
      //attributes for deleting or archiving a list via swipe action
