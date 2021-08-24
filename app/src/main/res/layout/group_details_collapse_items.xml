@@ -10,7 +10,9 @@
         android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="3dp">
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginBottom="1dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -21,7 +23,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="20dp">
+                android:paddingTop="20dp"
+                android:paddingLeft="10dp"
+                android:paddingBottom="5dp">
+
                 <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -35,20 +40,20 @@
                         android:layout_height="12dp"
                         android:text="testing"
                         android:textSize="10dp"
-                        app:chipMinTouchTargetSize="0dp"
                         app:chipEndPadding="1dp"
+                        app:chipMinTouchTargetSize="0dp"
                         app:chipStartPadding="1dp"
-                        app:ensureMinTouchTargetSize="false"
-                        />
+                        app:ensureMinTouchTargetSize="false" />
 
                     <TextView
                         android:id="@+id/groceryDetailListTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_below="@id/group_details_status"
                         android:text="Fruits &amp; Vegetables"
                         android:textSize="16sp"
-                        android:layout_below="@id/group_details_status"/>
-                    <!--                        android:layout_below="@id/group_details_hitch_request_status"-->
+                        android:textColor="@color/black"
+                        android:textStyle="bold"/>
 
                     <TextView
                         android:id="@+id/groceryDetailPickupTime"
@@ -56,7 +61,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/groceryDetailListTitle"
                         android:text="Pick-up time &amp; 9.30am"
-                        android:textSize="12sp" />
+                        android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/groceryDetailItemQuantitySum"
@@ -64,7 +69,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/groceryDetailPickupTime"
                         android:text="Items: &amp; 6"
-                        android:textSize="12sp" />
+                        android:textSize="16sp" />
 
                     <ImageButton
                         android:id="@+id/categoryExpandBtn"

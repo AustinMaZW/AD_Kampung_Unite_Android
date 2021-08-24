@@ -53,19 +53,6 @@ public class GroupsFragment extends Fragment {
         gpService = RetrofitClient.createService(GroupPlanService.class);
         getGroupPlansFromServer();
 
-        FloatingActionButton addButton = layoutRoot.findViewById(R.id.temp);
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                        FragmentManager fragmentManager = getParentFragmentManager();
-                        GroupDetailsFragment groupDetailsFragment = new GroupDetailsFragment();
-                        fragmentManager.beginTransaction()
-                                .replace(R.id.fragment_container,groupDetailsFragment)
-                                .addToBackStack(null)
-                                .commit();
-            }
-        });
-
         return layoutRoot;
     }
     private void getGroupPlansFromServer(){

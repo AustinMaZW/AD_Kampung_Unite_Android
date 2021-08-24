@@ -21,7 +21,6 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="5dp"
             android:text="No"
-            android:textColor="@color/black"
             android:textSize="14dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
@@ -33,7 +32,6 @@
             android:paddingLeft="5dp"
             android:layout_marginTop="5dp"
             android:text="item name here"
-            android:textColor="@color/black"
             android:textSize="14dp"
             app:layout_constraintLeft_toRightOf="@id/item_quantity"
             app:layout_constraintRight_toLeftOf="@id/item_amount"
@@ -51,7 +49,6 @@
             android:paddingRight="15dp"
             android:layout_marginTop="5dp"
             android:text="item price here"
-            android:textColor="@color/black"
             android:textSize="14dp"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
