@@ -20,6 +20,7 @@ import com.example.ad_project_kampung_unite.R;
 import com.example.ad_project_kampung_unite.data.remote.GroupPlanService;
 import com.example.ad_project_kampung_unite.data.remote.HitcherDetailService;
 import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
+import com.example.ad_project_kampung_unite.entities.GroceryList;
 import com.example.ad_project_kampung_unite.entities.HitcherDetail;
 
 import java.time.LocalDate;
@@ -49,6 +50,12 @@ public class HitcherDetailFragment extends Fragment{
     private int id = -1;
     private List<Integer> planIds;
     private Intent intent_buyerList;
+    private GroceryList gList;
+
+    public void setgList(GroceryList gList) {
+        this.gList = gList;
+    }
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
