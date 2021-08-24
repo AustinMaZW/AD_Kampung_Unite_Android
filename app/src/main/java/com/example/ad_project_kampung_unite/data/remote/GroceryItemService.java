@@ -1,6 +1,7 @@
 package com.example.ad_project_kampung_unite.data.remote;
 
 import com.example.ad_project_kampung_unite.entities.GroceryItem;
+import com.example.ad_project_kampung_unite.entities.HitchRequest;
 
 import java.util.List;
 
@@ -31,4 +32,10 @@ public interface GroceryItemService {
     Call<Integer> addGroceryItemToGroceryList (@Query("productId") int productId, @Query("quantity") int quantity, @Query("groceryListId")  int groceryListId);
 
 
+
+    @GET("groceries/groupplan/hitcheritems")
+    Call<List<List<GroceryItem>>> findGroceryItemsByHitchRequests(@Query("array") List<Integer> hitchRequestIds);
+
+    @GET("groceries/groupplan/hitcheritems/testing/{hitchRequestId}")
+    Call<List<GroceryItem>> findGroceryItemsByHitchRequest(@Path("hitchRequestId") int hitchRequestId);
 }

@@ -20,8 +20,8 @@ public interface HitchRequestService {
     @GET("hitchrequest/accepted/{hitcherDetailId}")
     Call<HitchRequest> getAcceptedHitchRequestByHitcherDetailId(@Path("hitcherDetailId") int id);
 
-    @GET("hitchrequest/groupplan/{groupplanId}")
-    Call<List<HitchRequest>> getHitchRequestsByGroupId(@Path("groupplanId") int id);
+    @GET("hitchrequest/groupplan/{groupPlanId}")
+    Call<List<HitchRequest>> getHitchRequestsByGroupPlanId(@Path("groupPlanId") int id);
 
     @PUT("hitchrequest/update")
     Call<HitchRequest> updateHitchRequest(@Body HitchRequest hitchRequest);
