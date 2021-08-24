@@ -45,15 +45,6 @@
         android:background="@color/Kampong_Gray"
         android:padding="20dp" />
 
-<!--    delete below btn later, only for test (austin)-->
-    <Button
-        android:id="@+id/accept_hitchrq"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Accept HitchRq TEST BTN"
-        android:layout_gravity="center"
-        ></Button>
-
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
