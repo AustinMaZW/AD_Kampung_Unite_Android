@@ -54,24 +54,17 @@ public class RegisterActivity extends AppCompatActivity {
         registerCreateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UserDetail userDetail = new UserDetail();
                 String pwd = registerPassword.getText().toString();
                 String pwd2 = registerPassword2.getText().toString();
-                UserDetail userDetail = new UserDetail();
-                if (pwd.matches(pwd2)){
-                    userDetail.setUsername(registerUsername.getText().toString());
-                    userDetail.setPassword(registerPassword.getText().toString());
-                    userDetail.setFirstName(registerFirstName.getText().toString());
-                    userDetail.setLastName(registerLastName.getText().toString());
-                    userDetail.setPhoneNumber(registerPhoneNumber.getText().toString());
-                    userDetail.setHomeAddress(registerAddress.getText().toString());
-                }
-                else{
-                    Toast.makeText(RegisterActivity.this, "Please retype correct password", Toast.LENGTH_SHORT).show();
-                }
+                userDetail.setUsername(registerUsername.getText().toString());
+                userDetail.setPassword(registerPassword.getText().toString());
+                userDetail.setFirstName(registerFirstName.getText().toString());
+                userDetail.setLastName(registerLastName.getText().toString());
+                userDetail.setPhoneNumber(registerPhoneNumber.getText().toString());
+                userDetail.setHomeAddress(registerAddress.getText().toString());
 
-                boolean isComplete = checkFormCompletion(userDetail);
-
-                if(isComplete){
+                if(checkFormCompletion(userDetail)){
                     String url = getResources().getString(R.string.user_base_url);
                     httpClient.addInterceptor(logging);
                     Retrofit.Builder builder = new Retrofit.Builder()
@@ -101,45 +94,48 @@ public class RegisterActivity extends AppCompatActivity {
                             Toast.makeText(RegisterActivity.this, "Something went wrong :(", Toast.LENGTH_SHORT).show();
                         }
                     });
-
-
                 }
             }
         });
 
     }
 
+s    private boolean pwdConfirm() {
+        boolean confirmed = false;
+        String pwd = registerPassword.getText().toString();
+        String pwd2 = registerPassword2.getText().toString();
+        if(pwd.matches(pwd2)){
+            if (!pwd.matches("") && !pwd2.matches("")) {
+                confirmed = true;
+            }
+        }
+        return confirmed;
+    }
+
     private boolean checkFormCompletion(UserDetail userDetail) {
-        boolean isComplete = true;
-        if(userDetail.getUsername()!="" | userDetail.getUsername()!= null){}
-        else{
+        boolean isComplete;
+        boolean[] completion = new boolean[]{
+                userDetail.getUsername().matches(""),
+                !pwdConfirm(),
+                userDetail.getFirstName().matches(""),
+                userDetail.getLastName().matches(""),
+                userDetail.getPhoneNumber().matches(""),
+                userDetail.getHomeAddress().matches("")
+        };
+        String toastString = "Please enter: \n";
+        int toastStringLength = toastString.length();
+        String[] toastMessages = new String[]{"username", "valid password", "first name", "last name", "phone number", "address"};
+
+        for (int i = 0; i < completion.length; i++) {
+            if (completion[i]){
+                toastString += toastMessages[i]+"\n";
+            }
+        }
+        if (toastString.length() > toastStringLength){
+            Toast.makeText(RegisterActivity.this, toastString, Toast.LENGTH_SHORT).show();
             isComplete = false;
-            Toast.makeText(RegisterActivity.this, "Please enter username", Toast.LENGTH_SHORT).show();
-        }
-        if(userDetail.getPassword()!="" | userDetail.getPassword()!=null){}
-        else{
-            isComplete = false;
-            Toast.makeText(RegisterActivity.this, "Please enter valid password", Toast.LENGTH_SHORT).show();
-        }
-        if (userDetail.getFirstName() != "" | userDetail.getFirstName() != null){}
-        else{
-            isComplete= false;
-            Toast.makeText(RegisterActivity.this, "Please enter first name", Toast.LENGTH_SHORT).show();
-        }
-        if(userDetail.getLastName()!="" | userDetail.getLastName()!= null){}
-        else{
-            isComplete=false;
-            Toast.makeText(RegisterActivity.this, "Please enter last name", Toast.LENGTH_SHORT).show();
-        }
-        if(userDetail.getPhoneNumber()!="" | userDetail.getPhoneNumber()!= null){}
-        else{
-            isComplete=false;
-            Toast.makeText(RegisterActivity.this, "Please enter phone number", Toast.LENGTH_SHORT).show();
-        }
-        if(userDetail.getHomeAddress()!= "" | userDetail.getHomeAddress()!= null){}
-        else{
-            Toast.makeText(RegisterActivity.this, "Please enter address", Toast.LENGTH_SHORT).show();
-        }
+        }else
+            isComplete = true;
         return isComplete;
     }
 
