@@ -100,7 +100,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-s    private boolean pwdConfirm() {
+    private boolean pwdConfirm() {
         boolean confirmed = false;
         String pwd = registerPassword.getText().toString();
         String pwd2 = registerPassword2.getText().toString();
