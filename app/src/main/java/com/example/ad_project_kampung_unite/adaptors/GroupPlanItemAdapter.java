@@ -73,7 +73,7 @@ public class GroupPlanItemAdapter extends RecyclerView.Adapter<MyGroupPlansHolde
                 groupDetailsFragment.setArguments(result);       //putting bundle inside frag
                 activity.getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.fragment_container, groupDetailsFragment)
+                        .replace(R.id.fragment_container, groupDetailsFragment, "group_details_frag")
                         .addToBackStack(null)
                         .commit();
             }

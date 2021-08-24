@@ -124,7 +124,7 @@ public class GroupDetailsFragment extends Fragment {
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.dismiss();
-                        approveHitchRqToServer();
+                        approveHitchRqToServer(290);    //hard hitchrqid here for testing
 
                         try {
                             Thread.sleep(500);      //need to wait or database hasn't updated...
@@ -230,9 +230,9 @@ public class GroupDetailsFragment extends Fragment {
 
 
 
-    private void approveHitchRqToServer() {
+    private void approveHitchRqToServer(int hitchRqId) {
         HitchRequestService hitchRequestService = RetrofitClient.createService(HitchRequestService.class);
-        Call<Boolean> call = hitchRequestService.approveHitchRq(290); //hard coded hitchRqId here, replace later
+        Call<Boolean> call = hitchRequestService.approveHitchRq(hitchRqId); //hard coded hitchRqId here, replace later
 
         call.enqueue(new Callback<Boolean>() {
             @Override
@@ -364,23 +364,33 @@ public class GroupDetailsFragment extends Fragment {
                             }).show();
                     break;
                 case ItemTouchHelper.RIGHT:
+                    int hitchRqId = hitchRequestList.get(position).getId();     //get id of hitchRq
+                    approveHitchRqToServer(hitchRqId);  //send http rq to server to approve
+
                     archiveList = hitchRequestList.get(position);
                     archivedListName = archiveList.toString();
                     archivedLists.add(archiveList);
 
                     hitchRequestList.remove(position);
+
+                    FragmentManager fm = ((AppCompatActivity)layoutRoot.getContext()).getSupportFragmentManager();
+                    Fragment currentFrag = fm.findFragmentByTag("group_details_frag");
+                    fm.beginTransaction().detach(currentFrag).commitNow();
+                    fm.beginTransaction().attach(currentFrag).commitNow();
+
 //                    ExpandableRecyclerViewAdapter.notifyItemRemoved(position);
 
-                    Snackbar.make(rvHitchRequests, archivedListName, Snackbar.LENGTH_LONG)
-                            .setAction("Undo", new View.OnClickListener(){
-
-                                @Override
-                                public void onClick(View v) {
-                                    archivedLists.remove(archivedLists.lastIndexOf(archiveList));
-                                    hitchRequestList.add(position, archiveList);
-//                                    ExpandableRecyclerViewAdapter.notifyItemInserted(position);
-                                }
-                            }).show();
+                    //had to comment out below or there was an error, not sure what this should do (austin)
+//                    Snackbar.make(rvHitchRequests, archivedListName, Snackbar.LENGTH_LONG)
+//                            .setAction("Undo", new View.OnClickListener(){
+//
+//                                @Override
+//                                public void onClick(View v) {
+//                                    archivedLists.remove(archivedLists.lastIndexOf(archiveList));
+//                                    hitchRequestList.add(position, archiveList);
+////                                    ExpandableRecyclerViewAdapter.notifyItemInserted(position);
+//                                }
+//                            }).show();
                     break;
             }
         }
