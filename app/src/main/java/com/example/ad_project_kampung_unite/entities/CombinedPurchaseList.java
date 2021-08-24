@@ -9,7 +9,7 @@ public class CombinedPurchaseList {
 	private GroupPlan groupPlan;
 	private String productName;
 	private Product product;
-	private boolean isPurchased;
+	private boolean purchasedStatus;
 
 	public CombinedPurchaseList() {
 	}
@@ -32,11 +32,18 @@ public class CombinedPurchaseList {
 		this.product = product;
 	}
 
-	public CombinedPurchaseList(int id, int productId, String productName, int quantity ){
+	public CombinedPurchaseList(int id, int productId, String productName, int quantity, boolean purchasedStatus ){
 		this.id = id;
 		this.productId = productId;
 		this.productName = productName;
 		this.quantity = quantity;
+		this.purchasedStatus = purchasedStatus;
+	}
+
+	public CombinedPurchaseList(int id, int quantity, boolean purchasedStatus) {
+		this.id = id;
+		this.quantity = quantity;
+		this.purchasedStatus = purchasedStatus;
 	}
 
 	public String getProductName() {
@@ -99,11 +106,26 @@ public class CombinedPurchaseList {
 
 	public void setProduct(Product product) { this.product = product; }
 
-	public boolean isPurchased() {
-		return isPurchased;
+	public boolean isPurchasedStatus() {
+		return purchasedStatus;
 	}
 
-	public void setPurchased(boolean purchased) {
-		isPurchased = purchased;
+	public void setPurchasedStatus(boolean purchasedStatus) {
+		this.purchasedStatus = purchasedStatus;
+	}
+
+	@Override
+	public String toString() {
+		return "CombinedPurchaseList{" +
+				"id=" + id +
+				", productId=" + productId +
+				", quantity=" + quantity +
+				", productSubtotal=" + productSubtotal +
+				", productUnitPrice=" + productUnitPrice +
+				", groupPlan=" + groupPlan +
+				", productName='" + productName + '\'' +
+				", product=" + product +
+				", purchasedStatus=" + purchasedStatus +
+				'}';
 	}
 }

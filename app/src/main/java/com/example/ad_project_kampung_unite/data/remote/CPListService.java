@@ -5,7 +5,9 @@ import com.example.ad_project_kampung_unite.entities.CombinedPurchaseList;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 public interface CPListService {
@@ -14,4 +16,7 @@ public interface CPListService {
 
     @GET("cplist/getlist/{groupPlanId}")
     Call<List<CombinedPurchaseList>> getCPListByGroupPlanId(@Path("groupPlanId") int id);
+
+    @POST("cplist/update")
+    Call<List<CombinedPurchaseList>> update(@Body List<CombinedPurchaseList> combinedPurchaseList);
 }
