@@ -2,10 +2,12 @@ package com.example.ad_project_kampung_unite.adaptors;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -15,28 +17,41 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ad_project_kampung_unite.R;
+import com.example.ad_project_kampung_unite.data.remote.HitchRequestService;
+import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
 import com.example.ad_project_kampung_unite.entities.GroceryItem;
+import com.example.ad_project_kampung_unite.entities.GroceryList;
+import com.example.ad_project_kampung_unite.entities.GroupPlan;
 import com.example.ad_project_kampung_unite.entities.HitchRequest;
 import com.google.android.material.chip.Chip;
+import com.example.ad_project_kampung_unite.entities.enums.GroupPlanStatus;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class ActiveGroupExpandableRecyclerViewAdapter extends RecyclerView.Adapter<ActiveGroupExpandableRecyclerViewAdapter.ViewHolder> {
 
+    private HitchRequestService hitchRequestService;
     private List<HitchRequest> hitchRequestsList;
     private List<List<GroceryItem>> groceryItemList;
+    private GroupPlanStatus groupPlanStatus;
     List<Integer> counter = new ArrayList<>();
 
     Context context;
 
     public ActiveGroupExpandableRecyclerViewAdapter(Context context,
-                                                    List<HitchRequest> hitchRequestsList,
-                                                    List<List<GroceryItem>> groceryItemList){
+                                         List<HitchRequest> hitchRequestsList,
+                                         List<List<GroceryItem>> groceryItemList,
+                                         GroupPlanStatus groupPlanStatus){
         this.context = context;
         this.hitchRequestsList = hitchRequestsList;
         this.groceryItemList = groceryItemList;
+        this.groupPlanStatus = groupPlanStatus;
 
         for (int i = 0; i < hitchRequestsList.size(); i++) {
             counter.add(0);
@@ -45,8 +60,9 @@ public class ActiveGroupExpandableRecyclerViewAdapter extends RecyclerView.Adapt
 
     //viewholder obj provides access to all views within each item row
     public class ViewHolder extends RecyclerView.ViewHolder{
-        TextView name, pickuptime, itemcount;
+        TextView name, pickuptime, itemcount, paymentstatus;
         ImageButton dropBtn;
+        Button completepaymentBtn;
         RecyclerView cardRecyclerView;
         CardView cardView;
         Chip mrequeststatus;
@@ -57,7 +73,9 @@ public class ActiveGroupExpandableRecyclerViewAdapter extends RecyclerView.Adapt
             name = itemView.findViewById(R.id.groceryDetailListTitle);
             pickuptime = itemView.findViewById(R.id.groceryDetailPickupTime);
             itemcount=itemView.findViewById(R.id.groceryDetailItemQuantitySum);
+            paymentstatus = itemView.findViewById(R.id.payment_status);
             dropBtn = itemView.findViewById(R.id.categoryExpandBtn);
+            completepaymentBtn = itemView.findViewById(R.id.complete_payment_btn);
             cardRecyclerView = itemView.findViewById(R.id.innerRecyclerView);
             cardView = itemView.findViewById(R.id.cardView);
             mrequeststatus = itemView.findViewById(R.id.group_details_status);
@@ -108,6 +126,23 @@ public class ActiveGroupExpandableRecyclerViewAdapter extends RecyclerView.Adapt
             requestStatusChip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.Kampong_Gray)));
         }
 
+        if (groupPlanStatus == GroupPlanStatus.SHOPPINGCOMPLETED) {
+            if (hitchRequest.isBuyerConfirmTransaction()) {
+                if (hitchRequest.isHitcherConfirmTransaction()) {
+                    holder.paymentstatus.setText(R.string.paid);
+                    holder.paymentstatus.setBackground(context.getResources().getDrawable(R.drawable.rounded_bg_green, null));
+                } else {
+                    holder.paymentstatus.setText(R.string.pending_payment);
+                    holder.paymentstatus.setBackground(context.getResources().getDrawable(R.drawable.rounded_bg_yellow, null));
+                }
+                holder.completepaymentBtn.setVisibility(View.GONE);
+            } else {
+                holder.paymentstatus.setVisibility(View.GONE);
+            }
+        } else {
+            holder.completepaymentBtn.setVisibility(View.GONE);
+            holder.paymentstatus.setVisibility(View.GONE);
+        }
 
         InnerRecyclerViewAdapter itemInnerRecyclerView = new InnerRecyclerViewAdapter(groceryItemList.get(position));
         holder.cardRecyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false));
@@ -127,11 +162,50 @@ public class ActiveGroupExpandableRecyclerViewAdapter extends RecyclerView.Adapt
         });
         holder.cardRecyclerView.setAdapter(itemInnerRecyclerView);
 
+        holder.completepaymentBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                hitchRequest.setBuyerConfirmTransaction(true);
+                updateConrirmTransaction(hitchRequest, holder);
+            }
+        });
     }
 
     // Returns the total count of items in the list
     @Override
     public int getItemCount() {
         return (int)hitchRequestsList.stream().count();
+    }
+
+    private void updateConrirmTransaction(HitchRequest hitchRequest, ViewHolder holder) {
+        hitchRequestService = RetrofitClient.createService(HitchRequestService.class);
+        Call<HitchRequest> call = hitchRequestService.updateHitchRequest(hitchRequest);
+        call.enqueue(new Callback<HitchRequest>() {
+            @Override
+            public void onResponse(Call<HitchRequest> call, Response<HitchRequest> response) {
+                if (response.isSuccessful()) {
+                    HitchRequest updatedHR = response.body();
+
+                    if (updatedHR.isHitcherConfirmTransaction()) {
+                        holder.paymentstatus.setText(R.string.paid);
+                        holder.paymentstatus.setBackground(context.getResources().getDrawable(R.drawable.rounded_bg_green, null));
+                    } else {
+                        holder.paymentstatus.setText(R.string.pending_payment);
+                        holder.paymentstatus.setBackground(context.getResources().getDrawable(R.drawable.rounded_bg_yellow, null));
+                    }
+                    holder.completepaymentBtn.setVisibility(View.GONE);
+                    holder.paymentstatus.setVisibility(View.VISIBLE);
+                }
+                else {
+                    Log.e("updateHitchRequest Error", response.errorBody().toString());
+                }
+            }
+            @Override
+            public void onFailure(Call<HitchRequest> call, Throwable t) {
+                call.cancel();
+                Log.w("Failure", "Failure!");
+                t.printStackTrace();
+            }
+        });
     }
 }

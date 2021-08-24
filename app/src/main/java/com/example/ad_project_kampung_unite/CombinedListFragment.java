@@ -89,10 +89,20 @@ public class CombinedListFragment extends Fragment {
                 // link to update prices fragment
 
                 //redirect to enter unit price
-                FragmentManager fragmentManager = getParentFragmentManager();
+/*                FragmentManager fragmentManager = getParentFragmentManager();
                 CombinedListFragment combinedListFragment = new CombinedListFragment();
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragment_container,combinedListFragment)
+                        .addToBackStack(null)
+                        .commit();*/
+                //pass bundle with group plan id
+                Bundle bundle = new Bundle();
+                bundle.putInt("gpId", groupPlanID);
+                FragmentManager fragmentManager = getParentFragmentManager();
+                UpdatePriceFragment updatePriceFragment = new UpdatePriceFragment();
+                updatePriceFragment.setArguments(bundle);
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container,updatePriceFragment)
                         .addToBackStack(null)
                         .commit();
 

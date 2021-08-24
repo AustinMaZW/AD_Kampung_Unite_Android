@@ -31,6 +31,7 @@ import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
 import com.example.ad_project_kampung_unite.entities.CombinedPurchaseList;
 import com.example.ad_project_kampung_unite.entities.GroceryItem;
 import com.example.ad_project_kampung_unite.entities.GroupPlan;
+import com.example.ad_project_kampung_unite.entities.GroupPlan;
 import com.example.ad_project_kampung_unite.entities.enums.GroupPlanStatus;
 import com.example.ad_project_kampung_unite.entities.enums.RequestStatus;
 import com.google.android.material.button.MaterialButton;
@@ -62,6 +63,7 @@ public class GroupDetailsFragment extends Fragment {
     private List<List<GroceryItem>> childListHolder = new ArrayList<>();
 
     List<Integer> hitchids = new ArrayList<>();
+    private GroupPlan groupPlan;
 
     private RecyclerView rvBuyerGrocery,rvHitchRequests;
     private ImageButton editBtn;
@@ -180,8 +182,11 @@ public class GroupDetailsFragment extends Fragment {
             public void onClick(View v) {
 
                 //navigate to CombinedList Fragment
+                Bundle bundle = new Bundle();
+                bundle.putInt("gpId", groupId);
                 FragmentManager fragmentManager = getParentFragmentManager();
                 CombinedListFragment combinedListFragment = new CombinedListFragment();
+                combinedListFragment.setArguments(bundle);
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragment_container,combinedListFragment)
                         .addToBackStack(null)
@@ -275,11 +280,12 @@ public class GroupDetailsFragment extends Fragment {
                     Log.d("Success", String.valueOf(childListHolder.get(0).toString())); //for testing
                     System.out.println("childlistholder updated ");
 
+                    getGroupPlanFromServer();
                     //inflate recycler view for all hitch requests and grocery items
-                    if(groupStatus=="Available")
+/*                    if(groupStatus=="Available")
                         initiateExpanderForActiveList();
                     else
-                        initiateExpanderForArchivedList();
+                        initiateExpanderForArchivedList();*/    //move to inside of getGroupPlanFromServer() method
 
                 } else {
                     Log.e("Error", response.errorBody().toString());
@@ -289,6 +295,36 @@ public class GroupDetailsFragment extends Fragment {
 
             @Override
             public void onFailure(Call<List<List<GroceryItem>>> call, Throwable t) {
+                // like no internet connection / the website doesn't exist
+                call.cancel();
+                Log.w("Failure", "Failure!");
+                t.printStackTrace();
+            }
+        });
+    }
+
+    private void getGroupPlanFromServer() {
+        groupPlanService = RetrofitClient.createService(GroupPlanService.class);
+        Call<GroupPlan> call = groupPlanService.getGroupPlanById(groupId);
+
+        call.enqueue(new Callback<GroupPlan>() {
+            @Override
+            public void onResponse(Call<GroupPlan> call, Response<GroupPlan> response) {
+                if (response.isSuccessful()) {
+                    groupPlan = response.body();
+
+                    //inflate recycler view for all hitch requests and grocery items
+                    if(groupStatus=="Available")
+                        initiateExpanderForActiveList();
+                    else
+                        initiateExpanderForArchivedList(); //invisible
+                } else {
+                    Log.e("getGroupPlanById Error", response.errorBody().toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GroupPlan> call, Throwable t) {
                 // like no internet connection / the website doesn't exist
                 call.cancel();
                 Log.w("Failure", "Failure!");
@@ -353,7 +389,7 @@ public class GroupDetailsFragment extends Fragment {
 
         ActiveGroupExpandableRecyclerViewAdapter expandableCategoryRecyclerViewAdapter =
                 new ActiveGroupExpandableRecyclerViewAdapter(layoutRoot.getContext(), hitchRequestList,
-                        childListHolder);
+                        childListHolder, groupPlan.getGroupPlanStatus());
 
         rvHitchRequests.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext()));
         rvHitchRequests.setAdapter(expandableCategoryRecyclerViewAdapter);
@@ -368,7 +404,7 @@ public class GroupDetailsFragment extends Fragment {
 
         ArchivedGroupExpandableRecyclerViewAdapter expandableCategoryRecyclerViewAdapter =
                 new ArchivedGroupExpandableRecyclerViewAdapter(layoutRoot.getContext(), hitchRequestList,
-                        childListHolder);
+                        childListHolder, groupPlan.getGroupPlanStatus());
 
         rvHitchRequests.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext()));
         rvHitchRequests.setAdapter(expandableCategoryRecyclerViewAdapter);
