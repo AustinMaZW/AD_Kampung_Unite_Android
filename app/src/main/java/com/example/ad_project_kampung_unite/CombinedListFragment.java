@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -126,12 +127,15 @@ public class CombinedListFragment extends Fragment {
                             Toast.makeText(getActivity().getApplicationContext(), "List updated", Toast.LENGTH_SHORT).show();
 //                            System.out.println(response.body());
                             //redirect to enter unit price
-//                            FragmentManager fragmentManager = getParentFragmentManager();
-//                            UpdatePriceFragment updatePriceFragment = new UpdatePriceFragment();
-//                            fragmentManager.beginTransaction()
-//                                    .replace(R.id.fragment_container,updatePriceFragment)
-//                                    .addToBackStack(null)
-//                                    .commit();
+                            Bundle bundle = new Bundle();
+                            bundle.putInt("gpId", groupPlanID);
+                            FragmentManager fragmentManager = getParentFragmentManager();
+                            UpdatePriceFragment updatePriceFragment = new UpdatePriceFragment();
+                            updatePriceFragment.setArguments(bundle);
+                            fragmentManager.beginTransaction()
+                                    .replace(R.id.fragment_container,updatePriceFragment)
+                                    .addToBackStack(null)
+                                    .commit();
                         }
                     }
                     @Override

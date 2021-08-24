@@ -133,7 +133,6 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<UserDetail> call, Response<UserDetail> response) {
                 if (response.isSuccessful()){
-                    System.out.println(response.body());
                     if(response.body().getAuthentication() != null){
                         auth = response.body().getAuthentication();
                     }

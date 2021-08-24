@@ -6,6 +6,7 @@ import com.example.ad_project_kampung_unite.Post;
 import com.example.ad_project_kampung_unite.entities.GroceryList;
 import com.example.ad_project_kampung_unite.model.responseModel.StatusResponseEntity;
 
+import java.io.Serializable;
 import java.util.List;
 
 import retrofit2.Call;
@@ -29,6 +30,5 @@ public interface GroceryListService {
 
     @GET("groceries/{groceryListId}")
     Call<List<GroceryItem>> getGroceryItemByGroceryListId(@Path("groceryListId") int id);
-
 
 }

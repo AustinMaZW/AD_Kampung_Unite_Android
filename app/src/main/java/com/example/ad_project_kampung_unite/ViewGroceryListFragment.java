@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentResultListener;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,8 +32,10 @@ import com.example.ad_project_kampung_unite.entities.GroceryItem;
 import com.example.ad_project_kampung_unite.entities.GroceryList;
 import com.example.ad_project_kampung_unite.entities.GroupPlan;
 import com.example.ad_project_kampung_unite.entities.HitchRequest;
+import com.example.ad_project_kampung_unite.entities.enums.GroupPlanStatus;
 import com.example.ad_project_kampung_unite.entities.enums.RequestStatus;
 import com.example.ad_project_kampung_unite.manage_grocery_list.EditGroceryListFragment;
+import com.example.ad_project_kampung_unite.ml.HitcherDetailFragment;
 
 
 import java.time.LocalDateTime;
@@ -54,6 +57,7 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
     private List<GroupPlan> groupPlanList;
     private List<GroceryItem> groceryItemList = new ArrayList<>();
     private List<HitchRequest> hitchRequests = new ArrayList<>();
+    private HitchRequest acceptedHitchRequest;
     private HitchRequestService hitchRequestService;
     private GroceryListService groceryListService;
     private GroupPlanService groupPlanService;
@@ -112,14 +116,12 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
         pickupLoc = layoutRoot.findViewById(R.id.pickup_location);
         pickupTime = layoutRoot.findViewById(R.id.pickup_time);
         hitchRqButton = layoutRoot.findViewById(R.id.hitch_rq_btn);
+        hitchRqButton.setOnClickListener(this);
         quitGroupBtn = layoutRoot.findViewById(R.id.quit_group);
 
         setQuitGroupBtn();       //for quitGroup
         editListBtn = layoutRoot.findViewById(R.id.edit_groceries);
         editListBtn.setOnClickListener(this);
-
-        tvPaymentStatus = layoutRoot.findViewById(R.id.payment_status);
-        tvPaymentStatus.setVisibility(View.GONE);
 
         return layoutRoot;
     }
@@ -127,31 +129,23 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
 
     @Override
     public void onClick(View view) {
+        if(view.getId() == R.id.hitch_rq_btn){
+            FragmentManager fm = getParentFragmentManager();
+            Log.e("Hitcher Detail","yes_5");
+            HitcherDetailFragment hitcerDetail = new HitcherDetailFragment();
+//            hitcerDetail.setgList(groceryList);
+            FragmentTransaction trans = fm.beginTransaction();
+            trans.replace(R.id.fragment_container,hitcerDetail);
+            trans.addToBackStack(null);
+            trans.commit();
+        }
         if(view.getId() == R.id.complete_payment_btn) {
             Log.i("Click", "clicked complete payment");
-            Call<HitchRequest> call = hitchRequestService.getAcceptedHitchRequestByHitcherDetailId(groceryList.getHitcherDetail().getId());
-            call.enqueue(new Callback<HitchRequest>() {
-                @Override
-                public void onResponse(Call<HitchRequest> call, Response<HitchRequest> response) {
-                    if (response.isSuccessful()) {
-                        HitchRequest hitchRequest = response.body();
-                        if (hitchRequest != null) {
-                            Log.i("HitchRequest", hitchRequest.toString());
-                            hitchRequest.setHitcherConfirmTransaction(CONFIRMED);
-                            updateConrirmTransaction(hitchRequest);
-                        }
-                    } else {
-                        Log.e("getAcceptedHitchRequestByHitcherDetailId Error", response.errorBody().toString());
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<HitchRequest> call, Throwable t) {
-                    call.cancel();
-                    Log.w("Failure", "Failure!");
-                    t.printStackTrace();
-                }
-            });
+            if (acceptedHitchRequest != null) {
+                Log.i("HitchRequest", acceptedHitchRequest.toString());
+                acceptedHitchRequest.setHitcherConfirmTransaction(CONFIRMED);
+                updateConrirmTransaction();
+            }
         }
 
         if(view.getId() == R.id.edit_groceries) {
@@ -188,11 +182,13 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
 //                    Log.d("Success", String.valueOf(groceryItemList.get(0).getProduct().getProductName())); //for testing
 
                     buildGroceryItemRV();
-                    // need to change condition | if group plan status is shopping completed
-                    if (true) {
-                        // calculate total payment
-                        Map<String, Double> totalPayment = calculateTotalPayment();
-                        buildPaymentComponents(totalPayment);
+
+                    if(groceryList.getGroupPlanGL() != null) {
+                        if (groceryList.getGroupPlanGL().getGroupPlanStatus() == GroupPlanStatus.SHOPPINGCOMPLETED) {
+                            // view pending payment parts
+                            Map<String, Double> totalPayment = calculateTotalPayment();
+                            buildPaymentComponents(totalPayment);
+                        }
                     }
                 } else {
                     Log.e("getGroceryItemByGroceryListId Error", response.errorBody().toString());
@@ -313,9 +309,12 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
         rvGroceryItems.setAdapter(groceryListItemAdaptor);  //set the adaptor here
         rvGroceryItems.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext()));
 
-        //add condition if group plan status is shopping completed to show or hide this component
-//        layoutRoot.findViewById(R.id.payment_component).setVisibility(View.GONE);
-//        llPaymentComponent = layoutRoot.findViewById(R.id.payment_component);
+        llPaymentComponent = layoutRoot.findViewById(R.id.payment_component);
+        if (groceryList == null || groceryList.getGroupPlanGL() == null ||
+                groceryList.getGroupPlanGL().getGroupPlanStatus() != GroupPlanStatus.SHOPPINGCOMPLETED) {
+
+            llPaymentComponent.setVisibility(View.GONE);
+        }
     }
 
     private void buildPaymentComponents(Map<String, Double> totalPayment) {
@@ -330,9 +329,11 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
         tvServicefeeAmount.setText("$" + totalPayment.get("servicefee"));
         tvTotalAmount.setText("$" + totalPayment.get("total"));
 
+        tvPaymentStatus = layoutRoot.findViewById(R.id.payment_status);
         btnCompletePayment = layoutRoot.findViewById(R.id.complete_payment_btn);
         btnCompletePayment.setOnClickListener(this);
-//        llPaymentComponent.setVisibility(View.VISIBLE); // testing
+
+        getAcceptedHitchRequestFromServer();
     }
 
     private void setQuitGroupBtn() {
@@ -352,7 +353,7 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
                             e.printStackTrace();
                         }
 
-                        FragmentManager fm = ((AppCompatActivity)context).getSupportFragmentManager();
+                        FragmentManager fm = ((AppCompatActivity)context).getSupportFragmentManager();     //below to refresh ui
 
                         Fragment currentFrag = fm.findFragmentByTag("VIEW_HITCHER_GL_FRAG");
                         fm.beginTransaction().detach(currentFrag).commitNow();
@@ -371,13 +372,14 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
     }
 
     private Map<String, Double> calculateTotalPayment() {
+        //calculate subtotal, gst, service fee, net total
         Map<String, Double> map = new HashMap<>();
 
         double subtotal = 0;
         for (GroceryItem groceryItem : groceryItemList) {
             subtotal += groceryItem.getSubtotal();
-            map.put("subtotal", subtotal);
         }
+        map.put("subtotal", subtotal);
 
         double gst = subtotal * 7 / 100;
         gst = Math.round(gst * 100.0) / 100.0;
@@ -388,34 +390,77 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
         map.put("servicefee", servicefee);
 
         double total = subtotal + gst + servicefee;
+        total = Math.round(total * 100.0) / 100.0;
         map.put("total", total);
 
         return map;
     }
 
-    private void updateConrirmTransaction(HitchRequest hitchRequest) {
-        Call<Void> call = hitchRequestService.updateHitchRequest(hitchRequest);
-        call.enqueue(new Callback<Void>() {
+    private void getAcceptedHitchRequestFromServer() {
+        if (groceryList.getHitcherDetail() != null) {
+            Call<HitchRequest> call = hitchRequestService.getAcceptedHitchRequestByHitcherDetailId(groceryList.getHitcherDetail().getId());
+            call.enqueue(new Callback<HitchRequest>() {
+                @Override
+                public void onResponse(Call<HitchRequest> call, Response<HitchRequest> response) {
+                    if (response.isSuccessful()) {
+                        acceptedHitchRequest = response.body();
+                        loadPaymentStatus();
+                    } else {
+                        Log.e("getAcceptedHitchRequestByHitcherDetailId Error", response.errorBody().toString());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<HitchRequest> call, Throwable t) {
+                    call.cancel();
+                    Log.w("Failure", "Failure!");
+                    t.printStackTrace();
+                }
+            });
+        }
+    }
+
+    private void loadPaymentStatus() {
+        if (acceptedHitchRequest != null) {
+            if (acceptedHitchRequest.isHitcherConfirmTransaction()) {
+                if (acceptedHitchRequest.isBuyerConfirmTransaction()) {
+                    tvPaymentStatus.setText(R.string.payment_status_complete);
+                    tvPaymentStatus.setTextColor(getResources().getColor(R.color.Kampong_Green, null));
+                } else {
+                    tvPaymentStatus.setText(R.string.payment_status_waiting_buyer);
+                    tvPaymentStatus.setTextColor(getResources().getColor(R.color.yellow, null));
+                }
+                layoutRoot.findViewById(R.id.button_container).setVisibility(View.GONE);
+            } else {
+                tvPaymentStatus.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    private void updateConrirmTransaction() {
+        Call<HitchRequest> call = hitchRequestService.updateHitchRequest(acceptedHitchRequest);
+        call.enqueue(new Callback<HitchRequest>() {
             @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
+            public void onResponse(Call<HitchRequest> call, Response<HitchRequest> response) {
                 if (response.isSuccessful()) {
-                    if (hitchRequest.isBuyerConfirmTransaction()) {
+                    HitchRequest updatedHR = response.body();
+
+                    if (updatedHR.isBuyerConfirmTransaction()) {
                         tvPaymentStatus.setText(R.string.payment_status_complete);
                         tvPaymentStatus.setTextColor(getResources().getColor(R.color.Kampong_Green, null));
-                    }
-                    else {
+                    } else {
                         tvPaymentStatus.setText(R.string.payment_status_waiting_buyer);
                         tvPaymentStatus.setTextColor(getResources().getColor(R.color.yellow, null));
                     }
-                    tvPaymentStatus.setVisibility(View.VISIBLE);
                     layoutRoot.findViewById(R.id.button_container).setVisibility(View.GONE);
+                    tvPaymentStatus.setVisibility(View.VISIBLE);
                 }
                 else {
                     Log.e("updateHitchRequest Error", response.errorBody().toString());
                 }
             }
             @Override
-            public void onFailure(Call<Void> call, Throwable t) {
+            public void onFailure(Call<HitchRequest> call, Throwable t) {
                 call.cancel();
                 Log.w("Failure", "Failure!");
                 t.printStackTrace();
