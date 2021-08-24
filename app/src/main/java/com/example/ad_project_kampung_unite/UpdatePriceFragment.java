@@ -56,7 +56,7 @@ public class UpdatePriceFragment extends Fragment implements View.OnClickListene
         // to get arguments from previous fragment
         Bundle bundle = getArguments();
         if(bundle!=null){
-            gpId = (int) bundle.getSerializable("gpId");
+            gpId = (int) bundle.getInt("gpId");
         }
         gpId = 18; // hard coded to test
 
