@@ -24,5 +24,5 @@ public interface HitchRequestService {
     Call<List<HitchRequest>> getHitchRequestsByGroupPlanId(@Path("groupPlanId") int id);
 
     @PUT("hitchrequest/update")
-    Call<Void> updateHitchRequest(@Body HitchRequest hitchRequest);
+    Call<HitchRequest> updateHitchRequest(@Body HitchRequest hitchRequest);
 }
