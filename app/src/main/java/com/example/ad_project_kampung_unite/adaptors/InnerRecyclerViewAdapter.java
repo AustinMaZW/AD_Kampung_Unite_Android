@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.ad_project_kampung_unite.R;
 import com.example.ad_project_kampung_unite.entities.GroceryItem;
 import com.example.ad_project_kampung_unite.entities.HitchRequest;
+import com.example.ad_project_kampung_unite.entities.enums.GLStatus;
+import com.example.ad_project_kampung_unite.entities.enums.GroupPlanStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +56,14 @@ public class InnerRecyclerViewAdapter extends RecyclerView.Adapter<InnerRecycler
         name.setText(nameList.get(position).getProduct().getProductName());
         test.setText(Integer.toString(quantity) + "x");
         amount.setText(String.valueOf(nameList.get(position).getSubtotal()));
+
+        if(nameList.get(position).getGroceryList().getGroupPlanGL() ==null){
+            amount.setVisibility(View.GONE);
+        }
+        //if group plan status is COMPLETED, don't show the item price
+        else if(nameList.get(position).getGroceryList().getGroupPlanGL().getGroupPlanStatus().getDisplayStatus()!= GroupPlanStatus.SHOPPINGCOMPLETED.getDisplayStatus()){
+            amount.setVisibility(View.GONE);
+        };
 //
 //        name.setText(nameList.get(position).getProduct().getProductName());
 //        test.setText(nameList.get(position).getProduct().getProductName());
