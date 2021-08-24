@@ -51,7 +51,7 @@ public class GroupPlanItemAdapter extends RecyclerView.Adapter<MyGroupPlansHolde
         //null object ref error
         //myholder.mGroupPlanItemCount.setText(lists.get(i).getCombinedPurchaseList().getQuantity());
 
-        myholder.mGroupPlanRequests.setText(lists.get(i).getGroupPlanStatus().getDisplayStatus());
+        myholder.mGroupPlanRequests.setText("pending code");
         //.setImageResource to set image.
 
         myholder.setItemClickListener(new ItemClickListener() {

@@ -25,4 +25,7 @@ public interface HitchRequestService {
 
     @PUT("hitchrequest/update")
     Call<HitchRequest> updateHitchRequest(@Body HitchRequest hitchRequest);
+
+    @GET("hitchrequest/approve/{hitchRequestId}")
+    Call<Boolean> approveHitchRq(@Path("hitchRequestId") int id);
 }
