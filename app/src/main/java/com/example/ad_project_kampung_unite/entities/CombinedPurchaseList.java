@@ -5,6 +5,7 @@ public class CombinedPurchaseList {
 	private int productId;
 	private int quantity;
 	private double productSubtotal;
+	private double productDiscount;
 	private double productUnitPrice;
 	private GroupPlan groupPlan;
 	private String productName;
@@ -13,11 +14,12 @@ public class CombinedPurchaseList {
 	public CombinedPurchaseList() {
 	}
 
-	public CombinedPurchaseList(int id, int productId, int quantity, double productSubtotal, double productUnitPrice, GroupPlan groupPlan) {
+	public CombinedPurchaseList(int id, int productId, int quantity, double productSubtotal, double productDiscount, double productUnitPrice, GroupPlan groupPlan) {
 		this.id = id;
 		this.productId = productId;
 		this.quantity = quantity;
 		this.productSubtotal = productSubtotal;
+		this.productDiscount = productDiscount;
 		this.productUnitPrice = productUnitPrice;
 		this.groupPlan = groupPlan;
 	}
@@ -68,6 +70,10 @@ public class CombinedPurchaseList {
 	public void setProductSubtotal(double productSubtotal) {
 		this.productSubtotal = productSubtotal;
 	}
+
+	public double getProductDiscount() { return productDiscount; }
+
+	public void setProductDiscount(double productDiscount) { this.productDiscount = productDiscount; }
 
 	public double getProductUnitPrice() {
 		return productUnitPrice;

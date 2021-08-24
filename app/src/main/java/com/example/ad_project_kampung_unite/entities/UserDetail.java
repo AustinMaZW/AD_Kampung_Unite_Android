@@ -23,6 +23,9 @@ public class UserDetail extends UserLogin implements Serializable{
         this.homeAddress = homeAddress;
     }
 
+    public UserDetail() {
+    }
+
     public UserDetail(String username, String password) {
         super(username, password);
     }
