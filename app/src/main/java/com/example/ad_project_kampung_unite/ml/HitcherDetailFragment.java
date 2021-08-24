@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.ad_project_kampung_unite.R;
 import com.example.ad_project_kampung_unite.data.remote.GroupPlanService;
@@ -101,6 +102,8 @@ public class HitcherDetailFragment extends Fragment{
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                submitBtn.setEnabled(false);
+                Toast.makeText(getContext(),"Please Wait",Toast.LENGTH_SHORT).show();
                 saveHitcherDetail();
             }
         });
@@ -114,7 +117,7 @@ public class HitcherDetailFragment extends Fragment{
         LocalDate pickDate = LocalDate.parse(pickUpDate.getText().toString());
         LocalTime pickTime = LocalTime.parse(timeSlot.getText().toString());
         LocalDateTime pickUpDate = LocalDateTime.of(pickDate,pickTime);
-        String address = location.getText().toString();
+        String address = location.getText().toString().concat(", Singapore, Singapore");
         if(!pickDate.equals(null) && !pickTime.equals(null) && !address.isEmpty()&&!address.equals(null)){
             HitcherDetail hd = new HitcherDetail(pickUpDate,address);
             sendRequest(pickDate,pickTime,address);
@@ -141,7 +144,8 @@ public class HitcherDetailFragment extends Fragment{
 
             @Override
             public void onFailure(Call<Integer> call, Throwable t) {
-                Log.e("Request","Fail in Request to Create Hitcher Detail");
+                Toast.makeText(getContext(),"Please submit again!",Toast.LENGTH_SHORT).show();
+                submitBtn.setEnabled(true);
             }
         });
     }
@@ -177,11 +181,5 @@ public class HitcherDetailFragment extends Fragment{
             }
         }).start();
         return ids;
-    }
-    private void checkEditText(){
-
-    }
-    private void showMenu(){
-
     }
 }
