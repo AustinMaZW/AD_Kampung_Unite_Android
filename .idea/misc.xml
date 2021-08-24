@@ -5,12 +5,17 @@
       <map>
         <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Kampung_Unite_Android/app/src/main/res/layout/activity_view_grocery_list.xml" value="0.20520833333333333" />
         <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Kampung_Unite_Android/app/src/main/res/layout/addgrocerylist_dialog.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Kampung_Unite_Android/app/src/main/res/layout/buyer_list_item_pop.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Kampung_Unite_Android/app/src/main/res/layout/buyer_list_item_pop_item.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Kampung_Unite_Android/app/src/main/res/layout/combined_item.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Kampung_Unite_Android/app/src/main/res/layout/find_products_item.xml" value="0.20520833333333333" />
+        <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Kampung_Unite_Android/app/src/main/res/layout/fragment_combined_list.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Kampung_Unite_Android/app/src/main/res/layout/fragment_grocery_list.xml" value="0.20520833333333333" />
         <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Kampung_Unite_Android/app/src/main/res/layout/fragment_grocery_lists.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Kampung_Unite_Android/app/src/main/res/layout/fragment_group_details.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Kampung_Unite_Android/app/src/main/res/layout/fragment_groups.xml" value="0.264" />
         <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Kampung_Unite_Android/app/src/main/res/layout/fragment_search.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Kampung_Unite_Android/app/src/main/res/layout/fragment_update_price.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Kampung_Unite_Android/app/src/main/res/layout/fragment_view_grocery_list.xml" value="0.264" />
         <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Kampung_Unite_Android/app/src/main/res/layout/grocerylist_groceryitem.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Jean/AndroidStudioProjects/AD_Kampung_Unite_Android/app/src/main/res/layout/group_details_collapse_items.xml" value="0.536" />

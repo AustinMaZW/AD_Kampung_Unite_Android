@@ -86,7 +86,7 @@ public class ExpandableRecyclerViewAdapter extends RecyclerView.Adapter<Expandab
         TextView pickuptime = holder.pickuptime;
         TextView itemcount = holder.itemcount;
 
-        name.setText("Testing");
+        name.setText(groceryItemList.get(position).get(0).getGroceryList().getName());
         pickuptime.setText("Pick-up time: " + mpickuptime);
         itemcount.setText("Items: " + Integer.toString(groceryItemsCount.size()));
 

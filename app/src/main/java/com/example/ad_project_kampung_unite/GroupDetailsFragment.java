@@ -44,7 +44,8 @@ public class GroupDetailsFragment extends Fragment {
 
     private List<HitchRequest> hitchRequestList = new ArrayList<>();
     private List<List<GroceryItem>> childListHolder = new ArrayList<>();
-    List<HitchRequest> parentList = new ArrayList<>();
+
+    List<Integer> hitchids = new ArrayList<>();
 
       private RecyclerView rvBuyerGrocery,rvHitchRequests;
       private GroceryItemService groceryItemService;
@@ -52,8 +53,8 @@ public class GroupDetailsFragment extends Fragment {
 //    private GroupDetailsAdapter myAdapter;
 
     MaterialButton combinedListButton;
-
-    RecyclerView expanderRecyclerView;
+//
+//    RecyclerView expanderRecyclerView;
     View layoutRoot;
 
     public GroupDetailsFragment() {
@@ -102,14 +103,12 @@ public class GroupDetailsFragment extends Fragment {
 //            }
 //        });
 
+
         groceryItemService = RetrofitClient.createService(GroceryItemService.class);
         getBuyerGroceryItemsFromServer();
 
         hitchRequestService = RetrofitClient.createService(HitchRequestService.class);
         getHitchRequestsFromServer();
-
-        expanderRecyclerView = layoutRoot.findViewById(R.id.groupDetails_expandableRecyclerView);
-//        initiateExpander();
 
         return layoutRoot;
     }
@@ -147,7 +146,7 @@ public class GroupDetailsFragment extends Fragment {
     }
 
     private void getHitchRequestsFromServer(){
-        Call<List<HitchRequest>> call = hitchRequestService.getHitchRequestsByGroupId(groupId);
+        Call<List<HitchRequest>> call = hitchRequestService.getHitchRequestsByGroupPlanId(groupId);
 
         call.enqueue(new Callback<List<HitchRequest>>() {
             @Override
@@ -157,29 +156,17 @@ public class GroupDetailsFragment extends Fragment {
                     hitchRequestList = response.body();
                     Log.d("Success", String.valueOf(hitchRequestList.get(0).toString())); //for testing
 
-                    List<Integer> hitchRequestIds = new ArrayList<>();
-                    for(int i = 0; i<hitchRequestList.size(); i++){
-                        hitchRequestIds.add(hitchRequestList.get(i).getId());
-                    }
-                    System.out.println(hitchRequestIds);
-                    getHitcherGroceryItemsFromServer(hitchRequestIds);
-
-                    if(childListHolder.size()!=0) {
                         //recycler view for grocery items
-                        rvHitchRequests = layoutRoot.findViewById(R.id.groupDetails_expandableRecyclerView);
-                        rvHitchRequests.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext()));
 
-                        initiateExpander();
-
-                        ExpandableRecyclerViewAdapter expandableRecyclerViewAdapter =
-                                new ExpandableRecyclerViewAdapter(layoutRoot.getContext(),
-                                        parentList,
-                                        childListHolder);
-                        rvHitchRequests.setAdapter(expandableRecyclerViewAdapter);  //set the adaptor here
-
-                        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
-                        itemTouchHelper.attachToRecyclerView(rvHitchRequests);
+                    for(int i = 0; i<hitchRequestList.size(); i++){
+                        int hitchRequestId = hitchRequestList.get(i).getId();
+                        // make individual request to fetch grocery items based on hitch request id
+//                        testing(hitchRequestId);
+                        hitchids.add(hitchRequestId);
                     }
+
+                    getHitcherGroceryItemsFromServer(hitchids);
+
                 } else {
                     Log.e("Error", response.errorBody().toString());
                 }
@@ -195,8 +182,9 @@ public class GroupDetailsFragment extends Fragment {
         });
     }
 
-    private void getHitcherGroceryItemsFromServer(List<Integer> id){
-        Call<List<List<GroceryItem>>> call = groceryItemService.findGroceryItemsByHitchRequests(id);
+    //get grocery items for each hitcher's grocery list
+    private void getHitcherGroceryItemsFromServer(List<Integer> ids){
+        Call<List<List<GroceryItem>>> call = groceryItemService.findGroceryItemsByHitchRequests(ids);
 
         call.enqueue(new Callback<List<List<GroceryItem>>>() {
             @Override
@@ -207,10 +195,12 @@ public class GroupDetailsFragment extends Fragment {
                     Log.d("Success", String.valueOf(childListHolder.get(0).toString())); //for testing
                     System.out.println("childlistholder updated ");
 
+                    //inflate recycler view for all hitch requests and grocery items
+                    initiateExpander();
+
                 } else {
                     Log.e("Error", response.errorBody().toString());
                     System.out.println("childlistholder not updated ");
-
                 }
             }
 
@@ -224,17 +214,19 @@ public class GroupDetailsFragment extends Fragment {
         });
     }
 
-
     private void initiateExpander() {
 
-        parentList = hitchRequestList;
+        rvHitchRequests = layoutRoot.findViewById(R.id.groupDetails_expandableRecyclerView);
 
         ExpandableRecyclerViewAdapter expandableCategoryRecyclerViewAdapter =
-                new ExpandableRecyclerViewAdapter(layoutRoot.getContext(), parentList,
+                new ExpandableRecyclerViewAdapter(layoutRoot.getContext(), hitchRequestList,
                         childListHolder);
 
-        expanderRecyclerView.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext()));
-        expanderRecyclerView.setAdapter(expandableCategoryRecyclerViewAdapter);
+        rvHitchRequests.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext()));
+        rvHitchRequests.setAdapter(expandableCategoryRecyclerViewAdapter);
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(rvHitchRequests);
     }
 
 

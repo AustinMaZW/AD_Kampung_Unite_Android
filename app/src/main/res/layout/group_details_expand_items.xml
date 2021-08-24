@@ -15,13 +15,22 @@
         android:padding="10dp">
 
         <TextView
-            android:id="@+id/itemTextView"
+            android:id="@+id/group_plan_hitch_request_item_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
             android:layout_marginTop="5dp"
             android:text="Fresh Fruits"
             android:textSize="14sp" />
+        <TextView
+            android:id="@+id/group_plan_hitch_request_item_quantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginTop="5dp"
+            android:text="Fresh Fruits"
+            android:textSize="14sp" />
+
 
     </LinearLayout>
 

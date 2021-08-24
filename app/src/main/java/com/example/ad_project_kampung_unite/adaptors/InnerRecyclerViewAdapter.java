@@ -1,5 +1,6 @@
 package com.example.ad_project_kampung_unite.adaptors;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,19 +24,20 @@ public class InnerRecyclerViewAdapter extends RecyclerView.Adapter<InnerRecycler
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView name;
+        TextView name, test,price;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            name = itemView.findViewById(R.id.itemTextView);
+            name = itemView.findViewById(R.id.item_name);
+            test = itemView.findViewById(R.id.item_quantity);
+            price = itemView.findViewById(R.id.item_amount);
         }
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.group_details_expand_items, parent, false);
-
+                .inflate(R.layout.indiv_grocery_list_item, parent, false);
 
         InnerRecyclerViewAdapter.ViewHolder vh = new InnerRecyclerViewAdapter.ViewHolder(v);
 
@@ -44,9 +46,17 @@ public class InnerRecyclerViewAdapter extends RecyclerView.Adapter<InnerRecycler
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        TextView name = holder.name;
+        TextView test = holder.test;
+        TextView amount = holder.price;
 
-        holder.name.setText(nameList.get(position).toString());
-
+        int quantity = nameList.get(position).getQuantity();
+        name.setText(nameList.get(position).getProduct().getProductName());
+        test.setText(Integer.toString(quantity) + "x");
+        amount.setText(String.valueOf(nameList.get(position).getSubtotal()));
+//
+//        name.setText(nameList.get(position).getProduct().getProductName());
+//        test.setText(nameList.get(position).getProduct().getProductName());
     }
 
     @Override
