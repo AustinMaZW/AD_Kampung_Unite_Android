@@ -58,11 +58,12 @@
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/groceryItemRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:id="@+id/groceryItemRecyclerView"
-        app:layout_constraintTop_toBottomOf="@id/add"
-        />
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintBottom_toTopOf="@id/hitcherButton"
+        app:layout_constraintTop_toBottomOf="@+id/add" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

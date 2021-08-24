@@ -63,17 +63,19 @@ public class GroupPlanItemAdapter extends RecyclerView.Adapter<MyGroupPlansHolde
 
                 // send group plan object
                 int target = lists.get(position).getId();
+                String target2 = lists.get(position).getGroupPlanStatus().getDisplayStatus();
 
                 // send grocery list to grocery list fragment
                 Bundle result = new Bundle();
                 result.putInt("gpId", target);
+                result.putString("gpStatus", target2);
 
                 // go to grocery list view fragment
                 groupDetailsFragment = new GroupDetailsFragment();
                 groupDetailsFragment.setArguments(result);       //putting bundle inside frag
                 activity.getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.fragment_container, groupDetailsFragment, "group_details_frag")
+                        .replace(R.id.fragment_container, groupDetailsFragment, "GROUP_DETAILS_FRAG")
                         .addToBackStack(null)
                         .commit();
             }

@@ -15,11 +15,16 @@ import android.widget.Button;
 
 import com.example.ad_project_kampung_unite.adaptors.UpdatePriceAdapter;
 import com.example.ad_project_kampung_unite.data.remote.CPListService;
+import com.example.ad_project_kampung_unite.data.remote.GroceryItemService;
+import com.example.ad_project_kampung_unite.data.remote.GroupPlanService;
 import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
 import com.example.ad_project_kampung_unite.entities.CombinedPurchaseList;
-import com.example.ad_project_kampung_unite.manage_grocery_list.MyGroceryListsAdapter;
+import com.example.ad_project_kampung_unite.entities.GroceryItem;
+import com.example.ad_project_kampung_unite.entities.enums.GroupPlanStatus;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -33,6 +38,8 @@ public class UpdatePriceFragment extends Fragment implements View.OnClickListene
 
     private int gpId;
     private CPListService cplService;
+    private GroceryItemService giService;
+    private GroupPlanService gpService;
     private List<CombinedPurchaseList> combinedPurchaseLists;
     private UpdatePriceAdapter updatePriceAdapter;
 
@@ -49,7 +56,7 @@ public class UpdatePriceFragment extends Fragment implements View.OnClickListene
         // to get arguments from previous fragment
         Bundle bundle = getArguments();
         if(bundle!=null){
-            gpId = (int) bundle.getSerializable("gpId");
+            gpId = (int) bundle.getInt("gpId");
         }
         gpId = 18; // hard coded to test
 
@@ -96,7 +103,165 @@ public class UpdatePriceFragment extends Fragment implements View.OnClickListene
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.submit_btn) {
-//            String subtotal = updatePriceAdapter.holder.etSubtotal.getText().toString();
+            /*for (int i=0; i<combinedPurchaseLists.size(); i++) {
+                View holder = rvCombinedList.getChildAt(i);
+                EditText etSubtotal = holder.findViewById(R.id.subtotal);
+                String subtotal = etSubtotal.getText().toString();
+                EditText etDiscount = holder.findViewById(R.id.discount);
+                String discount = etDiscount.getText().toString();
+                Log.i("Update Price", subtotal + ", " + discount.isEmpty());
+            }*/
+            output();
+            if (!updatePriceAdapter.hasError()) {
+                if (!combinedPurchaseLists.isEmpty())
+                    getGroceryItemsForGroupPlan();
+            }
         }
+    }
+
+    private void output() {
+        Map<Integer, String> sm = updatePriceAdapter.getSubtotalMap();
+        Map<Integer, String> dm = updatePriceAdapter.getDiscountMap();
+        for (int key : sm.keySet()) {
+            Log.i("subtotal", key + ": " + sm.get(key));
+            Log.i("discount", key + ": " + dm.get(key));
+        }
+    }
+
+    private void getGroceryItemsForGroupPlan() {
+        giService = RetrofitClient.createService(GroceryItemService.class);
+        Call<List<GroceryItem>> call = giService.getAcceptedGroceryItemsByGroupPlanId(gpId);
+        call.enqueue(new Callback<List<GroceryItem>>() {
+            @Override
+            public void onResponse(Call<List<GroceryItem>> call, Response<List<GroceryItem>> response) {
+                if (response.isSuccessful()) {
+                    List<GroceryItem> items = response.body();
+                    calculateSubtotalPriceForEachItem(items);
+
+                    // go to group details fragment, passed group plan id
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("gpId", gpId);
+
+                    GroupDetailsFragment groupDetailsFragment = new GroupDetailsFragment();
+                    groupDetailsFragment.setArguments(bundle);
+                    getParentFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.fragment_container, groupDetailsFragment)
+                            .addToBackStack(null)
+                            .commit();
+                } else {
+                    Log.e("getAcceptedGroceryItemsByGroupPlanId Error", response.errorBody().toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<GroceryItem>> call, Throwable t) {
+                call.cancel();
+                Log.w("Failure", "Failure!");
+                t.printStackTrace();
+            }
+        });
+    }
+
+    private void calculateSubtotalPriceForEachItem(List<GroceryItem> items) {
+        Map<Integer, String> sm = updatePriceAdapter.getSubtotalMap();
+        Map<Integer, String> dm = updatePriceAdapter.getDiscountMap();
+
+        for (int i=0; i<combinedPurchaseLists.size(); i++) {
+            CombinedPurchaseList cp = combinedPurchaseLists.get(i);
+            double subtotal = 0;
+            if (!sm.get(cp.getId()).isEmpty())
+                subtotal = Double.parseDouble(sm.get(cp.getId()));
+
+            double discount = 0;
+            if (!dm.get(cp.getId()).isEmpty())
+                discount = Double.parseDouble(dm.get(cp.getId()));
+
+            double unitprice = 0;
+            if (subtotal > 0) {
+                unitprice = (subtotal - discount) / cp.getQuantity();
+                unitprice = Math.round(unitprice * 100.0) / 100.0;
+            }
+
+            cp.setProductSubtotal(subtotal);
+            cp.setProductDiscount(discount);
+            cp.setProductUnitPrice(unitprice);
+
+            List<GroceryItem> list =  items.stream().filter(x -> x.getProduct().getProductId() == cp.getProduct().getProductId()).collect(Collectors.toList());
+            for (GroceryItem gi : list) {
+                gi.setSubtotal(gi.getQuantity() * unitprice);   //subtotal = qty * up;
+            }
+        }
+        //save unit price of each product in CombinedPurchaseList table
+        saveUnitPriceAndSubtotalInCombinedPurchaseList();
+        //save subtotal in GroceryItem table for all items of each grocery list of this group plan
+        saveSubtotalInGroceryItem(items);
+        //set group plan status 'shopping completed'
+        updateGroupPlanStatus();
+        Log.i("test", "//////");
+    }
+
+    private void saveUnitPriceAndSubtotalInCombinedPurchaseList() {
+        Call<Boolean> call = cplService.saveAll(combinedPurchaseLists);
+        call.enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                if (response.isSuccessful()) {
+                    boolean isSuccess = response.body();
+                } else {
+                    Log.e("CPL saveAll Error", response.errorBody().toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+                call.cancel();
+                Log.w("Failure", "Failure!");
+                t.printStackTrace();
+            }
+        });
+    }
+
+    private void saveSubtotalInGroceryItem(List<GroceryItem> items) {
+        Call<Boolean> call = giService.saveAll(items);
+        call.enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                if (response.isSuccessful()) {
+                    boolean isSuccess = response.body();
+                } else {
+                    Log.e("GroceryItem saveAll Error", response.errorBody().toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+                call.cancel();
+                Log.w("Failure", "Failure!");
+                t.printStackTrace();
+            }
+        });
+    }
+
+    private void updateGroupPlanStatus() {
+        gpService = RetrofitClient.createService(GroupPlanService.class);
+        Call<Void> call = gpService.updateGroupPlanStatus(gpId, GroupPlanStatus.SHOPPINGCOMPLETED);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Log.i("updateGroupPlanStatus", "Successful");
+                } else {
+                    Log.e("updateGroupPlanStatus Error", response.errorBody().toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                call.cancel();
+                Log.w("Failure", "Failure!");
+                t.printStackTrace();
+            }
+        });
     }
 }

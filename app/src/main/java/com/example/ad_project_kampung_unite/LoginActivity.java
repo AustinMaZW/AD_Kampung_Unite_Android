@@ -99,6 +99,9 @@ public class LoginActivity extends AppCompatActivity {
 
 //                    String authenticateUrl = "https://localhost:8080/user/authenticate";
 
+//                    use this for easy no login required
+//                    Intent main = new Intent(LoginActivity.this, MainActivity.class);
+//                    startActivity(main);
                 }
             }
         });
@@ -149,7 +152,7 @@ public class LoginActivity extends AppCompatActivity {
                     //login without password - temp addition to delete
                     Intent main = new Intent(LoginActivity.this, MainActivity.class);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString(KEY_USERID, "3");
+                    editor.putString(KEY_USERID, "1");
                     startActivity(main);
                 }
             }

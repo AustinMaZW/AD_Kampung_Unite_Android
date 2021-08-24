@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <EditText
+        android:id="@+id/store_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Store Name"
+        android:inputType="text"
+        android:layout_margin="16dp"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/header_1"
+        android:layout_margin="16dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Purchase Schedule"
+        app:layout_constraintTop_toBottomOf="@+id/store_name"/>
+
+    <EditText
+        android:layout_margin="16dp"
+        android:id="@+id/purchase_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Purchase Date"
+        android:inputType="date"
+        android:drawableLeft="@drawable/canlendar_input"
+        android:drawablePadding="12dp"
+        android:text="2021-10-29"
+        app:layout_constraintTop_toBottomOf="@+id/header_1"/>
+
+    <EditText
+        android:layout_margin="16dp"
+        android:id="@+id/purchase_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Purchase Time"
+        android:inputType="time"
+        android:drawableLeft="@drawable/time_to_slot"
+        android:drawablePadding="12dp"
+        android:text="12:00:00"
+        app:layout_constraintTop_toBottomOf="@id/purchase_date"/>
+
+    <TextView
+        android:id="@+id/header_2"
+        android:layout_margin="16dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pick-Up Details"
+        app:layout_constraintTop_toBottomOf="@+id/purchase_time"/>
+
+    <EditText
+        android:layout_margin="16dp"
+        android:id="@+id/pickup_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Purchase Date"
+        android:inputType="date"
+        android:drawableLeft="@drawable/canlendar_input"
+        android:drawablePadding="12dp"
+        android:text="2021-10-29"
+        app:layout_constraintTop_toBottomOf="@id/header_2"/>
+
+    <EditText
+        android:layout_margin="16dp"
+        android:id="@+id/address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Location"
+        android:inputType="textPostalAddress"
+        android:drawableLeft="@drawable/location_input"
+        android:drawablePadding="12dp"
+        app:layout_constraintTop_toBottomOf="@id/pickup_date"/>
+
+    <EditText
+        android:layout_margin="16dp"
+        android:id="@+id/pickup_time_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Time Slot 1"
+        android:inputType="time"
+        android:drawableLeft="@drawable/time_to_slot"
+        android:drawablePadding="12dp"
+        app:layout_constraintTop_toBottomOf="@id/address"/>
+
+    <EditText
+        android:layout_margin="16dp"
+        android:id="@+id/pickup_time_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Time Slot 2"
+        android:inputType="time"
+        android:drawableLeft="@drawable/time_to_slot"
+        android:drawablePadding="12dp"
+        app:layout_constraintTop_toBottomOf="@id/pickup_time_1"/>
+
+    <EditText
+        android:layout_margin="16dp"
+        android:id="@+id/pickup_time_3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Time Slot 3"
+        android:inputType="time"
+        android:drawableLeft="@drawable/time_to_slot"
+        android:drawablePadding="12dp"
+        app:layout_constraintTop_toBottomOf="@id/pickup_time_2"/>
+
+    <com.google.android.material.button.MaterialButton
+        style="@style/Widget.MaterialComponents.Button"
+        android:layout_margin="16dp"
+        android:id="@+id/submitBtn"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="Submit"
+        android:textColor="@color/Kampong_Blue"
+        android:backgroundTint="@color/Kampong_Yellow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

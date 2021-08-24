@@ -1,9 +1,8 @@
 package com.example.ad_project_kampung_unite.data.remote;
 
-import com.example.ad_project_kampung_unite.entities.GroceryList;
-import com.example.ad_project_kampung_unite.entities.GroupPlan;
 import com.example.ad_project_kampung_unite.entities.GroupPlan;
 import com.example.ad_project_kampung_unite.entities.Product;
+import com.example.ad_project_kampung_unite.entities.enums.GroupPlanStatus;
 import com.example.ad_project_kampung_unite.ml.Recommendation;
 
 import java.util.List;
@@ -38,4 +37,13 @@ public interface GroupPlanService {
 
     @GET("hitchrequest/savereq")
     Call<Integer> saveRequest(@Query("planId") int planId, @Query("hitcherDetailId") int hitcherDetailId, @Query("pickUpTime") String pickUpTime);
+
+    @GET("HitcherDetail/removedetail")
+    Call<Integer> removeHitcherDetail(@Query("hdid") int hdid);
+
+    @GET("groupplan/update/status/{id}/{status}")
+    Call<Void> updateGroupPlanStatus(@Path("id") int id, @Path("status") GroupPlanStatus status);
+
+    @GET("groupplan/plan/{id}")
+    Call<GroupPlan> getGroupPlanById(@Path("id") int planId);
 }
