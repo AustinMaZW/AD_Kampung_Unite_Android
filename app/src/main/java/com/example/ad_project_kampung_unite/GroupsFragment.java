@@ -1,6 +1,7 @@
 package com.example.ad_project_kampung_unite;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,6 +39,9 @@ public class GroupsFragment extends Fragment {
 
     List<GroupPlan> groupPlanList;
 
+    private SharedPreferences sharedPreferences;
+    private int userId;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -46,6 +50,10 @@ public class GroupsFragment extends Fragment {
         context = layoutRoot.getContext();
 
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("My Groups");
+
+        // Get user id from shared prefs
+        sharedPreferences = getContext().getSharedPreferences("LoginCredentials",0);
+        userId = sharedPreferences.getInt("userId", -1);
 
         rvGroupPlan = layoutRoot.findViewById(R.id.group_plan_recyclerview);
         rvGroupPlan.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext()));
@@ -56,7 +64,7 @@ public class GroupsFragment extends Fragment {
         return layoutRoot;
     }
     private void getGroupPlansFromServer(){
-        Call<List<GroupPlan>> call = gpService.findGroupPlansByUserDetailId(1); //hard coded userid here, replace later
+        Call<List<GroupPlan>> call = gpService.findGroupPlansByUserDetailId(userId);
 
         call.enqueue(new Callback<List<GroupPlan>>() {
             @Override
