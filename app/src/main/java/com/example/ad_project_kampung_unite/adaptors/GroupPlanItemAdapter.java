@@ -21,6 +21,7 @@ import com.example.ad_project_kampung_unite.entities.GroceryItem;
 import com.example.ad_project_kampung_unite.entities.GroceryList;
 import com.example.ad_project_kampung_unite.entities.GroupPlan;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,10 +48,7 @@ public class GroupPlanItemAdapter extends RecyclerView.Adapter<MyGroupPlansHolde
         GroupPlan groupPlan = lists.get(i);
 
         myholder.mGroupPlanName.setText(lists.get(i).getPlanName());
-
-        //null object ref error
-        //myholder.mGroupPlanItemCount.setText(lists.get(i).getCombinedPurchaseList().getQuantity());
-
+        myholder.mGroupPlanShoppingDate.setText(lists.get(i).getShoppingDate().toString());
         myholder.mGroupPlanRequests.setText(lists.get(i).getGroupPlanStatus().getDisplayStatus());
         //.setImageResource to set image.
 
