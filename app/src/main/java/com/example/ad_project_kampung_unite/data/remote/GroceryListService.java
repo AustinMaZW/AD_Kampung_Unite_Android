@@ -15,6 +15,7 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface GroceryListService {
 
@@ -23,7 +24,7 @@ public interface GroceryListService {
     Call<List<GroceryList>> findGroceryListsByUserDetailId(@Path("userDetailId") int userDetailId);
 
     @POST("grocerylists/new")
-    Call<GroceryList> addGroceryList(@Body GroceryList groceryList);
+    Call<Integer> createGroceryListByUserDetailId(@Query("groceryListName") String groceryListName, @Query("userDetailId") int userDetailId);
 
     @GET("grocerylists")
     Call<List<GroceryList>> getGroceryLists();
