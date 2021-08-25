@@ -417,7 +417,7 @@ public class GroupDetailsFragment extends Fragment {
 
         ActiveGroupExpandableRecyclerViewAdapter expandableCategoryRecyclerViewAdapter =
                 new ActiveGroupExpandableRecyclerViewAdapter(layoutRoot.getContext(), hitchRequestList_excludeRejected,
-                        childListHolder, groupPlan.getGroupPlanStatus());
+                        childListHolder/*, groupPlan.getGroupPlanStatus()*/);
 
         rvHitchRequests.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext()));
         rvHitchRequests.setAdapter(expandableCategoryRecyclerViewAdapter);

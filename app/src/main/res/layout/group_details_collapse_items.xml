@@ -78,19 +78,19 @@
                         android:layout_alignBaseline="@+id/categoryExpandBtn"
                         android:layout_alignBottom="@+id/categoryExpandBtn"
                         android:layout_toLeftOf="@+id/categoryExpandBtn"
-                        android:textSize="10sp"
+                        android:textSize="12sp"
                         android:textColor="@color/Kampong_Blue"
                         android:textStyle="bold"
                         android:background="@drawable/rounded_bg_yellow"/>
 
                     <Button
-                        android:id="@+id/complete_payment_btn"
+                        android:id="@+id/receive_payment_btn"
                         android:layout_width="wrap_content"
                         android:layout_height="40dp"
                         android:layout_alignBaseline="@+id/categoryExpandBtn"
                         android:layout_alignTop="@+id/categoryExpandBtn"
                         android:layout_toLeftOf="@+id/categoryExpandBtn"
-                        android:text="@string/complete_payment"
+                        android:text="@string/receive_payment"
                         android:textSize="10sp"
                         android:paddingVertical="0dp"
                         android:paddingHorizontal="8dp"/>

@@ -71,7 +71,7 @@ public class UpdatePriceFragment extends Fragment implements View.OnClickListene
     private void loadCombinedPurchaseLists() {
         cplService = RetrofitClient.createService(CPListService.class);
 //        Call<List<CombinedPurchaseList>> call = cplService.getAllCPLists();
-        Call<List<CombinedPurchaseList>> call = cplService.getCPListByGroupPlanId(gpId);
+        Call<List<CombinedPurchaseList>> call = cplService.getCPListByGroupPlanIdAndPurchasedStatus(gpId, true);
         call.enqueue(new Callback<List<CombinedPurchaseList>>() {
             @Override
             public void onResponse(Call<List<CombinedPurchaseList>> call, Response<List<CombinedPurchaseList>> response) {
