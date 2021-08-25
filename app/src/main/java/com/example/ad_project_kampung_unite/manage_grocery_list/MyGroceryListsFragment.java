@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,14 +44,17 @@ public class MyGroceryListsFragment extends Fragment {
 
     private List<GroceryList> groceryLists;
     private UserDetail user;
-    GroceryListService groceryListService;
-    UserDetailService userDetailService;
+    private SharedPreferences sharedPreferences;
+    private GroceryList newGroceryList;
+    int userId;
+
+    private GroceryListService groceryListService;
+    private UserDetailService userDetailService;
 
     private RecyclerView mRecyclerView;
     private MyGroceryListsAdapter myGroceryListsAdapter;
-
-    SharedPreferences sharedPreferences;
-    int userId;
+    private View layoutRoot;
+    FloatingActionButton addButton;
 
     public MyGroceryListsFragment() {
         // Required empty public constructor
@@ -60,27 +64,49 @@ public class MyGroceryListsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View layoutRoot = inflater.inflate(R.layout.fragment_grocery_lists, container, false);
+        layoutRoot = inflater.inflate(R.layout.fragment_grocery_lists, container, false);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("My Grocery Lists");
 
-        // Get user id
+        // Get user id from shared prefs
         sharedPreferences = getContext().getSharedPreferences("LoginCredentials",0);
         userId = sharedPreferences.getInt("userId", -1);
 
-        // get grocery lists from database
         groceryLists = new ArrayList<>();
         groceryListService = RetrofitClient.createService(GroceryListService.class);
-
-        // get user from database
         userDetailService = RetrofitClient.createService(UserDetailService.class);
 
-        loadGroceryLists(layoutRoot);
-        setUpAddButton(layoutRoot, userId);
+        getUser();
+        loadGroceryLists();
+        setUpAddButton();
 
         return layoutRoot;
     }
 
-    public void loadGroceryLists(View layoutRoot) {
+    public void getUser() {
+        Call<UserDetail> userCall = userDetailService.findUserById(userId);
+        userCall.enqueue(new Callback<UserDetail>() {
+            @Override
+            public void onResponse(Call<UserDetail> call, Response<UserDetail> response) {
+                if (response.isSuccessful()) {
+                    user = response.body();
+                    if(user!=null) {
+                        Log.i("User", user.toString());
+                    }
+                } else {
+                    Log.e("findUserById Error", response.errorBody().toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserDetail> call, Throwable t) {
+                Toast.makeText(getContext(), "Failed to connect", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+    }
+
+    public void loadGroceryLists() {
         Call<List<GroceryList>> call = groceryListService.findGroceryListsByUserDetailId(userId);
         call.enqueue(new Callback<List<GroceryList>>() {
             @Override
@@ -89,7 +115,7 @@ public class MyGroceryListsFragment extends Fragment {
                 if(result != null) {
                     result.stream().forEach(x -> groceryLists.add(x));
                     //recycler view adapter instantiated here
-                    buildRecyclerView(layoutRoot);
+                    buildRecyclerView();
 
                     //attaching touch helper to recycler view for swipe action itoms
                     ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
@@ -103,101 +129,102 @@ public class MyGroceryListsFragment extends Fragment {
         });
     }
 
-    public void setUpAddButton(View layoutRoot, int userId) {
-        FloatingActionButton addButton = layoutRoot.findViewById(R.id.fab);
+    public void setUpAddButton() {
+        addButton = layoutRoot.findViewById(R.id.fab);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Create dialog
-                AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
-                alert.setTitle("Enter Name of Grocery List");
+                createDialog();
+            }
+        });
+    }
 
-                // Set an EditText view to get user input
-                EditText input = new EditText(getContext());
-                alert.setView(input);
+    public void createDialog() {
+        // Create dialog
+        AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+        alert.setTitle("Enter Name of Grocery List");
 
-                alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        String name = input.getText().toString();
-                        GroceryList newGroceryList = new GroceryList();
-                        System.out.println("user id: " + userId);
+        // Set an EditText view to get user input
+        EditText input = new EditText(getContext());
+        alert.setView(input);
 
-                        Call<UserDetail> userCall = userDetailService.findUserById(userId);
-                        userCall.enqueue(new Callback<UserDetail>() {
-                            @Override
-                            public void onResponse(Call<UserDetail> call, Response<UserDetail> response) {
-                                if(response.body() != null) {
-                                    user = response.body();
-                                    System.out.println("name: " + user.getFirstName());
-                                    newGroceryList.setName(name);
-                                    newGroceryList.setUserDetail(user);
-                                }
+        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                String name = input.getText().toString();
+                saveNewGroceryList(name, userId);
+            }
+        });
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Canceled.
+            }
+        });
+        alert.show();
+    }
 
-                                // save new grocery list to database
-                                Call<GroceryList> groceryListCall = groceryListService.addGroceryList(newGroceryList);
-                                groceryListCall.enqueue(new Callback<GroceryList>() {
-                                    @Override
-                                    public void onResponse(Call<GroceryList> call, Response<GroceryList> response) {
-                                        System.out.println("connected");
+    public void saveNewGroceryList(String name, int userId) {
+        Call<Integer> groceryListCall = groceryListService.createGroceryListByUserDetailId(name, userId);
+        groceryListCall.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                if (response.isSuccessful()) {
+                    int groceryListId = response.body();
+                    System.out.println("grocery list created: "+groceryListId);
+                    sendGroceryListToFragment(groceryListId);
 
-                                        FragmentManager fragmentManager = getParentFragmentManager();
-                                        EditGroceryListFragment editGroceryListFragment = new EditGroceryListFragment();
+                } else {
+                    Log.e("createGroceryListByUserDetailId Error", response.errorBody().toString());
+                }
+            }
 
-                                        // addtobackstack to go back to previous fragment
-                                        fragmentManager.beginTransaction()
-                                                .replace(R.id.fragment_container, editGroceryListFragment)
-                                                .addToBackStack(null)
-                                                .commit();
-                                    }
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                Toast.makeText(getContext(), "Failed to connect", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
-                                    @Override
-                                    public void onFailure(Call<GroceryList> call, Throwable t) {
-                                        System.out.println("failed to connect");
+    public void sendGroceryListToFragment(int groceryListId) {
+        Call<GroceryList> call = groceryListService.findGroceryListByGroceryListId(groceryListId);
+        call.enqueue(new Callback<GroceryList>() {
+            @Override
+            public void onResponse(Call<GroceryList> call, Response<GroceryList> response) {
+                if(response.isSuccessful()) {
+                    newGroceryList = response.body();
+                    if(newGroceryList != null) {
+                        // send grocery list to grocery list fragment
+                        Bundle result = new Bundle();
+                        result.putSerializable("bundleKey1", newGroceryList);
+                        System.out.println("result:" + result);
+                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                        fragmentManager.setFragmentResult("requestKey1", result);
 
-                                    }
-                                });
-                            }
-
-                            @Override
-                            public void onFailure(Call<UserDetail> call, Throwable t) {
-                                Toast.makeText(getContext(), "Failed to connect", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-
+                        EditGroceryListFragment editGroceryListFragment = new EditGroceryListFragment();
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.fragment_container, editGroceryListFragment)
+                                .addToBackStack(null)
+                                .commit();
                     }
-                });
-                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        // Canceled.
-                    }
-                });
-                alert.show();
+                } else {
+                    Log.e("findGroceryListByGroceryListId Error", response.errorBody().toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GroceryList> call, Throwable t) {
+                Toast.makeText(getContext(), "Failed to connect", Toast.LENGTH_SHORT).show();
             }
         });
 
-
-
     }
 
-    //build recycler view
-    public void buildRecyclerView(View layoutRoot){
 
+    public void buildRecyclerView(){
         mRecyclerView = layoutRoot.findViewById(R.id.recyclerview);
-//        mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext(), LinearLayoutManager.VERTICAL,false));
-
         myGroceryListsAdapter = new MyGroceryListsAdapter(layoutRoot.getContext(), groceryLists);
         mRecyclerView.setAdapter(myGroceryListsAdapter);
     }
-
-
-
-
-
-
-
-
-
 
     //attributes for deleting or archiving a list via swipe action
     GroceryList deletedList = null;

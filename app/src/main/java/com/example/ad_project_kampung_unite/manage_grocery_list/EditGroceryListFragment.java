@@ -42,6 +42,8 @@ public class EditGroceryListFragment extends Fragment {
     private RecyclerView groceryItemRecyclerView;
     private GroceryItemService groceryItemService;
     private GroceryList groceryList;
+    private int groceryListId;
+    private String groceryListName;
     private List<GroceryItem> groceryItems;
     private View layoutRoot;
     private Button findMatch;
@@ -53,20 +55,32 @@ public class EditGroceryListFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(groceryList.getName());
+        getGroceryItems();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
         layoutRoot = inflater.inflate(R.layout.fragment_grocery_list, container, false);
         context_ = this.getContext();
+
         getParentFragmentManager().setFragmentResultListener("requestKey1", this, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
                 groceryList = (GroceryList) bundle.getSerializable("bundleKey1");
+                groceryListId = groceryList.getId();
                 // Set title
                 ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(groceryList.getName());
                 getGroceryItems();
             }
         });
+
+
+
         findMatch = layoutRoot.findViewById(R.id.hitcherButton);
         findMatch.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,7 +175,6 @@ public class EditGroceryListFragment extends Fragment {
                 // switch to buyer details fragment
                 FragmentManager fragmentManager = getParentFragmentManager();
                 BuyerFragment buyerFragment = new BuyerFragment();
-                buyerFragment.setArguments(result);
                 buyerFragment.setArguments(result);
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragment_container,buyerFragment)
