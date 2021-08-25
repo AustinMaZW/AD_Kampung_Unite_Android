@@ -94,10 +94,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         new UpdatePriceFragment()).commit();
                 break;
 
+            //test, later delete
             case R.id.nav_combined_list:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new CombinedListFragment()).commit();
                 break;
+
             case R.id.nav_logout:
                 //logout request
                 sharedPreferences = getSharedPreferences(LOGIN_CREDENTIALS, MODE_PRIVATE);
