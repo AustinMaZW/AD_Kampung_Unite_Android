@@ -43,9 +43,8 @@ public class CombinedListFragment extends Fragment {
 
     private MaterialButton finishShopping;
     private SharedPreferences sharedPreferences;
-    private List<CombinedPurchaseList> cplList = new ArrayList<>();
+    private List<CombinedPurchaseList> cplList;
     private RecyclerView combinedListItems;
-    private List<CombinedPurchaseList> shoppingList = new ArrayList<>();
     private ShoppingListAdapter shoppingListAdapter;
     private View combinedListView;
 
@@ -63,14 +62,15 @@ public class CombinedListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         combinedListView = inflater.inflate(R.layout.fragment_combined_list, container, false);
 
         //Demo Code to get from GroupPlanID = 18;
-        Integer groupPlanID = 18;
+//        Integer groupPlanID = 18;
 
         //Acutal code get data from server, groupPlanId from bundle
-//        Bundle bundle = getArguments();
-//        Integer groupPlanID = bundle.getInt("gpId");
+        Bundle bundle = getArguments();
+        Integer groupPlanID = bundle.getInt("gpId");
 
         String url = getResources().getString(R.string.base_url)+getString(R.string.get_list_id)+groupPlanID;
 
@@ -150,6 +150,7 @@ public class CombinedListFragment extends Fragment {
     }
 
     private void parseArray(JSONArray jsonArray) {
+        cplList = new ArrayList<>();
         for (int i = 0; i < jsonArray.length(); i++) {
             try {
                 JSONObject object = jsonArray.getJSONObject(i);
