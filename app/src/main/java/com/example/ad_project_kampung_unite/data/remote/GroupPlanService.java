@@ -46,4 +46,6 @@ public interface GroupPlanService {
 
     @GET("groupplan/plan/{id}")
     Call<GroupPlan> getGroupPlanById(@Path("id") int planId);
+
+
 }

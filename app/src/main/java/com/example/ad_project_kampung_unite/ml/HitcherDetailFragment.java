@@ -141,8 +141,9 @@ public class HitcherDetailFragment extends Fragment{
         String date = pickUpDate.format(df_date);
         String time = pickUpTime.format(df_time);
         id = -1;
-        Call<Integer> create = hds.saveHitcherDetail(date,time,address);
-        create.enqueue(new Callback<Integer>() {
+//        Call<Integer> create = hds.saveHitcherDetail(date,time,address);
+        Call<Integer> create_withList = hds.saveHitcherDetails(date,time,address,gList.getId());
+        create_withList.enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 Log.e("Request","Successful!!!!!");
