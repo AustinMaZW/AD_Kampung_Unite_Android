@@ -60,6 +60,7 @@ public class GroupDetailsFragment extends Fragment {
     private List<GroceryItem> hitcherGroceryItemList = new ArrayList<>();
 
     private List<HitchRequest> hitchRequestList = new ArrayList<>();
+    private List<HitchRequest> hitchRequestList_excludeRejected = new ArrayList<>();
     private List<List<GroceryItem>> childListHolder = new ArrayList<>();
 
     List<Integer> hitchids = new ArrayList<>();
@@ -241,16 +242,17 @@ public class GroupDetailsFragment extends Fragment {
                     hitchRequestList = response.body();
                     Log.d("Success", String.valueOf(hitchRequestList.get(0).toString())); //for testing
 
-                        //recycler view for grocery items
+                    //get hitchRequestsId from hitchRequest that are not "rejected" and create hitchrequest list to be passed to adapter
+                    List<Integer> hitchRequestIds = new ArrayList<>();
+                    for(int i =0; i<hitchRequestList.size();i++){
+                        Integer id = hitchRequestList.get(i).getId();
 
-                    for(int i = 0; i<hitchRequestList.size(); i++){
-                        int hitchRequestId = hitchRequestList.get(i).getId();
-                        // make individual request to fetch grocery items based on hitch request id
-//                        testing(hitchRequestId);
-                        hitchids.add(hitchRequestId);
+                        if(hitchRequestList.get(i).getRequestStatus().getDisplayStatus()!="Rejected"){
+                            hitchRequestList_excludeRejected.add(hitchRequestList.get(i));
+                            hitchRequestIds.add(id);
+                        }
                     }
-
-                    getHitcherGroceryItemsFromServer(hitchids);
+                    getHitcherGroceryItemsFromServer(hitchRequestIds);
 
                 } else {
                     Log.e("Error", response.errorBody().toString());
@@ -268,8 +270,9 @@ public class GroupDetailsFragment extends Fragment {
     }
 
     //get grocery items for each hitcher's grocery list
-    private void getHitcherGroceryItemsFromServer(List<Integer> ids){
-        Call<List<List<GroceryItem>>> call = groceryItemService.findGroceryItemsByHitchRequests(ids);
+    private void getHitcherGroceryItemsFromServer(List<Integer> hitchRequestIds){
+
+        Call<List<List<GroceryItem>>> call = groceryItemService.findGroceryItemsByHitchRequests(hitchRequestIds);
 
         call.enqueue(new Callback<List<List<GroceryItem>>>() {
             @Override
@@ -413,7 +416,7 @@ public class GroupDetailsFragment extends Fragment {
         rvHitchRequests = layoutRoot.findViewById(R.id.groupDetails_expandableRecyclerView);
 
         ActiveGroupExpandableRecyclerViewAdapter expandableCategoryRecyclerViewAdapter =
-                new ActiveGroupExpandableRecyclerViewAdapter(layoutRoot.getContext(), hitchRequestList,
+                new ActiveGroupExpandableRecyclerViewAdapter(layoutRoot.getContext(), hitchRequestList_excludeRejected,
                         childListHolder/*, groupPlan.getGroupPlanStatus()*/);
 
         rvHitchRequests.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext()));
@@ -428,7 +431,7 @@ public class GroupDetailsFragment extends Fragment {
         rvHitchRequests = layoutRoot.findViewById(R.id.groupDetails_expandableRecyclerView);
 
         ArchivedGroupExpandableRecyclerViewAdapter expandableCategoryRecyclerViewAdapter =
-                new ArchivedGroupExpandableRecyclerViewAdapter(layoutRoot.getContext(), hitchRequestList,
+                new ArchivedGroupExpandableRecyclerViewAdapter(layoutRoot.getContext(), hitchRequestList_excludeRejected,
                         childListHolder, groupPlan.getGroupPlanStatus());
 
         rvHitchRequests.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext()));
@@ -528,8 +531,10 @@ public class GroupDetailsFragment extends Fragment {
             new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
                     .addSwipeLeftBackgroundColor(ContextCompat.getColor(GroupDetailsFragment.this.getContext(), R.color.Kampong_Blue))
                     .addSwipeLeftActionIcon(R.drawable.ic_baseline_cancel_24)
+                    .addSwipeLeftLabel("Reject")
                     .addSwipeRightBackgroundColor(ContextCompat.getColor(GroupDetailsFragment.this.getContext(), R.color.Kampong_Yellow))
                     .addSwipeRightActionIcon(R.drawable.ic_baseline_check_circle_24)
+                    .addSwipeRightLabel("Approve")
                     .create()
                     .decorate();
 
