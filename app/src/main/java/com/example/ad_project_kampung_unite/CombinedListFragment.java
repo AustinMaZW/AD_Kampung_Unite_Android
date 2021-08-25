@@ -65,14 +65,12 @@ public class CombinedListFragment extends Fragment {
         // Inflate the layout for this fragment
         combinedListView = inflater.inflate(R.layout.fragment_combined_list, container, false);
 
-        //Get groupPlanID from sharedpreferences using Key groupPlanId
-        sharedPreferences = getActivity().getSharedPreferences("groupPlan",MODE_PRIVATE);
+        //Demo Code to get from GroupPlanID = 18;
+        Integer groupPlanID = 18;
 
-        //demo code get groupPlanid = 18;
-        Integer groupPlanID = sharedPreferences.getInt("groupPlanId", 18);
-
-        //Actual code get data from server, groupPlanId from shared preferences
-//        Integer groupPlanID = sharedPreferences.getInt("groupPlanId", 0);
+        //Acutal code get data from server, groupPlanId from bundle
+//        Bundle bundle = getArguments();
+//        Integer groupPlanID = bundle.getInt("gpId");
 
         String url = getResources().getString(R.string.base_url)+getString(R.string.get_list_id)+groupPlanID;
 
