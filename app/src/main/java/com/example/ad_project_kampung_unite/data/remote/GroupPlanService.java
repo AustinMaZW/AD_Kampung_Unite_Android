@@ -45,6 +45,11 @@ public interface GroupPlanService {
     @GET("groupplan/update/status/{id}/{status}")
     Call<Void> updateGroupPlanStatus(@Path("id") int id, @Path("status") GroupPlanStatus status);
 
+    @GET("groupplan/plan/{id}")
+    Call<GroupPlan> getGroupPlanById(@Path("id") int planId);
+
+
+
     @GET("groupplan/save")
     Call<GroupPlan> createGroupPlan(@Query("planName") String planName,
                                     @Query("storeName") String storeName,

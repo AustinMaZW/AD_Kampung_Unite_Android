@@ -3,6 +3,7 @@ package com.example.ad_project_kampung_unite.ml;
 import static android.provider.Settings.System.getString;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,6 +15,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -158,7 +161,7 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
         Button cancel = popView.findViewById(R.id.cancelPopBtn);
         Button ok = popView.findViewById(R.id.goToSlot);
 
-        PopupWindow popupWindow = new PopupWindow(popView, ViewGroup.LayoutParams.MATCH_PARENT, 1000, true);
+        PopupWindow popupWindow = new PopupWindow(popView, ViewGroup.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.WRAP_CONTENT, true);
 //                popupWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.arrow_back));
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -184,7 +187,7 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
         AlertDialog.Builder radioDialog = new AlertDialog.Builder(context);
 
         radioDialog.setTitle("Time Slots");
-        radioDialog.setIcon(R.mipmap.ic_launcher_round);
+        radioDialog.setIcon(R.drawable.logo_small);
         radioDialog.setSingleChoiceItems(radioItems, 0, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -206,6 +209,7 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
                         popupWindow_.dismiss();
                         Intent backToMain = new Intent(context, MainActivity.class);
                         backToMain.putExtra("hitcherDetail",false);
+                        Toast.makeText(context,"Request Sent!",Toast.LENGTH_SHORT).show();
                         context.startActivity(backToMain);
                     }
                 }).setNegativeButton("Back", new DialogInterface.OnClickListener() {
@@ -280,4 +284,5 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
     public interface onRecyclerItemClickListener {
         void onRecyclerItemClick(View view, int position);
     }
+
 }

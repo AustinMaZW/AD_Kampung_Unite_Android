@@ -37,12 +37,12 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:text="Total items: "
+                android:text="Shopping Date: "
                 android:textColor="@color/black"
                 android:textSize="14dp" />
 
             <TextView
-                android:id="@+id/group_plan_total_items"
+                android:id="@+id/group_plan_shopping_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -65,7 +65,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:text="Requests: "
+                android:text="Group Status: "
                 android:textColor="@color/black"
                 android:textSize="14dp" />
 

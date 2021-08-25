@@ -19,19 +19,28 @@
         <entry key="..\:/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/layout/fragment_group_details.xml" value="0.33" />
         <entry key="..\:/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/layout/fragment_groups.xml" value="0.190625" />
         <entry key="..\:/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/layout/fragment_search.xml" value="0.36666666666666664" />
+        <entry key="..\:/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/layout/fragment_update_price.xml" value="0.21927083333333333" />
         <entry key="..\:/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/layout/fragment_view_grocery_list.xml" value="0.36666666666666664" />
+        <entry key="..\:/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/layout/grocerylist_groceryitem.xml" value="0.29010416666666666" />
         <entry key="..\:/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/layout/hitch_request_item.xml" value="0.36666666666666664" />
         <entry key="..\:/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/layout/indiv_grocery_list_item.xml" value="0.36666666666666664" />
         <entry key="..\:/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/layout/my_grocery_lists_items.xml" value="0.36666666666666664" />
+        <entry key="..\:/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/layout/update_price_item.xml" value="0.34427083333333336" />
         <entry key="..\:/AndroidStudioProjects/AD_Project_Kampung_Unite/app/src/main/res/menu/drawer_menu.xml" value="0.5" />
         <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.2791666666666667" />
+        <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/drawable/anim_enter.xml" value="0.26197916666666665" />
         <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/drawable/arrow_back.xml" value="0.2791666666666667" />
         <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/drawable/custom_button.xml" value="0.2791666666666667" />
         <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/drawable/ic_baseline_archive_24.xml" value="0.2791666666666667" />
         <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/drawable/ic_baseline_delete_24.xml" value="0.2791666666666667" />
+        <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/drawable/ic_baseline_edit_24.xml" value="0.26197916666666665" />
         <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2791666666666667" />
         <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/drawable/join_group_plan.xml" value="0.22447916666666667" />
+        <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/drawable/menu_.xml" value="0.26197916666666665" />
         <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/drawable/myboard_1.xml" value="0.22447916666666667" />
+        <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/drawable/round_corner.xml" value="0.26197916666666665" />
+        <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/drawable/roundcorner.xml" value="0.26197916666666665" />
+        <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/drawable/roundcornerpop.xml" value="0.26197916666666665" />
         <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/layout/activity_buyer_list.xml" value="0.2046875" />
         <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/layout/activity_hitcher_detail.xml" value="0.2046875" />
         <entry key="..\:/Code/Github/AD_Project_Kampung_Unite/app/src/main/res/layout/activity_login.xml" value="0.2630208333333333" />

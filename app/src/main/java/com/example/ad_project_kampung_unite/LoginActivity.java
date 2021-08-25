@@ -64,7 +64,21 @@ public class LoginActivity extends AppCompatActivity {
                     String username = editText_username.getText().toString();
                     String pwd = editText_password.getText().toString();
                     UserDetail user = new UserDetail(username, pwd);
-                    loginRequest(user);
+                    if (!user.getUsername().matches("") | !user.getPassword().matches("")){
+                        loginRequest(user);
+                    }else
+                        Toast.makeText(LoginActivity.this, "Please enter Username / Password", Toast.LENGTH_SHORT).show();
+
+                    //use this for easy no login required
+//                    Intent main = new Intent(LoginActivity.this, MainActivity.class);
+//                    startActivity(main);
+
+                    //login without password - temp addition to delete
+//                    Intent main = new Intent(LoginActivity.this, MainActivity.class);
+//                    SharedPreferences.Editor editor = sharedPreferences.edit();
+//                    editor.putString(KEY_USERID, "3");
+//                    startActivity(main);
+
 //                    //Start use of path variable to login
 //                    String loginUrl = "https://localhost:8080/user/login"+username+"&&"+pwd;
 //                    StringRequest loginRequest = new StringRequest(loginUrl, new Response.Listener<String>() {
@@ -96,15 +110,18 @@ public class LoginActivity extends AppCompatActivity {
 //                    queue.add(loginRequest);
 //                    //End use of pathvariable to login
 
-
 //                    String authenticateUrl = "https://localhost:8080/user/authenticate";
 
-//                    use this for easy no login required
-//                    Intent main = new Intent(LoginActivity.this, MainActivity.class);
-//                    startActivity(main);
+
                 }
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent backToMain = new Intent(LoginActivity.this, StartUpActivity.class);
+        startActivity(backToMain);
     }
 
     private void loginRequest(UserDetail user) {
@@ -149,11 +166,7 @@ public class LoginActivity extends AppCompatActivity {
                 else{
                     Toast.makeText(LoginActivity.this, "Enter Valid Username / Password", Toast.LENGTH_SHORT).show();
 
-                    //login without password - temp addition to delete
-                    Intent main = new Intent(LoginActivity.this, MainActivity.class);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString(KEY_USERID, "3");
-                    startActivity(main);
+
                 }
             }
 

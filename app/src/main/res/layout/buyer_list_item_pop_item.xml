@@ -12,23 +12,9 @@
             android:id="@+id/productInplan"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="ssssssssssssssssssssssssss"
+            android:text="sssssssss"
             android:gravity="left"
-            android:textColor="@color/black"
-            android:textSize="20sp"/>
+            android:textColor="#293250"
+            android:textSize="14sp"/>
     </LinearLayout>
-
-<!--    <LinearLayout-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_weight="1"-->
-<!--        android:layout_gravity="right"-->
-<!--        android:gravity="right">-->
-<!--        <androidx.appcompat.widget.AppCompatButton-->
-<!--            android:id="@+id/showSlots"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="Time Slot"/>-->
-
-<!--    </LinearLayout>-->
 </LinearLayout>

@@ -9,6 +9,7 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface HitchRequestService {
     @GET("hitchrequest/{groceryListId}")
@@ -25,4 +26,9 @@ public interface HitchRequestService {
 
     @PUT("hitchrequest/update")
     Call<HitchRequest> updateHitchRequest(@Body HitchRequest hitchRequest);
+
+    @GET("hitchrequest/approve/{hitchRequestId}")
+    Call<Boolean> approveHitchRq(@Path("hitchRequestId") int id);
+
+
 }

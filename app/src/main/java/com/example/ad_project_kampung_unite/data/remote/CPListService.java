@@ -14,9 +14,12 @@ public interface CPListService {
     @GET("cplist")
     Call<List<CombinedPurchaseList>> getAllCPLists();
 
-    @GET("cplist/getlist/{groupPlanId}")
-    Call<List<CombinedPurchaseList>> getCPListByGroupPlanId(@Path("groupPlanId") int id);
+    @GET("cplist/groupplan/{groupPlanId}/{status}")
+    Call<List<CombinedPurchaseList>> getCPListByGroupPlanIdAndPurchasedStatus(@Path("groupPlanId") int id, @Path("status") boolean purchasedStatus);
 
     @POST("cplist/save/all")
     Call<Boolean> saveAll(@Body List<CombinedPurchaseList> list);
+
+    @POST("cplist/update")
+    Call<List<CombinedPurchaseList>> update(@Body List<CombinedPurchaseList> combinedPurchaseList);
 }

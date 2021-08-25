@@ -56,7 +56,7 @@ public class UpdatePriceFragment extends Fragment implements View.OnClickListene
         // to get arguments from previous fragment
         Bundle bundle = getArguments();
         if(bundle!=null){
-            gpId = (int) bundle.getSerializable("gpId");
+            gpId = (int) bundle.getInt("gpId");
         }
         gpId = 18; // hard coded to test
 
@@ -71,7 +71,7 @@ public class UpdatePriceFragment extends Fragment implements View.OnClickListene
     private void loadCombinedPurchaseLists() {
         cplService = RetrofitClient.createService(CPListService.class);
 //        Call<List<CombinedPurchaseList>> call = cplService.getAllCPLists();
-        Call<List<CombinedPurchaseList>> call = cplService.getCPListByGroupPlanId(gpId);
+        Call<List<CombinedPurchaseList>> call = cplService.getCPListByGroupPlanIdAndPurchasedStatus(gpId, true);
         call.enqueue(new Callback<List<CombinedPurchaseList>>() {
             @Override
             public void onResponse(Call<List<CombinedPurchaseList>> call, Response<List<CombinedPurchaseList>> response) {
@@ -115,8 +115,6 @@ public class UpdatePriceFragment extends Fragment implements View.OnClickListene
             if (!updatePriceAdapter.hasError()) {
                 if (!combinedPurchaseLists.isEmpty())
                     getGroceryItemsForGroupPlan();
-
-                // need screen transition somewhere
             }
         }
     }
@@ -139,6 +137,18 @@ public class UpdatePriceFragment extends Fragment implements View.OnClickListene
                 if (response.isSuccessful()) {
                     List<GroceryItem> items = response.body();
                     calculateSubtotalPriceForEachItem(items);
+
+                    // go to group details fragment, passed group plan id
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("gpId", gpId);
+
+                    GroupDetailsFragment groupDetailsFragment = new GroupDetailsFragment();
+                    groupDetailsFragment.setArguments(bundle);
+                    getParentFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.fragment_container, groupDetailsFragment)
+                            .addToBackStack(null)
+                            .commit();
                 } else {
                     Log.e("getAcceptedGroceryItemsByGroupPlanId Error", response.errorBody().toString());
                 }
