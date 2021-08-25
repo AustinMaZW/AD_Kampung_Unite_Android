@@ -28,8 +28,6 @@ import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
 import com.example.ad_project_kampung_unite.data.remote.UserDetailService;
 import com.example.ad_project_kampung_unite.entities.GroceryList;
 import com.example.ad_project_kampung_unite.entities.UserDetail;
-import com.example.ad_project_kampung_unite.entities.enums.HitchBuyRole;
-import com.example.ad_project_kampung_unite.search_product.SearchFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -47,6 +45,7 @@ public class MyGroceryListsFragment extends Fragment {
     private List<GroceryList> groceryLists;
     private UserDetail user;
     private SharedPreferences sharedPreferences;
+    private GroceryList newGroceryList;
     int userId;
 
     private GroceryListService groceryListService;
@@ -171,6 +170,7 @@ public class MyGroceryListsFragment extends Fragment {
                 if (response.isSuccessful()) {
                     int groceryListId = response.body();
                     System.out.println("grocery list created: "+groceryListId);
+                    sendGroceryListToFragment(groceryListId);
 
                 } else {
                     Log.e("createGroceryListByUserDetailId Error", response.errorBody().toString());
@@ -183,6 +183,41 @@ public class MyGroceryListsFragment extends Fragment {
             }
         });
     }
+
+    public void sendGroceryListToFragment(int groceryListId) {
+        Call<GroceryList> call = groceryListService.findGroceryListByGroceryListId(groceryListId);
+        call.enqueue(new Callback<GroceryList>() {
+            @Override
+            public void onResponse(Call<GroceryList> call, Response<GroceryList> response) {
+                if(response.isSuccessful()) {
+                    newGroceryList = response.body();
+                    if(newGroceryList != null) {
+                        // send grocery list to grocery list fragment
+                        Bundle result = new Bundle();
+                        result.putSerializable("bundleKey1", newGroceryList);
+                        System.out.println("result:" + result);
+                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                        fragmentManager.setFragmentResult("requestKey1", result);
+
+                        EditGroceryListFragment editGroceryListFragment = new EditGroceryListFragment();
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.fragment_container, editGroceryListFragment)
+                                .addToBackStack(null)
+                                .commit();
+                    }
+                } else {
+                    Log.e("findGroceryListByGroceryListId Error", response.errorBody().toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GroceryList> call, Throwable t) {
+                Toast.makeText(getContext(), "Failed to connect", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
 
     public void buildRecyclerView(){
         mRecyclerView = layoutRoot.findViewById(R.id.recyclerview);
