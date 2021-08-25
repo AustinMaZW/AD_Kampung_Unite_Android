@@ -118,6 +118,12 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent backToMain = new Intent(LoginActivity.this, StartUpActivity.class);
+        startActivity(backToMain);
+    }
+
     private void loginRequest(UserDetail user) {
         String url = getResources().getString(R.string.user_base_url);
         httpClient.addInterceptor(logging);
