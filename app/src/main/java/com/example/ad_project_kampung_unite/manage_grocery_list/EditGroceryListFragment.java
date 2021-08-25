@@ -172,7 +172,6 @@ public class EditGroceryListFragment extends Fragment {
                 FragmentManager fragmentManager = getParentFragmentManager();
                 BuyerFragment buyerFragment = new BuyerFragment();
                 buyerFragment.setArguments(result);
-                buyerFragment.setArguments(result);
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragment_container,buyerFragment)
                         .addToBackStack(null)

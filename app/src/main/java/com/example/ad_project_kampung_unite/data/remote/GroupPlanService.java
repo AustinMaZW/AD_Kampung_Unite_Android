@@ -5,6 +5,7 @@ import com.example.ad_project_kampung_unite.entities.Product;
 import com.example.ad_project_kampung_unite.entities.enums.GroupPlanStatus;
 import com.example.ad_project_kampung_unite.ml.Recommendation;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import retrofit2.Call;
@@ -43,4 +44,11 @@ public interface GroupPlanService {
 
     @GET("groupplan/update/status/{id}/{status}")
     Call<Void> updateGroupPlanStatus(@Path("id") int id, @Path("status") GroupPlanStatus status);
+
+    @GET("groupplan/save")
+    Call<GroupPlan> createGroupPlan(@Query("planName") String planName,
+                                    @Query("storeName") String storeName,
+                                    @Query("shoppingDate") String shoppingDate,
+                                    @Query("pickUpAddress") String pickupAddress,
+                                    @Query("pickUpDate") String pickupDate);
 }
