@@ -75,8 +75,9 @@ public class EditGroceryListFragment extends Fragment {
                 FragmentManager fm = getParentFragmentManager();
                 Log.e("Hitcher Detail","yes_5");
                 HitcherDetailFragment hitcerDetail = new HitcherDetailFragment();
+                Log.e("list Id",Integer.toString(groceryList.getId()));
 
-//                hitcerDetail.setgList(groceryList);
+                hitcerDetail.setgList(groceryList);
 
                 FragmentTransaction trans = fm.beginTransaction();
                 trans.replace(R.id.fragment_container,hitcerDetail);

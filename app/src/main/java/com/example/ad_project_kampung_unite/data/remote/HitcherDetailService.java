@@ -20,6 +20,7 @@ public interface HitcherDetailService {
     @GET("/HitcherDetail/savehd")
     Call<Integer> saveHitcherDetail(@Query("pickUpdate") String pickUpdate, @Query("pickUptime") String pickUptime, @Query("address") String address);
 
-
+    @GET("HitcherDetail/savehd")
+    Call<Integer> saveHitcherDetails(@Query("pickUpdate") String pickUpdate, @Query("pickUptime") String pickUptime, @Query("address") String address, @Query("listId") int listId);
 
 }
