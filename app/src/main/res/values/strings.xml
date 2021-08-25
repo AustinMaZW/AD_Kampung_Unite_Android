@@ -14,11 +14,13 @@
     <string name="gst">GST 7%</string>
     <string name="service_fee">Service fee 5%</string>
     <string name="total">Total</string>
-    <string name="complete_payment">Complete\nPayment</string>
+    <string name="complete_payment">Complete Payment</string>
     <string name="payment_status_complete">*Payment is completed</string>
     <string name="payment_status_waiting_buyer">*Buyer\'s confirmation for payment complete is still pending</string>
-    <string name="paid">PAID</string>
-    <string name="pending_payment">PENDING PAYMENT</string>
+    <string name="receive_payment">Payment\nReceived</string>
+    <string name="transaction_complete">Transaction Completed</string>
+    <string name="pending_payment">Pending Pick Up</string>
+    <string name="receive_payment_confirm_msg">Have you received the payment from hitcher for this request?</string>
     <string name="user_base_url">http://10.0.2.2:8080/user/</string>
     <string name="finish_shopping">Finish Shopping</string>
     <string name="item_name">Item Name</string>

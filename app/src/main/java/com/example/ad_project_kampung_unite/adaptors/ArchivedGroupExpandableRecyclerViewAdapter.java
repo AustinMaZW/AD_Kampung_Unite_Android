@@ -1,7 +1,9 @@
 package com.example.ad_project_kampung_unite.adaptors;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.util.Log;
 import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
@@ -10,9 +12,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,14 +26,11 @@ import com.example.ad_project_kampung_unite.R;
 import com.example.ad_project_kampung_unite.data.remote.HitchRequestService;
 import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
 import com.example.ad_project_kampung_unite.entities.GroceryItem;
-import com.example.ad_project_kampung_unite.entities.GroceryList;
-import com.example.ad_project_kampung_unite.entities.GroupPlan;
 import com.example.ad_project_kampung_unite.entities.HitchRequest;
+import com.example.ad_project_kampung_unite.entities.enums.RequestStatus;
 import com.google.android.material.chip.Chip;
 import com.example.ad_project_kampung_unite.entities.enums.GroupPlanStatus;
-import org.w3c.dom.Text;
 
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,7 +66,7 @@ public class ArchivedGroupExpandableRecyclerViewAdapter extends RecyclerView.Ada
     public class ViewHolder extends RecyclerView.ViewHolder{
         TextView name, pickuptime, itemcount, paymentstatus;
         ImageButton dropBtn;
-        Button completepaymentBtn;
+        Button receivepaymentBtn;
         RecyclerView cardRecyclerView;
         CardView cardView;
         Chip mrequeststatus;
@@ -76,7 +79,7 @@ public class ArchivedGroupExpandableRecyclerViewAdapter extends RecyclerView.Ada
             itemcount=itemView.findViewById(R.id.groceryDetailItemQuantitySum);
             paymentstatus = itemView.findViewById(R.id.payment_status);
             dropBtn = itemView.findViewById(R.id.categoryExpandBtn);
-            completepaymentBtn = itemView.findViewById(R.id.complete_payment_btn);
+            receivepaymentBtn = itemView.findViewById(R.id.receive_payment_btn);
             cardRecyclerView = itemView.findViewById(R.id.innerRecyclerView);
             cardView = itemView.findViewById(R.id.cardView);
             mrequeststatus = itemView.findViewById(R.id.group_details_status);
@@ -127,18 +130,18 @@ public class ArchivedGroupExpandableRecyclerViewAdapter extends RecyclerView.Ada
         if (groupPlanStatus == GroupPlanStatus.SHOPPINGCOMPLETED) {
             if (hitchRequest.isBuyerConfirmTransaction()) {
                 if (hitchRequest.isHitcherConfirmTransaction()) {
-                    holder.paymentstatus.setText(R.string.paid);
+                    holder.paymentstatus.setText(R.string.transaction_complete);
                     holder.paymentstatus.setBackground(context.getResources().getDrawable(R.drawable.rounded_bg_green, null));
                 } else {
                     holder.paymentstatus.setText(R.string.pending_payment);
                     holder.paymentstatus.setBackground(context.getResources().getDrawable(R.drawable.rounded_bg_yellow, null));
                 }
-                holder.completepaymentBtn.setVisibility(View.GONE);
+                holder.receivepaymentBtn.setVisibility(View.GONE);
             } else {
                 holder.paymentstatus.setVisibility(View.GONE);
             }
         } else {
-            holder.completepaymentBtn.setVisibility(View.GONE);
+            holder.receivepaymentBtn.setVisibility(View.GONE);
             holder.paymentstatus.setVisibility(View.GONE);
         }
 
@@ -160,11 +163,10 @@ public class ArchivedGroupExpandableRecyclerViewAdapter extends RecyclerView.Ada
         });
         holder.cardRecyclerView.setAdapter(itemInnerRecyclerView);
 
-        holder.completepaymentBtn.setOnClickListener(new View.OnClickListener() {
+        holder.receivepaymentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                hitchRequest.setBuyerConfirmTransaction(true);
-                updateConrirmTransaction(hitchRequest, holder);
+                loadConfirmDialog(hitchRequest, holder);
             }
         });
     }
@@ -172,11 +174,34 @@ public class ArchivedGroupExpandableRecyclerViewAdapter extends RecyclerView.Ada
     // Returns the total count of items in the list
     @Override
     public int getItemCount() {
-        return (int)hitchRequestsList.stream().count();
+        return hitchRequestsList.size();
+    }
+
+    private void loadConfirmDialog(HitchRequest hitchRequest, ViewHolder holder) {
+        // Create dialog to confirm close requests
+        AlertDialog.Builder alert = new AlertDialog.Builder(context);
+        alert.setMessage(R.string.receive_payment_confirm_msg);
+
+        alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //update buyer's confirm transaction
+                hitchRequest.setBuyerConfirmTransaction(true);
+                updateConrirmTransaction(hitchRequest, holder);
+            }
+        });
+
+        alert.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+            }
+        });
+
+        alert.show();
     }
 
     private void updateConrirmTransaction(HitchRequest hitchRequest, ViewHolder holder) {
         hitchRequestService = RetrofitClient.createService(HitchRequestService.class);
+        //update buyer's confirm transaction
         Call<HitchRequest> call = hitchRequestService.updateHitchRequest(hitchRequest);
         call.enqueue(new Callback<HitchRequest>() {
             @Override
@@ -184,14 +209,15 @@ public class ArchivedGroupExpandableRecyclerViewAdapter extends RecyclerView.Ada
                 if (response.isSuccessful()) {
                     HitchRequest updatedHR = response.body();
 
+                    //change transaction status on UI
                     if (updatedHR.isHitcherConfirmTransaction()) {
-                        holder.paymentstatus.setText(R.string.paid);
+                        holder.paymentstatus.setText(R.string.transaction_complete);
                         holder.paymentstatus.setBackground(context.getResources().getDrawable(R.drawable.rounded_bg_green, null));
                     } else {
                         holder.paymentstatus.setText(R.string.pending_payment);
                         holder.paymentstatus.setBackground(context.getResources().getDrawable(R.drawable.rounded_bg_yellow, null));
                     }
-                    holder.completepaymentBtn.setVisibility(View.GONE);
+                    holder.receivepaymentBtn.setVisibility(View.GONE);
                     holder.paymentstatus.setVisibility(View.VISIBLE);
                 }
                 else {
