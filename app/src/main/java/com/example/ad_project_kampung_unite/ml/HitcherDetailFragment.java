@@ -180,6 +180,7 @@ public class HitcherDetailFragment extends Fragment{
                         recommendation = response.body();
                         intent_buyerList.putExtra("recommendation",recommendation);
                         intent_buyerList.putExtra("hitcherDetailId",id);
+                        intent_buyerList.putExtra("groceryList",gList);
                         System.out.println("Successful!!!!");
                         startActivity(intent_buyerList);
 
@@ -188,6 +189,7 @@ public class HitcherDetailFragment extends Fragment{
                     @Override
                     public void onFailure(Call<Recommendation> call, Throwable t) {
                         System.out.println("fail_1");
+                        submitBtn.setEnabled(true);
                     }
                 });
             }

@@ -97,9 +97,6 @@ public class EditGroceryListFragment extends Fragment {
                 trans.replace(R.id.fragment_container,hitcerDetail);
                 trans.addToBackStack(null);
                 trans.commit();
-//                Intent intent = new Intent(context_, HitcherDetailActivity.class);
-//                startActivity(intent);
-
             }
         });
         addButton = layoutRoot.findViewById(R.id.add);
