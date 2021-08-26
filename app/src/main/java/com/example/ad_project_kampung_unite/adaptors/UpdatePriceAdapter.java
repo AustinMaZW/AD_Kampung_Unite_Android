@@ -34,7 +34,7 @@ public class UpdatePriceAdapter extends RecyclerView.Adapter<UpdatePriceAdapter.
             for (int i = 0; i < cpList.size(); i++) {
                 CombinedPurchaseList item = cpList.get(i);
                 subtotalMap.put(item.getId(), String.valueOf(item.getProductSubtotal()));
-                discountMap.put(item.getId(), String.valueOf(0));
+                discountMap.put(item.getId(), String.valueOf(item.getProductDiscount()));
             }
         }
 
@@ -135,7 +135,7 @@ public class UpdatePriceAdapter extends RecyclerView.Adapter<UpdatePriceAdapter.
     }
 
     private static boolean isNumeric(String text) {
-        if (text == null || text.equals("-0.0")) {
+        if (text == null || text.equals("-0.0") || text.equals("-0.") || text.equals("-0")) {
             return false;
         }
 
