@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ad_project_kampung_unite.adaptors.ActiveGroupExpandableRecyclerViewAdapter;
@@ -111,6 +112,8 @@ public class GroupDetailsFragment extends Fragment {
                 }
             });
         }
+        groupPlanService = RetrofitClient.createService(GroupPlanService.class);
+        getGroupPlanFromServer();
 
         groceryItemService = RetrofitClient.createService(GroceryItemService.class);
         getBuyerGroceryItemsFromServer();
@@ -118,11 +121,12 @@ public class GroupDetailsFragment extends Fragment {
         hitchRequestService = RetrofitClient.createService(HitchRequestService.class);
         getHitchRequestsFromServer();
 
-        groupPlanService = RetrofitClient.createService(GroupPlanService.class);
+        TextView requestComment = layoutRoot.findViewById(R.id.group_details_requestcomment);
+        requestComment.setVisibility(View.GONE);
 
         closeRequestBtn = layoutRoot.findViewById(R.id.closeRequestButton);
         if(groupStatus!="Available"){
-            closeRequestBtn.setVisibility(View.INVISIBLE);
+            closeRequestBtn.setVisibility(View.GONE);
         }
         else{
             closeRequestBtn.setOnClickListener(new View.OnClickListener() {
@@ -179,7 +183,7 @@ public class GroupDetailsFragment extends Fragment {
         //Button to link to Combined List Fragment
         combinedListBtn = layoutRoot.findViewById(R.id.combinedListButton);
         if(groupStatus!="Closed"){
-            combinedListBtn.setVisibility(View.INVISIBLE);
+            combinedListBtn.setVisibility(View.GONE);
         }
         combinedListBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -287,12 +291,12 @@ public class GroupDetailsFragment extends Fragment {
                     Log.d("Success", String.valueOf(childListHolder.get(0).toString())); //for testing
                     System.out.println("childlistholder updated ");
 
-                    getGroupPlanFromServer();
+
                     //inflate recycler view for all hitch requests and grocery items
-/*                    if(groupStatus=="Available")
+                    if(groupStatus=="Available")
                         initiateExpanderForActiveList();
                     else
-                        initiateExpanderForArchivedList();*/    //move to inside of getGroupPlanFromServer() method
+                        initiateExpanderForArchivedList(); //invisible
 
                 } else {
                     Log.e("Error", response.errorBody().toString());
@@ -320,11 +324,6 @@ public class GroupDetailsFragment extends Fragment {
                 if (response.isSuccessful()) {
                     groupPlan = response.body();
 
-                    //inflate recycler view for all hitch requests and grocery items
-                    if(groupStatus=="Available")
-                        initiateExpanderForActiveList();
-                    else
-                        initiateExpanderForArchivedList(); //invisible
                 } else {
                     Log.e("getGroupPlanById Error", response.errorBody().toString());
                 }
