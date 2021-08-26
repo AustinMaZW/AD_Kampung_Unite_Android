@@ -72,11 +72,6 @@ public class HitcherDetailFragment extends Fragment{
     @Override
     public void onStart() {
         super.onStart();
-        View view = getView();
-        Log.e("Hitcher Detail","yes_4");
-
-        Log.e("Hitcher Detail","yes_5");
-
     }
 
     public static HitcherDetailFragment newInstance(String param1, String param2) {

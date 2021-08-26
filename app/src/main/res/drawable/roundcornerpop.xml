@@ -4,7 +4,8 @@
     <corners
         android:bottomLeftRadius="30px"
         android:bottomRightRadius="30px"
-        android:topLeftRadius="30px"/>
+        android:topLeftRadius="30px"
+        android:topRightRadius="30px"/>
     <padding
         android:bottom="5dp"
         android:left="5dp"

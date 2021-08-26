@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="showPopupAnimation" parent="android:Animation">
+        <item name="android:windowExitAnimation">@anim/alpha_exit</item>
+        <item name="android:windowEnterAnimation">@anim/alpha_in</item>
+    </style>
+</resources>

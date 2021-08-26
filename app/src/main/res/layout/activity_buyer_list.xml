@@ -12,17 +12,10 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/Kampong_Yellow"
             app:navigationIcon="@drawable/arrow_back"
-            app:titleTextColor="@color/black"
-            app:titleMarginStart="90dp">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="All Buyers"
-            android:textSize="30sp"
-            android:textStyle="bold"
-            android:textColor="#293250"/>
-    </androidx.appcompat.widget.Toolbar>
+            app:title="All Buyers"
+            android:theme="@style/ThemeOverlay.AppCompat.Light"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            android:elevation="4dp"/>
     <FrameLayout
         android:id="@+id/lists_byrv"
         android:name="com.example.ad_project_kampung_unite.ml.BuyerRecycleFragment"
