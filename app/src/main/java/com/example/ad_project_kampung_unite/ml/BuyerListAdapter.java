@@ -217,31 +217,19 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
             @Override
             public void onClick(View v) {
                 getSlotsByPlanId(planIds.get(position),position);
-                Log.e("ok", "ok");
             }
         });
         return popupWindow;
     }
     private void getSlotsByPlanId(int planId,int position){
-        Call<List<String>> getSlots = groupPlanService.getSlots(planId);
-
-        getSlots.enqueue(new Callback<List<String>>() {
-            @Override
-            public void onResponse(Call<List<String>> call, Response<List<String>> response) {
-                List<String> slotList = response.body();
-                if(slotList != null && slotList.size()>0){
-                    String[] slots = new String[slotList.size()];
-                    IntStream.range(0,slots.length).forEach(x->slots[x] = slotList.get(x));
-                    showRadioDialog(position,slots);
-                }else{
-                    showRadioDialog(position,null);
-                }
-            }
-            @Override
-            public void onFailure(Call<List<String>> call, Throwable t) {
-                showRadioDialog(position,null);
-            }
-        });
+        List<String> slot = slotsList.get(planId);
+        if(slot != null && slot.size()>0){
+            String[] slots = new String[slot.size()];
+            IntStream.range(0,slots.length).forEach(x->slots[x] = slot.get(x));
+            showRadioDialog(position,slots);
+        }else{
+            showRadioDialog(position,null);
+        }
     }
     private int pos;
     private void showRadioDialog(int position,String[] pSlots){
