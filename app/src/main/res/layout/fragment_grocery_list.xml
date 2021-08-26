@@ -60,7 +60,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/groceryItemRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_weight="1"
         app:layout_constraintVertical_bias="0"
         app:layout_constraintBottom_toTopOf="@id/hitcherButton"

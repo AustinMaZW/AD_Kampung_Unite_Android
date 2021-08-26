@@ -26,15 +26,18 @@ import com.example.ad_project_kampung_unite.adaptors.ActiveGroupExpandableRecycl
 import com.example.ad_project_kampung_unite.adaptors.ArchivedGroupExpandableRecyclerViewAdapter;
 import com.example.ad_project_kampung_unite.adaptors.GroceryListItemAdaptor;
 import com.example.ad_project_kampung_unite.data.remote.GroceryItemService;
+import com.example.ad_project_kampung_unite.data.remote.GroceryListService;
 import com.example.ad_project_kampung_unite.data.remote.GroupPlanService;
 import com.example.ad_project_kampung_unite.data.remote.HitchRequestService;
 import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
 import com.example.ad_project_kampung_unite.entities.CombinedPurchaseList;
 import com.example.ad_project_kampung_unite.entities.GroceryItem;
+import com.example.ad_project_kampung_unite.entities.GroceryList;
 import com.example.ad_project_kampung_unite.entities.GroupPlan;
 import com.example.ad_project_kampung_unite.entities.GroupPlan;
 import com.example.ad_project_kampung_unite.entities.enums.GroupPlanStatus;
 import com.example.ad_project_kampung_unite.entities.enums.RequestStatus;
+import com.example.ad_project_kampung_unite.manage_grocery_list.EditGroceryListFragment;
 import com.google.android.material.button.MaterialButton;
 import com.example.ad_project_kampung_unite.entities.HitchRequest;
 import com.google.android.material.snackbar.Snackbar;
@@ -95,21 +98,27 @@ public class GroupDetailsFragment extends Fragment {
 
         //if group status is not "available", buyer cannot edit their own grocery list
         editBtn = layoutRoot.findViewById(R.id.groupDetails_buyerEditBtn);
-        if(groupStatus!="Available"){
+        if(groupStatus!="Open to hitch requests"){
             editBtn.setVisibility(View.GONE);
         }
-        //buyer can edit their own grocery list
-        //pending to-do: pass buyer id to 'grocery list' fragment
         else{
               editBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    FragmentManager fragmentManager = getParentFragmentManager();
-//                    GroceryListFragment groceryListFragment = new GroceryListFragment();
-//                    fragmentManager.beginTransaction()
-//                            .replace(R.id.fragment_container,groceryListFragment)
-//                            .addToBackStack(null)
-//                            .commit();
+
+                    GroceryList buyerGroceryList = buyerGroceryItemList.get(0).getGroceryList();
+                    Bundle result = new Bundle();;
+                    result.putSerializable("bundleKey1", buyerGroceryList);
+                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                    fragmentManager.setFragmentResult("requestKey1", result);
+
+
+                    FragmentManager parentFragmentManager = getParentFragmentManager();
+                    EditGroceryListFragment editGroceryListFragment = new EditGroceryListFragment();
+                    parentFragmentManager.beginTransaction()
+                            .replace(R.id.fragment_container,editGroceryListFragment)
+                            .addToBackStack(null)
+                            .commit();
                 }
             });
         }
@@ -202,7 +211,6 @@ public class GroupDetailsFragment extends Fragment {
                         .commit();
             }
         });
-
 
         return layoutRoot;
     }
@@ -298,7 +306,7 @@ public class GroupDetailsFragment extends Fragment {
 
 
                     //inflate recycler view for all hitch requests and grocery items
-                    if(groupStatus=="Available")
+                    if(groupStatus=="Open to hitch requests")
                         initiateExpanderForActiveList();
                     else
                         initiateExpanderForArchivedList(); //invisible
