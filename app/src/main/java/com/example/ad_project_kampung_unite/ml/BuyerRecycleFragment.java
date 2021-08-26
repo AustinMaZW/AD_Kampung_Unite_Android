@@ -40,6 +40,11 @@ public class BuyerRecycleFragment extends Fragment {
         this.recommendation = recommendation;
         this.planIds = recommendation.getPlandIds();
     }
+    private GroceryList gList;
+
+    public void setgList(GroceryList gList) {
+        this.gList = gList;
+    }
 
     private List<GroupPlan> plans;
     public void setPlans(List<GroupPlan> plans){
@@ -84,6 +89,7 @@ public class BuyerRecycleFragment extends Fragment {
 
 
     public void buildRecyclerView(View layoutRoot){
+<<<<<<< Updated upstream
         Call<Map<Integer,List<String>>> getSlots = p.getSlotsByPlanIds(planIds);
         getSlots.enqueue(new Callback<Map<Integer, List<String>>>() {
             @Override
@@ -104,6 +110,19 @@ public class BuyerRecycleFragment extends Fragment {
 //                recyclerView.setAdapter(myAdapter);
             }
         });
+=======
+        recyclerView = layoutRoot.findViewById(R.id.buerlistrv);
+        LinearLayoutManager linear = new LinearLayoutManager(layoutRoot.getContext());
+        recyclerView.setLayoutManager(linear);
+        myAdapter = new BuyerListAdapter(plans,layoutRoot.getContext(),planIds,hitcherDetailId,recommendation,gList);
+        recyclerView.setAdapter(myAdapter);
+//        myAdapter.setRecyclerItemClickListener(new BuyerListAdapter.onRecyclerItemClickListener() {
+//            @Override
+//            public void onRecyclerItemClick(View view, int position ) {
+//
+//            }
+//        });
+>>>>>>> Stashed changes
     }
 
     public void queryPlans() {

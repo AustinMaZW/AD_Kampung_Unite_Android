@@ -32,6 +32,7 @@ import com.example.ad_project_kampung_unite.R;
 import com.example.ad_project_kampung_unite.data.remote.GroupPlanService;
 import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
 import com.example.ad_project_kampung_unite.entities.AvailableTime;
+import com.example.ad_project_kampung_unite.entities.GroceryList;
 import com.example.ad_project_kampung_unite.entities.GroupPlan;
 import com.example.ad_project_kampung_unite.entities.Product;
 import com.google.gson.Gson;
@@ -45,6 +46,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -70,16 +72,26 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
     private Context context;
     private GroupPlanService groupPlanService;
     private List<Integer> requestIds = new ArrayList<>();
+<<<<<<< Updated upstream
     private Map<Integer,List<String>> slotsList;
 
 
     public BuyerListAdapter(List<GroupPlan> plans, Context context,List<Integer> planIds,int hitcherDetailId,Recommendation recommendation,Map<Integer,List<String>> slotsList) {
+=======
+    private GroceryList gList;
+
+    public BuyerListAdapter(List<GroupPlan> plans, Context context,List<Integer> planIds,int hitcherDetailId,Recommendation recommendation,GroceryList gList) {
+>>>>>>> Stashed changes
         this.plans = plans;
         this.context = context;
         this.planIds = planIds;
         this.hitcherDetailId = hitcherDetailId;
         this.recommendation = recommendation;
+<<<<<<< Updated upstream
         this.slotsList = slotsList;
+=======
+        this.gList = gList;
+>>>>>>> Stashed changes
     }
 
 
@@ -198,7 +210,7 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
         RecyclerView recyclerView = layoutRoot.findViewById(R.id.poprv);
         LinearLayoutManager linear = new LinearLayoutManager(layoutRoot.getContext());
         recyclerView.setLayoutManager(linear);
-        ProductListAdapter myAdapter = new ProductListAdapter(pList, layoutRoot.getContext(),planIds);
+        ProductListAdapter myAdapter = new ProductListAdapter(pList, layoutRoot.getContext(),planIds,gList);
         recyclerView.setAdapter(myAdapter);
 
     }
@@ -251,6 +263,7 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
         });
     }
     private int pos;
+<<<<<<< Updated upstream
     private void showRadioDialog(int position,String[] pSlots){
         if(pSlots != null && pSlots.length >0){
             showSelectionDialog(position,pSlots);
@@ -262,6 +275,21 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
     private void showSelectionDialog(int position,String[] radioItems){
         AlertDialog.Builder radioDialog = new AlertDialog.Builder(context);
         System.out.println(plans.get(position).getStoreName());
+=======
+    private void showRadioDialog(int position) {
+        final String[] radioItems = new String[]{"9:00 am - 9:30 am", "9:30 am - 10:00 am", "10:00 am - 10:30 am"};
+        final LocalTime[] timeslots = new LocalTime[]{LocalTime.of(9,0),LocalTime.of(9,30),LocalTime.of(10,0)};
+        try{
+            LocalTime[] slots = (LocalTime[]) plans.get(position).getAvailableTimes().toArray();
+            String[] selectSlots = (String[]) Arrays.stream(slots).map(x-> String.format("%s - %s",x.toString(),x.plusMinutes(30).toString())).collect(Collectors.toList()).toArray();
+            IntStream.range(0,slots.length).forEach(System.out::println);
+        }catch (Exception e){
+            Log.e("No time","No Available time");
+        }
+
+
+        AlertDialog.Builder radioDialog = new AlertDialog.Builder(context);
+>>>>>>> Stashed changes
         radioDialog.setTitle("Time Slots");
         radioDialog.setIcon(R.drawable.logo_small);
         radioDialog.setSingleChoiceItems(radioItems, 0, new DialogInterface.OnClickListener() {
@@ -274,11 +302,17 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
                 , new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+<<<<<<< Updated upstream
 
                         String timeslot = radioItems[pos];
                         LocalTime time = LocalTime.parse(timeslot,DateTimeFormatter.ISO_TIME);
                         LocalDateTime pickUpDateTime = LocalDateTime.of(plans.get(position).getPickupDate(),time);
                         sendRequest(planIds.get(position),hitcherDetailId,pickUpDateTime);
+=======
+                        LocalTime timeslot = timeslots[pos];
+                        LocalDateTime pickUpTime = LocalDateTime.of(plans.get(position).getPickupDate(),timeslot);
+                        sendRequest(planIds.get(position),hitcherDetailId,pickUpTime);
+>>>>>>> Stashed changes
                         dialog.dismiss();
                         popupWindow_.dismiss();
                         Intent backToMain = new Intent(context, MainActivity.class);

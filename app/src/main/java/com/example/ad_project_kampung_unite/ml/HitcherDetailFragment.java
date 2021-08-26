@@ -114,8 +114,12 @@ public class HitcherDetailFragment extends Fragment{
             @Override
             public void onClick(View v) {
                 submitBtn.setEnabled(false);
-                Toast.makeText(getContext(),"Please Wait",Toast.LENGTH_SHORT).show();
-                saveHitcherDetail();
+                try{
+                    saveHitcherDetail();
+                }catch(Exception e){
+                    Toast.makeText(getContext(),"Please Input Correct Detail",Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
         return view;
@@ -130,6 +134,7 @@ public class HitcherDetailFragment extends Fragment{
         LocalDateTime pickUpDate = LocalDateTime.of(pickDate,pickTime);
         String address = location.getText().toString().concat(", Singapore, Singapore");
         if(!pickDate.equals(null) && !pickTime.equals(null) && !address.isEmpty()&&!address.equals(null)){
+            Toast.makeText(getContext(),"Please Wait",Toast.LENGTH_SHORT).show();
             HitcherDetail hd = new HitcherDetail(pickUpDate,address);
             sendRequest(pickDate,pickTime,address);
         }
@@ -180,7 +185,11 @@ public class HitcherDetailFragment extends Fragment{
                         recommendation = response.body();
                         intent_buyerList.putExtra("recommendation",recommendation);
                         intent_buyerList.putExtra("hitcherDetailId",id);
+<<<<<<< Updated upstream
                         intent_buyerList.putExtra("groceryList",gList);
+=======
+                        intent_buyerList.putExtra("gList",gList);
+>>>>>>> Stashed changes
                         System.out.println("Successful!!!!");
                         startActivity(intent_buyerList);
 

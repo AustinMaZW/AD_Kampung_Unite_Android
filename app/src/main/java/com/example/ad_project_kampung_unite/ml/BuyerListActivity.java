@@ -46,7 +46,11 @@ public class BuyerListActivity extends AppCompatActivity implements View.OnClick
         Intent intent = getIntent();
         hitcherDetailId = intent.getIntExtra("hitcherDetailId",0);
         recommendation = (Recommendation)intent.getSerializableExtra("recommendation");
+<<<<<<< Updated upstream
         gList = (GroceryList) intent.getSerializableExtra("groceryList");
+=======
+        gList = (GroceryList) intent.getSerializableExtra("gList");
+>>>>>>> Stashed changes
         tbar = findViewById(R.id.toolbar_allbuyers);
         tbar.setOnClickListener(this);
         back = new Intent(this, MainActivity.class);
@@ -60,7 +64,12 @@ public class BuyerListActivity extends AppCompatActivity implements View.OnClick
         FragmentTransaction trans = fm.beginTransaction();
         brv.setRecommendation(recommendation);
         brv.setHitcherDetailId(hitcherDetailId);
+<<<<<<< Updated upstream
         trans.replace(id,brv);
+=======
+        brv.setgList(gList);
+        trans.replace(R.id.lists_byrv,brv);
+>>>>>>> Stashed changes
         trans.addToBackStack(null);
         trans.commit();
     }

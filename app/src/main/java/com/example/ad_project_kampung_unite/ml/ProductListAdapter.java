@@ -1,6 +1,7 @@
 package com.example.ad_project_kampung_unite.ml;
 
 import android.content.Context;
+import android.text.TextPaint;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ad_project_kampung_unite.R;
+import com.example.ad_project_kampung_unite.entities.GroceryList;
 import com.example.ad_project_kampung_unite.entities.Product;
 
 import java.util.List;
@@ -20,15 +22,17 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
     private List<Product> pList;
     private List<Integer> planIds;
     private Context context;
+    private GroceryList gList;
 
     public ProductListAdapter(List<Product> pList) {
         this.pList = pList;
     }
 
-    public ProductListAdapter(List<Product> pList, Context context,List<Integer> planIds) {
+    public ProductListAdapter(List<Product> pList, Context context,List<Integer> planIds,GroceryList gList) {
         this.pList = pList;
         this.context = context;
         this.planIds = planIds;
+        this.gList = gList;
     }
 
     @NonNull
@@ -41,6 +45,12 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
     @Override
     public void onBindViewHolder(@NonNull ProductListViewHolder holder, int position) {
         holder.item.setText(pList.get(position).getProductName());
+//        gList.getGroceryItems().stream().forEach(x->{
+//            if(x.getProduct().getProductId() == pList.get(position).getProductId()){
+//                TextPaint tp = holder.item.getPaint();
+//                tp.setFakeBoldText(true);
+//            }
+//        });
     }
 
     @Override
