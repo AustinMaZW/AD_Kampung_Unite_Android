@@ -21,6 +21,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.ad_project_kampung_unite.entities.GroceryList;
 import com.example.ad_project_kampung_unite.manage_grocery_list.MyGroceryListsFragment;
 import com.example.ad_project_kampung_unite.ml.HitcherDetailFragment;
 import com.google.android.material.navigation.NavigationView;
@@ -61,6 +62,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(hd){
             FragmentManager fm = getSupportFragmentManager();
             HitcherDetailFragment hitcerDetail = new HitcherDetailFragment();
+            GroceryList gList = (GroceryList) back.getSerializableExtra("groceryList");
+            if(gList != null)
+                hitcerDetail.setgList(gList);
             FragmentTransaction trans = fm.beginTransaction();
             trans.replace(R.id.fragment_container,hitcerDetail);
             trans.addToBackStack(null);

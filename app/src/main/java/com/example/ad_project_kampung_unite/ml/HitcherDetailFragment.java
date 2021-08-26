@@ -180,6 +180,7 @@ public class HitcherDetailFragment extends Fragment{
                         recommendation = response.body();
                         intent_buyerList.putExtra("recommendation",recommendation);
                         intent_buyerList.putExtra("hitcherDetailId",id);
+                        intent_buyerList.putExtra("groceryList",gList);
                         System.out.println("Successful!!!!");
                         startActivity(intent_buyerList);
 
