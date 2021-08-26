@@ -55,6 +55,13 @@
         android:textSize="18dp"
         android:textStyle="bold" />
 
+    <TextView
+        android:id="@+id/group_details_requestcomment"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="You don't have any hitch request yet"
+        android:textAlignment="center" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/groupDetails_expandableRecyclerView"
         android:layout_width="match_parent"
@@ -62,12 +69,7 @@
         android:paddingLeft="0dp"
         android:paddingRight="10dp"
         />
-    <TextView
-        android:id="@+id/group_details_requestcomment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="You don't have any hitch request yet"
-        android:textAlignment="center"/>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

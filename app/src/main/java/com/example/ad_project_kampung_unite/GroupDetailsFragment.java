@@ -69,6 +69,7 @@ public class GroupDetailsFragment extends Fragment {
 
     private RecyclerView rvBuyerGrocery,rvHitchRequests;
     private ImageButton editBtn;
+    private TextView requestComment;
     private MaterialButton closeRequestBtn, combinedListBtn;
 
     private GroupPlanService groupPlanService;
@@ -118,11 +119,11 @@ public class GroupDetailsFragment extends Fragment {
         groceryItemService = RetrofitClient.createService(GroceryItemService.class);
         getBuyerGroceryItemsFromServer();
 
+        requestComment = layoutRoot.findViewById(R.id.group_details_requestcomment);
+        requestComment.setVisibility(View.GONE);
+
         hitchRequestService = RetrofitClient.createService(HitchRequestService.class);
         getHitchRequestsFromServer();
-
-        TextView requestComment = layoutRoot.findViewById(R.id.group_details_requestcomment);
-        requestComment.setVisibility(View.GONE);
 
         closeRequestBtn = layoutRoot.findViewById(R.id.closeRequestButton);
         if(groupStatus!="Available"){
@@ -248,19 +249,23 @@ public class GroupDetailsFragment extends Fragment {
 
                 if (response.isSuccessful()) {
                     hitchRequestList = response.body();
-                    Log.d("Success", String.valueOf(hitchRequestList.get(0).toString())); //for testing
 
-                    //get hitchRequestsId from hitchRequest that are not "rejected" and create hitchrequest list to be passed to adapter
-                    List<Integer> hitchRequestIds = new ArrayList<>();
-                    for(int i =0; i<hitchRequestList.size();i++){
-                        Integer id = hitchRequestList.get(i).getId();
+                    if(hitchRequestList.size()!=0) {
+                        //get hitchRequestsId from hitchRequest that are not "rejected" and create hitchrequest list to be passed to adapter
+                        List<Integer> hitchRequestIds = new ArrayList<>();
+                        for (int i = 0; i < hitchRequestList.size(); i++) {
+                            Integer id = hitchRequestList.get(i).getId();
 
-                        if(hitchRequestList.get(i).getRequestStatus().getDisplayStatus()!="Rejected"){
-                            hitchRequestList_excludeRejected.add(hitchRequestList.get(i));
-                            hitchRequestIds.add(id);
+                            if (hitchRequestList.get(i).getRequestStatus().getDisplayStatus() != "Rejected") {
+                                hitchRequestList_excludeRejected.add(hitchRequestList.get(i));
+                                hitchRequestIds.add(id);
+                            }
                         }
+                        getHitcherGroceryItemsFromServer(hitchRequestIds);
                     }
-                    getHitcherGroceryItemsFromServer(hitchRequestIds);
+                    else{
+                        requestComment.setVisibility(View.VISIBLE);
+                    }
 
                 } else {
                     Log.e("Error", response.errorBody().toString());
