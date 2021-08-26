@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
@@ -105,9 +106,6 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
         }else{
             holder.timeSlot.setText("No Available time");
         }
-
-        System.out.print("shit");
-
         holder.location.setText(String.format("Address: %s (Distance: %.2f)",plans.get(position).getPickupAddress(),recommendation.getDistance().get(position)));
         holder.sendRequest.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,27 +140,6 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
 
             }
         });
-
-
-
-//        Call<List<String>> getSlots = groupPlanService.getSlots(planIds.get(position));
-//        getSlots.enqueue(new Callback<List<String>>() {
-//            @Override
-//            public void onResponse(Call<List<String>> call, Response<List<String>> response) {
-//                List<String> sls = response.body();
-//                if(sls != null && sls.size() > 0){
-//                    String strSlots = sls.stream().reduce((x,y)->x.concat(String.format(" , ",y))).toString();
-//                    createView(holder,position,strSlots);
-//                }else{
-//                    createView(holder,position,null);
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<List<String>> call, Throwable t) {
-//                createView(holder,position,null);
-//            }
-//        });
     }
     @Override
     public int getItemCount() {
@@ -171,7 +148,17 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
         }
         return plans.size();
     }
-
+    private void backgroudAlpha(float f,Activity myActivity){
+        WindowManager.LayoutParams lp =myActivity.getWindow().getAttributes();
+        lp.alpha=f;
+        myActivity.getWindow().setAttributes(lp);
+    }
+    private Activity getActivity(Context context) {
+        if (context == null) return null;
+        if (context instanceof Activity) return (Activity) context;
+        if (context instanceof ContextWrapper) return getActivity(((ContextWrapper)context).getBaseContext());
+        return null;
+    }
     public void queryPronductsInplan(int planId, View v,int position) {
         GroupPlanService p = RetrofitClient.createService(GroupPlanService.class);
         Call<List<Product>> call = p.getProductsByPlanId(planId);
@@ -185,6 +172,8 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
                 PopupWindow popupWindow = popMaker(view, pList,position);
                 popupWindow_ = popupWindow;
                 popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+                backgroudAlpha(0.4f,getActivity(context));
+
             }
             //when request is fail, call back this
             @Override
@@ -210,13 +199,18 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
         Button ok = popView.findViewById(R.id.goToSlot);
 
         PopupWindow popupWindow = new PopupWindow(popView, ViewGroup.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.WRAP_CONTENT, true);
-//                popupWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.arrow_back));
+        popupWindow.setAnimationStyle(R.style.showPopupAnimation);
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                backgroudAlpha(1.0f,getActivity(context));
+            }
+        });
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.e("cancel", "cancel");
                 popupWindow.dismiss();
-
             }
         });
         ok.setOnClickListener(new View.OnClickListener() {
@@ -243,7 +237,6 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
                     showRadioDialog(position,null);
                 }
             }
-
             @Override
             public void onFailure(Call<List<String>> call, Throwable t) {
                 showRadioDialog(position,null);
@@ -274,7 +267,6 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
                 , new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
                         String timeslot = radioItems[pos];
                         LocalTime time = LocalTime.parse(timeslot,DateTimeFormatter.ISO_TIME);
                         LocalDateTime pickUpDateTime = LocalDateTime.of(plans.get(position).getPickupDate(),time);
@@ -284,6 +276,7 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
                         Intent backToMain = new Intent(context, MainActivity.class);
                         backToMain.putExtra("hitcherDetail",false);
                         Toast.makeText(context,"Request Sent!",Toast.LENGTH_SHORT).show();
+                        backgroudAlpha(0.4f,getActivity(context));
                         context.startActivity(backToMain);
                     }
                 }).setNegativeButton("Back", new DialogInterface.OnClickListener() {
@@ -305,8 +298,6 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
                 int idd = response.body();
                 if(idd > 0){
                     requestIds.add(idd);
-                    Log.e("dd","succ");
-                    System.out.println(idd);
                 }
             }
 
