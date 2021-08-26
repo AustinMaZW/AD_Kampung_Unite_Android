@@ -167,8 +167,8 @@ public class HitcherDetailFragment extends Fragment{
             @Override
             public void run() {
                 Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(MLBASEURL) //设置网络请求的Url地址
-                        .addConverterFactory(GsonConverterFactory.create()) //设置数据解析器
+                        .baseUrl(MLBASEURL)
+                        .addConverterFactory(GsonConverterFactory.create())
                         .build();
                 //create request interface object
                 GroupPlanService request = retrofit.create(GroupPlanService.class);
