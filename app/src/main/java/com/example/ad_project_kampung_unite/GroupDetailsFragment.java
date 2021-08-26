@@ -60,7 +60,7 @@ public class GroupDetailsFragment extends Fragment {
     private List<GroceryItem> hitcherGroceryItemList = new ArrayList<>();
 
     private List<HitchRequest> hitchRequestList = new ArrayList<>();
-    private List<HitchRequest> hitchRequestList_excludeRejected = new ArrayList<>();
+    private List<HitchRequest> hitchRequestList_excludeRejected;
     private List<List<GroceryItem>> childListHolder = new ArrayList<>();
 
     List<Integer> hitchids = new ArrayList<>();
@@ -233,6 +233,7 @@ public class GroupDetailsFragment extends Fragment {
 
     private void getHitchRequestsFromServer(){
         Call<List<HitchRequest>> call = hitchRequestService.getHitchRequestsByGroupPlanId(groupId);
+        hitchRequestList_excludeRejected = new ArrayList<>();
 
         call.enqueue(new Callback<List<HitchRequest>>() {
             @Override
@@ -386,31 +387,6 @@ public class GroupDetailsFragment extends Fragment {
         });
     }
 
-    private void approveHitchRqToServer(int hitchRqId) {
-        HitchRequestService hitchRequestService = RetrofitClient.createService(HitchRequestService.class);
-        Call<Boolean> call = hitchRequestService.approveHitchRq(hitchRqId); //hard coded hitchRqId here, replace later
-
-        call.enqueue(new Callback<Boolean>() {
-            @Override
-            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-
-                if (response.isSuccessful()) {
-                    Boolean status = response.body();
-                    Log.d("Success", status.toString()); //for testing
-
-                    //logic to change any UI here, but shouldn't need since other parts of this frag should've handled it
-                } else {
-                    Log.e("Error", response.errorBody().toString());
-                }
-            }
-            public void onFailure(Call<Boolean> call, Throwable t) {
-                call.cancel();
-                Log.w("Failure", "Failure!");
-                t.printStackTrace();
-            }
-        });
-    }
-
     private void initiateExpanderForActiveList() {
 
         rvHitchRequests = layoutRoot.findViewById(R.id.groupDetails_expandableRecyclerView);
@@ -441,15 +417,6 @@ public class GroupDetailsFragment extends Fragment {
         itemTouchHelper.attachToRecyclerView(rvHitchRequests);
     }
 
-
-     //attributes for deleting or archiving a list via swipe action
-    HitchRequest deletedList = null;
-    HitchRequest archiveList = null;
-    String deletedListName = null;
-    String archivedListName = null;
-
-    List<HitchRequest> archivedLists = new ArrayList<>();
-
     //defining what each swipe action does
     ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT|ItemTouchHelper.RIGHT) {
         @Override
@@ -464,50 +431,29 @@ public class GroupDetailsFragment extends Fragment {
 
             switch (direction){
                 case ItemTouchHelper.LEFT:
-                    deletedList = hitchRequestList.get(position);
-                    deletedListName = deletedList.toString();
+                    HitchRequest hitchRq = hitchRequestList.get(position);     //get id of hitchRq
+                    hitchRq.setRequestStatus(RequestStatus.REJECTED);
+                    updateHitchRequestStatusToServer(hitchRq);  //send http rq to server to approve
 
                     hitchRequestList.remove(position);
-                    rvHitchRequests.removeViewAt(position);
-//                    ExpandableRecyclerViewAdapter.notifyItemRemoved(position);
-//                    FragmentManager fm = ((AppCompatActivity)layoutRoot.getContext()).getSupportFragmentManager();
-//
-//                    Fragment currentFrag = fm.findFragmentById(R.id.groupDetails_expandableRecyclerView);
-//                    fm.beginTransaction().detach(currentFrag).commitNow();
-//                    fm.beginTransaction().attach(currentFrag).commitNow();
 
-                    Snackbar.make(rvHitchRequests, deletedListName, Snackbar.LENGTH_LONG)
-                            .setAction("Undo", new View.OnClickListener(){
+                    Snackbar.make(rvHitchRequests, "Hitch request rejected", Snackbar.LENGTH_LONG).show();
 
-                                @Override
-                                public void onClick(View v) {
-                                    hitchRequestList.add(position, deletedList);
-//                                    ExpandableRecyclerViewAdapter.notifyItemInserted(position);
-                                }
-                            }).show();
+                    FragmentManager fm = ((AppCompatActivity)layoutRoot.getContext()).getSupportFragmentManager();
+                    Fragment currentFrag = fm.findFragmentByTag("GROUP_DETAILS_FRAG");
+                    fm.beginTransaction().detach(currentFrag).commitNow();
+                    fm.beginTransaction().attach(currentFrag).commitNow();
+
                     break;
                 case ItemTouchHelper.RIGHT:
-                    int hitchRqId = hitchRequestList.get(position).getId();     //get id of hitchRq
-                    approveHitchRqToServer(hitchRqId);  //send http rq to server to approve
-
-                    archiveList = hitchRequestList.get(position);
-                    archivedListName = archiveList.toString();
-                    archivedLists.add(archiveList);
+                    hitchRq = hitchRequestList.get(position);     //get id of hitchRq
+                    hitchRq.setRequestStatus(RequestStatus.ACCEPTED);
+                    updateHitchRequestStatusToServer(hitchRq);  //send http rq to server to approve
 
                     hitchRequestList.remove(position);
 //                    ExpandableRecyclerViewAdapter.notifyItemRemoved(position);
 
-                    Snackbar.make(rvHitchRequests, archivedListName, Snackbar.LENGTH_LONG)
-                            .setAction("Undo", new View.OnClickListener(){
-
-                                @Override
-                                public void onClick(View v) {
-                                    archivedLists.remove(archivedLists.lastIndexOf(archiveList));
-                                    hitchRequestList.add(position, archiveList);
-//                                    ExpandableRecyclerViewAdapter.notifyItemInserted(position);
-                                }
-                            }).show();
-
+                    Snackbar.make(rvHitchRequests, "Hitch request accepted", Snackbar.LENGTH_LONG).show();
 
                     try {
                         Thread.sleep(250);      //need to wait or database hasn't updated...
@@ -516,8 +462,8 @@ public class GroupDetailsFragment extends Fragment {
                     }
 
                     //below to refresh the ui after accepting hitch rq
-                    FragmentManager fm = ((AppCompatActivity)layoutRoot.getContext()).getSupportFragmentManager();
-                    Fragment currentFrag = fm.findFragmentByTag("GROUP_DETAILS_FRAG");
+                    fm = ((AppCompatActivity)layoutRoot.getContext()).getSupportFragmentManager();
+                    currentFrag = fm.findFragmentByTag("GROUP_DETAILS_FRAG");
                     fm.beginTransaction().detach(currentFrag).commitNow();
                     fm.beginTransaction().attach(currentFrag).commitNow();
 
