@@ -3,9 +3,11 @@ package com.example.ad_project_kampung_unite.ml;
 import static android.provider.Settings.System.getString;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -13,6 +15,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -23,10 +27,12 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.ad_project_kampung_unite.MainActivity;
 import com.example.ad_project_kampung_unite.R;
 import com.example.ad_project_kampung_unite.data.remote.GroupPlanService;
 import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
 import com.example.ad_project_kampung_unite.entities.AvailableTime;
+import com.example.ad_project_kampung_unite.entities.GroceryList;
 import com.example.ad_project_kampung_unite.entities.GroupPlan;
 import com.example.ad_project_kampung_unite.entities.Product;
 import com.google.gson.Gson;
@@ -40,11 +46,14 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -63,13 +72,26 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
     private Context context;
     private GroupPlanService groupPlanService;
     private List<Integer> requestIds = new ArrayList<>();
+<<<<<<< Updated upstream
+    private Map<Integer,List<String>> slotsList;
 
-    public BuyerListAdapter(List<GroupPlan> plans, Context context,List<Integer> planIds,int hitcherDetailId,Recommendation recommendation) {
+
+    public BuyerListAdapter(List<GroupPlan> plans, Context context,List<Integer> planIds,int hitcherDetailId,Recommendation recommendation,Map<Integer,List<String>> slotsList) {
+=======
+    private GroceryList gList;
+
+    public BuyerListAdapter(List<GroupPlan> plans, Context context,List<Integer> planIds,int hitcherDetailId,Recommendation recommendation,GroceryList gList) {
+>>>>>>> Stashed changes
         this.plans = plans;
         this.context = context;
         this.planIds = planIds;
         this.hitcherDetailId = hitcherDetailId;
         this.recommendation = recommendation;
+<<<<<<< Updated upstream
+        this.slotsList = slotsList;
+=======
+        this.gList = gList;
+>>>>>>> Stashed changes
     }
 
 
@@ -82,22 +104,47 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
         groupPlanService = RetrofitClient.createService(GroupPlanService.class);
         return new MyViewHolder(view);
     }
-
-    @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
+    public void createView(MyViewHolder holder,int position,String slos){
         DecimalFormat df = new DecimalFormat("0.00%");
         holder.buyerName.setText(String.format("%s (Similarity %s)",plans.get(position).getStoreName(),df.format(recommendation.getProduct_score().get(position))));
         holder.pickUpDate.setText(String.format("Pick Up: %tF",plans.get(position).getPickupDate()));
-        List<AvailableTime> slos = plans.get(position).getAvailableTimes();
-        if(slos != null){
-            String slots = slos.stream().map(AvailableTime::getPickupSlots).map(LocalTime::toString).reduce((x,y) -> x.concat(String.format(" , ",y))).toString();
-            holder.timeSlot.setText(slots);
+        List<String> slots_str = this.slotsList.get(planIds.get(position));
+        System.out.println("get the slots by map");
+        if(slots_str != null && slots_str.size() > 0){
+            System.out.println(slots_str.get(0));
+            String slot = slots_str.stream().reduce((x,y)->x.concat(String.format(" %s",y))).toString();
+            holder.timeSlot.setText(slot);
         }else{
             holder.timeSlot.setText("No Available time");
         }
-//        List<String> slots = slos.stream().map(AvailableTime::getPickupSlots).map(LocalTime::toString).collect(Collectors.toList());
 
+        System.out.print("shit");
 
+        holder.location.setText(String.format("Address: %s (Distance: %.2f)",plans.get(position).getPickupAddress(),recommendation.getDistance().get(position)));
+        holder.sendRequest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                queryPronductsInplan(planIds.get(position), v,position); //use id
+            }
+        });
+    }
+    @Override
+    public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
+
+        DecimalFormat df = new DecimalFormat("0.00%");
+        holder.buyerName.setText(String.format("%s (Similarity %s)",plans.get(position).getStoreName(),df.format(recommendation.getProduct_score().get(position))));
+        holder.pickUpDate.setText(String.format("Pick Up: %tF",plans.get(position).getPickupDate()));
+        List<String> slots_str = this.slotsList.get(planIds.get(position));
+        if(slots_str != null && slots_str.size() > 0){
+            StringBuilder bler = new StringBuilder();
+            slots_str.stream().forEach(x->bler.append(String.format("%s ",x)));
+            String slot = bler.toString();
+            holder.timeSlot.setText(slot);
+        }else{
+            holder.timeSlot.setText("No Available time");
+        }
+
+        System.out.print("shit");
 
         holder.location.setText(String.format("Address: %s (Distance: %.2f)",plans.get(position).getPickupAddress(),recommendation.getDistance().get(position)));
         holder.sendRequest.setOnClickListener(new View.OnClickListener() {
@@ -107,6 +154,27 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
 
             }
         });
+
+
+
+//        Call<List<String>> getSlots = groupPlanService.getSlots(planIds.get(position));
+//        getSlots.enqueue(new Callback<List<String>>() {
+//            @Override
+//            public void onResponse(Call<List<String>> call, Response<List<String>> response) {
+//                List<String> sls = response.body();
+//                if(sls != null && sls.size() > 0){
+//                    String strSlots = sls.stream().reduce((x,y)->x.concat(String.format(" , ",y))).toString();
+//                    createView(holder,position,strSlots);
+//                }else{
+//                    createView(holder,position,null);
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<List<String>> call, Throwable t) {
+//                createView(holder,position,null);
+//            }
+//        });
     }
     @Override
     public int getItemCount() {
@@ -125,14 +193,11 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
             public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
                 List<Product> pList = response.body();
                 pList.stream().forEach(x -> System.out.println(x.getProductId()));
-//                View view = LayoutInflater.from(v.getContext()).inflate(R.layout.buyer_list_item_pop_item,null);
                 View view = View.inflate(context, R.layout.buyer_list_item_pop, null);
                 PopupWindow popupWindow = popMaker(view, pList,position);
                 popupWindow_ = popupWindow;
-//                popupWindow.showAsDropDown(view);
                 popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
             }
-
             //when request is fail, call back this
             @Override
             public void onFailure(Call<List<Product>> call, Throwable t) {
@@ -145,7 +210,7 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
         RecyclerView recyclerView = layoutRoot.findViewById(R.id.poprv);
         LinearLayoutManager linear = new LinearLayoutManager(layoutRoot.getContext());
         recyclerView.setLayoutManager(linear);
-        ProductListAdapter myAdapter = new ProductListAdapter(pList, layoutRoot.getContext(),planIds);
+        ProductListAdapter myAdapter = new ProductListAdapter(pList, layoutRoot.getContext(),planIds,gList);
         recyclerView.setAdapter(myAdapter);
 
     }
@@ -156,7 +221,7 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
         Button cancel = popView.findViewById(R.id.cancelPopBtn);
         Button ok = popView.findViewById(R.id.goToSlot);
 
-        PopupWindow popupWindow = new PopupWindow(popView, ViewGroup.LayoutParams.MATCH_PARENT, 1000, true);
+        PopupWindow popupWindow = new PopupWindow(popView, ViewGroup.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.WRAP_CONTENT, true);
 //                popupWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.arrow_back));
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -169,39 +234,91 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showRadioDialog(position);
+                getSlotsByPlanId(planIds.get(position),position);
                 Log.e("ok", "ok");
             }
         });
         return popupWindow;
     }
+    private void getSlotsByPlanId(int planId,int position){
+        Call<List<String>> getSlots = groupPlanService.getSlots(planId);
+
+        getSlots.enqueue(new Callback<List<String>>() {
+            @Override
+            public void onResponse(Call<List<String>> call, Response<List<String>> response) {
+                List<String> slotList = response.body();
+                if(slotList != null && slotList.size()>0){
+                    String[] slots = new String[slotList.size()];
+                    IntStream.range(0,slots.length).forEach(x->slots[x] = slotList.get(x));
+                    showRadioDialog(position,slots);
+                }else{
+                    showRadioDialog(position,null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<String>> call, Throwable t) {
+                showRadioDialog(position,null);
+            }
+        });
+    }
     private int pos;
+<<<<<<< Updated upstream
+    private void showRadioDialog(int position,String[] pSlots){
+        if(pSlots != null && pSlots.length >0){
+            showSelectionDialog(position,pSlots);
+        }else{
+            final String[] timeslots = new String[]{LocalTime.of(9,0).toString(),LocalTime.of(9,30).toString(),LocalTime.of(10,0).toString()};
+            showSelectionDialog(position,timeslots);
+        }
+    }
+    private void showSelectionDialog(int position,String[] radioItems){
+        AlertDialog.Builder radioDialog = new AlertDialog.Builder(context);
+        System.out.println(plans.get(position).getStoreName());
+=======
     private void showRadioDialog(int position) {
         final String[] radioItems = new String[]{"9:00 am - 9:30 am", "9:30 am - 10:00 am", "10:00 am - 10:30 am"};
         final LocalTime[] timeslots = new LocalTime[]{LocalTime.of(9,0),LocalTime.of(9,30),LocalTime.of(10,0)};
-        AlertDialog.Builder radioDialog = new AlertDialog.Builder(context);
+        try{
+            LocalTime[] slots = (LocalTime[]) plans.get(position).getAvailableTimes().toArray();
+            String[] selectSlots = (String[]) Arrays.stream(slots).map(x-> String.format("%s - %s",x.toString(),x.plusMinutes(30).toString())).collect(Collectors.toList()).toArray();
+            IntStream.range(0,slots.length).forEach(System.out::println);
+        }catch (Exception e){
+            Log.e("No time","No Available time");
+        }
 
+
+        AlertDialog.Builder radioDialog = new AlertDialog.Builder(context);
+>>>>>>> Stashed changes
         radioDialog.setTitle("Time Slots");
-        radioDialog.setIcon(R.mipmap.ic_launcher_round);
+        radioDialog.setIcon(R.drawable.logo_small);
         radioDialog.setSingleChoiceItems(radioItems, 0, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-//                Toast.makeText(context, Integer.toString(which), Toast.LENGTH_SHORT).show();
                 pos = which;
             }
         });
-
-
         radioDialog.setPositiveButton("Ok"
                 , new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+<<<<<<< Updated upstream
 
+                        String timeslot = radioItems[pos];
+                        LocalTime time = LocalTime.parse(timeslot,DateTimeFormatter.ISO_TIME);
+                        LocalDateTime pickUpDateTime = LocalDateTime.of(plans.get(position).getPickupDate(),time);
+                        sendRequest(planIds.get(position),hitcherDetailId,pickUpDateTime);
+=======
                         LocalTime timeslot = timeslots[pos];
                         LocalDateTime pickUpTime = LocalDateTime.of(plans.get(position).getPickupDate(),timeslot);
                         sendRequest(planIds.get(position),hitcherDetailId,pickUpTime);
+>>>>>>> Stashed changes
                         dialog.dismiss();
                         popupWindow_.dismiss();
+                        Intent backToMain = new Intent(context, MainActivity.class);
+                        backToMain.putExtra("hitcherDetail",false);
+                        Toast.makeText(context,"Request Sent!",Toast.LENGTH_SHORT).show();
+                        context.startActivity(backToMain);
                     }
                 }).setNegativeButton("Back", new DialogInterface.OnClickListener() {
             @Override
@@ -212,18 +329,14 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
         });
         radioDialog.create().show();
     }
-
     private void sendRequest(int planId, int hitcherDetailId, LocalDateTime pickUpTime){
-        int requestId = -1;
-        DateTimeFormatter dfter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String dd = pickUpTime.format(dfter);
-        Log.e("date",pickUpTime.toString());
-        Call<Integer> saveRequest = groupPlanService.saveRequest(planId,hitcherDetailId,dd);
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String pickUpTime_str = df.format(pickUpTime);
+        Call<Integer> saveRequest = groupPlanService.saveRequest(planId,hitcherDetailId,pickUpTime_str);
         saveRequest.enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 int idd = response.body();
-//                Log.e("id",);
                 if(idd > 0){
                     requestIds.add(idd);
                     Log.e("dd","succ");
@@ -237,9 +350,6 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
             }
         });
     }
-
-
-
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView buyerName, pickUpDate, timeSlot, location;
@@ -275,4 +385,5 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
     public interface onRecyclerItemClickListener {
         void onRecyclerItemClick(View view, int position);
     }
+
 }

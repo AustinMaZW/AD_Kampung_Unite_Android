@@ -12,4 +12,6 @@ public interface UserDetailService {
     @POST("login")
     Call<UserDetail> login(@Body UserDetail userDetail);
 
+    @POST("create")
+    Call<UserDetail> create(@Body UserDetail userDetail);
 }

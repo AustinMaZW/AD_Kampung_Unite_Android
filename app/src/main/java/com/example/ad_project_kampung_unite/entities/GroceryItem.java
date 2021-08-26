@@ -7,8 +7,6 @@ public class GroceryItem {
 	private Product product;
 	private GroceryList groceryList;
 
-	public GroceryItem() {
-	}
 
 	public GroceryItem(int id, int quantity, double subtotal, Product product, GroceryList groceryList) {
 		this.id = id;

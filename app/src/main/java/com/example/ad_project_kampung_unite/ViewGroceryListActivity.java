@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 //pending item - haven't started
 
+//this activity isn't being used, should delete
 //view details of each grocery list
 public class ViewGroceryListActivity extends AppCompatActivity {
 

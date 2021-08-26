@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentResultListener;
 
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,6 +25,7 @@ import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
 import com.example.ad_project_kampung_unite.entities.GroceryItem;
 import com.example.ad_project_kampung_unite.entities.GroceryList;
 import com.example.ad_project_kampung_unite.ml.HitcherDetailActivity;
+import com.example.ad_project_kampung_unite.ml.HitcherDetailFragment;
 import com.example.ad_project_kampung_unite.search_product.SearchFragment;
 import com.example.ad_project_kampung_unite.search_product.SearchProductListAdapter;
 import com.google.android.material.chip.Chip;
@@ -40,13 +42,23 @@ public class EditGroceryListFragment extends Fragment {
     private RecyclerView groceryItemRecyclerView;
     private GroceryItemService groceryItemService;
     private GroceryList groceryList;
+    private int groceryListId;
+    private String groceryListName;
     private List<GroceryItem> groceryItems;
     private View layoutRoot;
     private Button findMatch;
+    private Button startGroup;
     private Context context_;
 
     public EditGroceryListFragment() {
         // Empty constructor
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(groceryList.getName());
+        getGroceryItems();
     }
 
     @Override
@@ -55,26 +67,36 @@ public class EditGroceryListFragment extends Fragment {
                              Bundle savedInstanceState) {
         layoutRoot = inflater.inflate(R.layout.fragment_grocery_list, container, false);
         context_ = this.getContext();
+
         getParentFragmentManager().setFragmentResultListener("requestKey1", this, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
                 groceryList = (GroceryList) bundle.getSerializable("bundleKey1");
+                groceryListId = groceryList.getId();
                 // Set title
                 ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(groceryList.getName());
                 getGroceryItems();
             }
         });
+
+
+
         findMatch = layoutRoot.findViewById(R.id.hitcherButton);
         findMatch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Jump to HitcherDetail Activity
-                Log.e("Find match","yes");
-                Intent intent = new Intent(context_, HitcherDetailActivity.class);
-                Log.e("Find match","yes_2");
-                startActivity(intent);
-                Log.e("Find match","yes_3");
+                FragmentManager fm = getParentFragmentManager();
+                Log.e("Hitcher Detail","yes_5");
+                HitcherDetailFragment hitcerDetail = new HitcherDetailFragment();
+                Log.e("list Id",Integer.toString(groceryList.getId()));
 
+                hitcerDetail.setgList(groceryList);
+
+                FragmentTransaction trans = fm.beginTransaction();
+                trans.replace(R.id.fragment_container,hitcerDetail);
+                trans.addToBackStack(null);
+                trans.commit();
             }
         });
         addButton = layoutRoot.findViewById(R.id.add);
@@ -124,11 +146,35 @@ public class EditGroceryListFragment extends Fragment {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // send grocery list to grocery list fragment
+                Bundle result = new Bundle();
+                result.putSerializable("editToSearchKey", groceryList);
+
                 // switch to search fragment
                 FragmentManager fragmentManager = getParentFragmentManager();
                 SearchFragment searchFragment = new SearchFragment();
+                searchFragment.setArguments(result);
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragment_container,searchFragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
+        startGroup = layoutRoot.findViewById(R.id.buyerButton);
+        startGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // send grocery list to grocery list fragment
+                Bundle result = new Bundle();
+                result.putSerializable("editToBuyerDetailKey", groceryList);
+
+                // switch to buyer details fragment
+                FragmentManager fragmentManager = getParentFragmentManager();
+                BuyerFragment buyerFragment = new BuyerFragment();
+                buyerFragment.setArguments(result);
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container,buyerFragment)
                         .addToBackStack(null)
                         .commit();
             }

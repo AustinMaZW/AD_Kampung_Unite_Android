@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:text="MY GROCERIES"
-        android:padding="2dp"
+        android:padding="15dp"
         android:textColor="@color/black"
         android:textSize="18dp"
         android:textStyle="bold" />
@@ -23,9 +23,11 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerviewGroupDetails"
             android:layout_width="match_parent"
+            android:layout_height="111dp"
             android:layout_weight=".9"
-            android:layout_height="169dp"
-            android:padding="10dp" />
+            android:paddingBottom="15dp"
+            android:paddingRight="10dp"/>
+
         <ImageButton
             android:id="@+id/groupDetails_buyerEditBtn"
             android:layout_width="wrap_content"
@@ -40,15 +42,15 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@android:color/darker_gray"
+        android:background="@color/Kampong_Gray"
         android:padding="20dp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAlignment="center"
+        android:padding="15dp"
         android:text="HITCH REQUESTS"
-        android:padding="2dp"
+        android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="18dp"
         android:textStyle="bold" />
@@ -57,10 +59,12 @@
         android:id="@+id/groupDetails_expandableRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="366dp"
+        android:paddingLeft="0dp"
+        android:paddingRight="10dp"
         />
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         >
 
         <com.google.android.material.button.MaterialButton
@@ -76,6 +80,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/combinedListButton"
             />
 
         <com.google.android.material.button.MaterialButton
@@ -84,7 +89,6 @@
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:layout_marginBottom="16dp"
             android:text="COMBINED LIST"
             android:layout_below="@id/closeRequestButton"
             app:layout_constraintTop_toBottomOf="@+id/closeRequestButton"
@@ -93,4 +97,6 @@
             app:layout_constraintRight_toRightOf="parent"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 </LinearLayout>

@@ -1,11 +1,12 @@
 package com.example.ad_project_kampung_unite.entities;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
-public class HitcherDetail {
+public class HitcherDetail implements Serializable {
     private int id;
     private LocalDateTime prefPickupTimeFrom;
     private String prefPickupLocation;

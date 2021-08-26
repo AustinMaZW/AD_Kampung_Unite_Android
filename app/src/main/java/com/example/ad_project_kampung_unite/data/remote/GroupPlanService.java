@@ -1,12 +1,13 @@
 package com.example.ad_project_kampung_unite.data.remote;
 
-import com.example.ad_project_kampung_unite.entities.GroceryList;
-import com.example.ad_project_kampung_unite.entities.GroupPlan;
 import com.example.ad_project_kampung_unite.entities.GroupPlan;
 import com.example.ad_project_kampung_unite.entities.Product;
+import com.example.ad_project_kampung_unite.entities.enums.GroupPlanStatus;
 import com.example.ad_project_kampung_unite.ml.Recommendation;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -38,4 +39,28 @@ public interface GroupPlanService {
 
     @GET("hitchrequest/savereq")
     Call<Integer> saveRequest(@Query("planId") int planId, @Query("hitcherDetailId") int hitcherDetailId, @Query("pickUpTime") String pickUpTime);
+
+    @GET("HitcherDetail/removedetail")
+    Call<Integer> removeHitcherDetail(@Query("hdid") int hdid);
+
+    @GET("groupplan/update/status/{id}/{status}")
+    Call<Void> updateGroupPlanStatus(@Path("id") int id, @Path("status") GroupPlanStatus status);
+
+    @GET("groupplan/plan/{id}")
+    Call<GroupPlan> getGroupPlanById(@Path("id") int planId);
+
+
+
+    @GET("groupplan/save")
+    Call<GroupPlan> createGroupPlan(@Query("planName") String planName,
+                                    @Query("storeName") String storeName,
+                                    @Query("shoppingDate") String shoppingDate,
+                                    @Query("pickUpAddress") String pickupAddress,
+                                    @Query("pickUpDate") String pickupDate);
+
+    @POST("groupplan/availableTime/{planId}")
+    Call<List<String>> getSlots(@Path("planId") int planId);
+
+    @POST("groupplan/availableTimes")
+    Call<Map<Integer,List<String>>> getSlotsByPlanIds(@Body List<Integer> planIds);
 }

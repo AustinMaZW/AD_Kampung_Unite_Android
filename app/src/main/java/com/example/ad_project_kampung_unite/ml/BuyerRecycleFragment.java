@@ -17,10 +17,12 @@ import android.widget.PopupWindow;
 import com.example.ad_project_kampung_unite.R;
 import com.example.ad_project_kampung_unite.data.remote.GroupPlanService;
 import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
+import com.example.ad_project_kampung_unite.entities.GroceryList;
 import com.example.ad_project_kampung_unite.entities.GroupPlan;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -38,6 +40,11 @@ public class BuyerRecycleFragment extends Fragment {
         this.recommendation = recommendation;
         this.planIds = recommendation.getPlandIds();
     }
+    private GroceryList gList;
+
+    public void setgList(GroceryList gList) {
+        this.gList = gList;
+    }
 
     private List<GroupPlan> plans;
     public void setPlans(List<GroupPlan> plans){
@@ -48,9 +55,12 @@ public class BuyerRecycleFragment extends Fragment {
         this.planIds = planId;
     }
     private int hitcherDetailId;
-
     public void setHitcherDetailId(int hitcherDetailId) {
         this.hitcherDetailId = hitcherDetailId;
+    }
+    private GroceryList gList;
+    public void setgList(GroceryList gList) {
+        this.gList = gList;
     }
 
     private RecyclerView recyclerView;
@@ -79,10 +89,32 @@ public class BuyerRecycleFragment extends Fragment {
 
 
     public void buildRecyclerView(View layoutRoot){
+<<<<<<< Updated upstream
+        Call<Map<Integer,List<String>>> getSlots = p.getSlotsByPlanIds(planIds);
+        getSlots.enqueue(new Callback<Map<Integer, List<String>>>() {
+            @Override
+            public void onResponse(Call<Map<Integer, List<String>>> call, Response<Map<Integer, List<String>>> response) {
+                Map<Integer,List<String>> slots = response.body();
+                recyclerView = layoutRoot.findViewById(R.id.buerlistrv);
+                LinearLayoutManager linear = new LinearLayoutManager(layoutRoot.getContext());
+                recyclerView.setLayoutManager(linear);
+                myAdapter = new BuyerListAdapter(plans,layoutRoot.getContext(),planIds,hitcherDetailId,recommendation,slots);
+                recyclerView.setAdapter(myAdapter);
+            }
+            @Override
+            public void onFailure(Call<Map<Integer, List<String>>> call, Throwable t) {
+//                recyclerView = layoutRoot.findViewById(R.id.buerlistrv);
+//                LinearLayoutManager linear = new LinearLayoutManager(layoutRoot.getContext());
+//                recyclerView.setLayoutManager(linear);
+//                myAdapter = new BuyerListAdapter(plans,layoutRoot.getContext(),planIds,hitcherDetailId,recommendation);
+//                recyclerView.setAdapter(myAdapter);
+            }
+        });
+=======
         recyclerView = layoutRoot.findViewById(R.id.buerlistrv);
         LinearLayoutManager linear = new LinearLayoutManager(layoutRoot.getContext());
         recyclerView.setLayoutManager(linear);
-        myAdapter = new BuyerListAdapter(plans,layoutRoot.getContext(),planIds,hitcherDetailId,recommendation);
+        myAdapter = new BuyerListAdapter(plans,layoutRoot.getContext(),planIds,hitcherDetailId,recommendation,gList);
         recyclerView.setAdapter(myAdapter);
 //        myAdapter.setRecyclerItemClickListener(new BuyerListAdapter.onRecyclerItemClickListener() {
 //            @Override
@@ -90,6 +122,7 @@ public class BuyerRecycleFragment extends Fragment {
 //
 //            }
 //        });
+>>>>>>> Stashed changes
     }
 
     public void queryPlans() {

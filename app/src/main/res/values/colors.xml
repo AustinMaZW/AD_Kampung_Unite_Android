@@ -7,7 +7,12 @@
 <!--    <color name="teal_700">#FF018786</color>-->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="yellow">#B47808</color>
+    <color name="green">#6dd47e</color>
 
     <color name="Kampong_Yellow">#f9d45d</color>
     <color name="Kampong_Blue">#303454</color>
+    <color name="Kampong_Green">#067709</color>
+    <color name="Kampong_Gray">#D3D3D3</color>
+
 </resources>
