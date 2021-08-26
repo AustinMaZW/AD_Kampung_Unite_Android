@@ -92,7 +92,7 @@ public class UpdatePriceAdapter extends RecyclerView.Adapter<UpdatePriceAdapter.
                 String text = holder.etSubtotal.getText().toString();
                 boolean isvalid = validate(text);
                 if (!isvalid) {
-                    holder.etSubtotal.setError("enter integer");
+                    holder.etSubtotal.setError("enter number only");
                     errors.put(position,true);
                 } else {
                     if (errors.containsKey(position))
@@ -116,7 +116,7 @@ public class UpdatePriceAdapter extends RecyclerView.Adapter<UpdatePriceAdapter.
                 String text = holder.etDiscount.getText().toString();
                 boolean isvalid = validate(text);
                 if (!isvalid) {
-                    holder.etDiscount.setError("enter integer");
+                    holder.etDiscount.setError("enter number only");
                     errors.put(position,true);
                 } else {
                     if (errors.containsKey(position))
