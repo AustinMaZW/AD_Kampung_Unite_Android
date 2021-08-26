@@ -58,7 +58,6 @@ public class UpdatePriceFragment extends Fragment implements View.OnClickListene
         if(bundle!=null){
             gpId = (int) bundle.getInt("gpId");
         }
-        gpId = 18; // hard coded to test
 
         btnSubmit = layoutRoot.findViewById(R.id.submit_btn);
         btnSubmit.setOnClickListener(this);
@@ -79,7 +78,7 @@ public class UpdatePriceFragment extends Fragment implements View.OnClickListene
                     combinedPurchaseLists = response.body();
                     buildRecyclerView();
                 } else {
-                    Log.e("getCPListByGroupPlanId Error", response.errorBody().toString());
+                    Log.e("getCPListByGroupPlanIdAndPurchasedStatus Error", response.errorBody().toString());
                 }
             }
 
@@ -111,20 +110,10 @@ public class UpdatePriceFragment extends Fragment implements View.OnClickListene
                 String discount = etDiscount.getText().toString();
                 Log.i("Update Price", subtotal + ", " + discount.isEmpty());
             }*/
-            output();
-            if (!updatePriceAdapter.hasError()) {
-                if (!combinedPurchaseLists.isEmpty())
-                    getGroceryItemsForGroupPlan();
-            }
-        }
-    }
 
-    private void output() {
-        Map<Integer, String> sm = updatePriceAdapter.getSubtotalMap();
-        Map<Integer, String> dm = updatePriceAdapter.getDiscountMap();
-        for (int key : sm.keySet()) {
-            Log.i("subtotal", key + ": " + sm.get(key));
-            Log.i("discount", key + ": " + dm.get(key));
+            if (!updatePriceAdapter.hasError()) {
+                getGroceryItemsForGroupPlan();
+            }
         }
     }
 
