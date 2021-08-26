@@ -189,6 +189,7 @@ public class HitcherDetailFragment extends Fragment{
                     @Override
                     public void onFailure(Call<Recommendation> call, Throwable t) {
                         System.out.println("fail_1");
+                        submitBtn.setEnabled(true);
                     }
                 });
             }
