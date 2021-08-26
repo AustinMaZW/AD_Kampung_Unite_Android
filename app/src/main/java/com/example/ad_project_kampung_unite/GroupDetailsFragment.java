@@ -178,6 +178,9 @@ public class GroupDetailsFragment extends Fragment {
 
         //Button to link to Combined List Fragment
         combinedListBtn = layoutRoot.findViewById(R.id.combinedListButton);
+        if(groupStatus!="Closed"){
+            combinedListBtn.setVisibility(View.INVISIBLE);
+        }
         combinedListBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
