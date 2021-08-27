@@ -135,7 +135,7 @@ public class GroupDetailsFragment extends Fragment {
         getHitchRequestsFromServer();
 
         closeRequestBtn = layoutRoot.findViewById(R.id.closeRequestButton);
-        if(groupStatus!="Available"){
+        if(groupStatus!="Open to hitch requests"){
             closeRequestBtn.setVisibility(View.GONE);
         }
         else{
@@ -192,9 +192,9 @@ public class GroupDetailsFragment extends Fragment {
 
         //Button to link to Combined List Fragment
         combinedListBtn = layoutRoot.findViewById(R.id.combinedListButton);
-        if(groupStatus!="Closed"){
-            combinedListBtn.setVisibility(View.GONE);
-        }
+//        if(groupStatus!="Closed"){
+//            combinedListBtn.setVisibility(View.GONE);
+//        }
         combinedListBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -224,7 +224,7 @@ public class GroupDetailsFragment extends Fragment {
 
                 if (response.isSuccessful()) {
                     buyerGroceryItemList = response.body();
-                    Log.d("Success", String.valueOf(buyerGroceryItemList.get(0).getProduct().getProductName())); //for testing
+//                    Log.d("Success", String.valueOf(buyerGroceryItemList.get(0).getProduct().getProductName())); //for testing
 
                     //recycler view for grocery items
                     rvBuyerGrocery = layoutRoot.findViewById(R.id.recyclerviewGroupDetails);

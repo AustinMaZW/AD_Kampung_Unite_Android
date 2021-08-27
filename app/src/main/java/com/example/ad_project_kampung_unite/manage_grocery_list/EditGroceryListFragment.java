@@ -70,6 +70,12 @@ public class EditGroceryListFragment extends Fragment {
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
                 groceryList = (GroceryList) bundle.getSerializable("bundleKey1");
                 groceryListId = groceryList.getId();
+
+                if(groceryList.getHitcherDetail() != null || groceryList.getGroupPlanGL() != null) {
+                    findMatch.setVisibility(View.GONE);
+                    startGroup.setVisibility(View.GONE);
+                }
+
                 // Set title
                 ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(groceryList.getName());
                 getGroceryItems();
@@ -79,6 +85,7 @@ public class EditGroceryListFragment extends Fragment {
 
 
         findMatch = layoutRoot.findViewById(R.id.hitcherButton);
+
         findMatch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,6 +104,9 @@ public class EditGroceryListFragment extends Fragment {
             }
         });
         addButton = layoutRoot.findViewById(R.id.add);
+
+
+
         setUpBtns();
 
         return layoutRoot;

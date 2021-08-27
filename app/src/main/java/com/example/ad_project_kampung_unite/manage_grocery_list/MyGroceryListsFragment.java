@@ -117,9 +117,9 @@ public class MyGroceryListsFragment extends Fragment {
                     //recycler view adapter instantiated here
                     buildRecyclerView();
 
-                    //attaching touch helper to recycler view for swipe action itoms
-                    ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
-                    itemTouchHelper.attachToRecyclerView(mRecyclerView);
+//                    //attaching touch helper to recycler view for swipe action itoms
+//                    ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+//                    itemTouchHelper.attachToRecyclerView(mRecyclerView);
                 }
             }
             @Override
@@ -226,100 +226,100 @@ public class MyGroceryListsFragment extends Fragment {
         mRecyclerView.setAdapter(myGroceryListsAdapter);
     }
 
-    //attributes for deleting or archiving a list via swipe action
-    GroceryList deletedList = null;
-    GroceryList archiveList = null;
-    String deletedListName = null;
-    String archivedListName = null;
-
-    List<GroceryList> archivedLists = new ArrayList<>();
-
-    //defining what each swipe action does
-    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT|ItemTouchHelper.RIGHT) {
-        @Override
-        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-            return false;
-        }
-
-        @Override
-        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-
-            int position = viewHolder.getAbsoluteAdapterPosition();
-
-            switch (direction){
-                case ItemTouchHelper.LEFT:
-                    deletedList = groceryLists.get(position);
-                    deletedListName = deletedList.getName().toString();
-
-                    groceryLists.remove(position);
-                    myGroceryListsAdapter.notifyItemRemoved(position);
-
-                    Snackbar.make(mRecyclerView, deletedListName, Snackbar.LENGTH_LONG)
-                            .addCallback(new Snackbar.Callback(){
-                                @Override
-                                public void onDismissed(Snackbar transientBottomBar, int event) {
-                                    super.onDismissed(transientBottomBar, event);
-                                    if(event == DISMISS_EVENT_TIMEOUT){
-                                        // logic to delete item
-                                        GroceryList groceryList = groceryLists.get(position);
-                                        Toast.makeText(getContext(), "set update to database to update delete status", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            })
-                            .setAction("Undo", new View.OnClickListener(){
-                                @Override
-                                public void onClick(View v) {
-                                    groceryLists.add(position, deletedList);
-                                    myGroceryListsAdapter.notifyItemInserted(position);
-                                }
-                            }).show();
-
-
-                    break;
-                case ItemTouchHelper.RIGHT:
-                    archiveList = groceryLists.get(position);
-                    archivedListName = archiveList.getName().toString();
-                    archivedLists.add(archiveList);
-
-                    groceryLists.remove(position);
-                    myGroceryListsAdapter.notifyItemRemoved(position);
-
-                    Snackbar.make(mRecyclerView, archivedListName, Snackbar.LENGTH_LONG)
-                            .addCallback(new Snackbar.Callback(){
-                                @Override
-                                public void onDismissed(Snackbar transientBottomBar, int event) {
-                                    super.onDismissed(transientBottomBar, event);
-                                    if (event == DISMISS_EVENT_TIMEOUT){
-                                        // logic to archive items
-                                        Toast.makeText(getContext(), "set update to database to update archive item", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            })
-                            .setAction("Undo", new View.OnClickListener(){
-
-                                @Override
-                                public void onClick(View v) {
-                                    archivedLists.remove(archivedLists.lastIndexOf(archiveList));
-                                    groceryLists.add(position, archiveList);
-                                    myGroceryListsAdapter.notifyItemInserted(position);
-                                }
-                            }).show();
-                    break;
-            }
-        }
-        //swipe action item decorator (set color and icon)
-        public void onChildDraw (Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive){
-
-            new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
-                    .addSwipeLeftBackgroundColor(ContextCompat.getColor(MyGroceryListsFragment.this.getContext(), R.color.Kampong_Blue))
-                    .addSwipeLeftActionIcon(R.drawable.ic_baseline_delete_24)
-                    .addSwipeRightBackgroundColor(ContextCompat.getColor(MyGroceryListsFragment.this.getContext(), R.color.Kampong_Yellow))
-                    .addSwipeRightActionIcon(R.drawable.ic_baseline_archive_24)
-                    .create()
-                    .decorate();
-
-            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-        }
-    };
+//    //attributes for deleting or archiving a list via swipe action
+//    GroceryList deletedList = null;
+//    GroceryList archiveList = null;
+//    String deletedListName = null;
+//    String archivedListName = null;
+//
+//    List<GroceryList> archivedLists = new ArrayList<>();
+//
+//    //defining what each swipe action does
+//    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT|ItemTouchHelper.RIGHT) {
+//        @Override
+//        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+//            return false;
+//        }
+//
+//        @Override
+//        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+//
+//            int position = viewHolder.getAbsoluteAdapterPosition();
+//
+//            switch (direction){
+//                case ItemTouchHelper.LEFT:
+//                    deletedList = groceryLists.get(position);
+//                    deletedListName = deletedList.getName().toString();
+//
+//                    groceryLists.remove(position);
+//                    myGroceryListsAdapter.notifyItemRemoved(position);
+//
+//                    Snackbar.make(mRecyclerView, deletedListName, Snackbar.LENGTH_LONG)
+//                            .addCallback(new Snackbar.Callback(){
+//                                @Override
+//                                public void onDismissed(Snackbar transientBottomBar, int event) {
+//                                    super.onDismissed(transientBottomBar, event);
+//                                    if(event == DISMISS_EVENT_TIMEOUT){
+//                                        // logic to delete item
+//                                        GroceryList groceryList = groceryLists.get(position);
+//                                        Toast.makeText(getContext(), "set update to database to update delete status", Toast.LENGTH_SHORT).show();
+//                                    }
+//                                }
+//                            })
+//                            .setAction("Undo", new View.OnClickListener(){
+//                                @Override
+//                                public void onClick(View v) {
+//                                    groceryLists.add(position, deletedList);
+//                                    myGroceryListsAdapter.notifyItemInserted(position);
+//                                }
+//                            }).show();
+//
+//
+//                    break;
+//                case ItemTouchHelper.RIGHT:
+//                    archiveList = groceryLists.get(position);
+//                    archivedListName = archiveList.getName().toString();
+//                    archivedLists.add(archiveList);
+//
+//                    groceryLists.remove(position);
+//                    myGroceryListsAdapter.notifyItemRemoved(position);
+//
+//                    Snackbar.make(mRecyclerView, archivedListName, Snackbar.LENGTH_LONG)
+//                            .addCallback(new Snackbar.Callback(){
+//                                @Override
+//                                public void onDismissed(Snackbar transientBottomBar, int event) {
+//                                    super.onDismissed(transientBottomBar, event);
+//                                    if (event == DISMISS_EVENT_TIMEOUT){
+//                                        // logic to archive items
+//                                        Toast.makeText(getContext(), "set update to database to update archive item", Toast.LENGTH_SHORT).show();
+//                                    }
+//                                }
+//                            })
+//                            .setAction("Undo", new View.OnClickListener(){
+//
+//                                @Override
+//                                public void onClick(View v) {
+//                                    archivedLists.remove(archivedLists.lastIndexOf(archiveList));
+//                                    groceryLists.add(position, archiveList);
+//                                    myGroceryListsAdapter.notifyItemInserted(position);
+//                                }
+//                            }).show();
+//                    break;
+//            }
+//        }
+//        //swipe action item decorator (set color and icon)
+//        public void onChildDraw (Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive){
+//
+//            new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+//                    .addSwipeLeftBackgroundColor(ContextCompat.getColor(MyGroceryListsFragment.this.getContext(), R.color.Kampong_Blue))
+//                    .addSwipeLeftActionIcon(R.drawable.ic_baseline_delete_24)
+//                    .addSwipeRightBackgroundColor(ContextCompat.getColor(MyGroceryListsFragment.this.getContext(), R.color.Kampong_Yellow))
+//                    .addSwipeRightActionIcon(R.drawable.ic_baseline_archive_24)
+//                    .create()
+//                    .decorate();
+//
+//            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+//        }
+//    };
 }
 
