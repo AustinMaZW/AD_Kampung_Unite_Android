@@ -255,14 +255,26 @@ public class MyGroceryListsFragment extends Fragment {
                     myGroceryListsAdapter.notifyItemRemoved(position);
 
                     Snackbar.make(mRecyclerView, deletedListName, Snackbar.LENGTH_LONG)
+                            .addCallback(new Snackbar.Callback(){
+                                @Override
+                                public void onDismissed(Snackbar transientBottomBar, int event) {
+                                    super.onDismissed(transientBottomBar, event);
+                                    if(event == DISMISS_EVENT_TIMEOUT){
+                                        // logic to delete item
+                                        GroceryList groceryList = groceryLists.get(position);
+                                        Toast.makeText(getContext(), "set update to database to update delete status", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            })
                             .setAction("Undo", new View.OnClickListener(){
-
                                 @Override
                                 public void onClick(View v) {
                                     groceryLists.add(position, deletedList);
                                     myGroceryListsAdapter.notifyItemInserted(position);
                                 }
                             }).show();
+
+
                     break;
                 case ItemTouchHelper.RIGHT:
                     archiveList = groceryLists.get(position);
@@ -273,6 +285,16 @@ public class MyGroceryListsFragment extends Fragment {
                     myGroceryListsAdapter.notifyItemRemoved(position);
 
                     Snackbar.make(mRecyclerView, archivedListName, Snackbar.LENGTH_LONG)
+                            .addCallback(new Snackbar.Callback(){
+                                @Override
+                                public void onDismissed(Snackbar transientBottomBar, int event) {
+                                    super.onDismissed(transientBottomBar, event);
+                                    if (event == DISMISS_EVENT_TIMEOUT){
+                                        // logic to archive items
+                                        Toast.makeText(getContext(), "set update to database to update archive item", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            })
                             .setAction("Undo", new View.OnClickListener(){
 
                                 @Override
