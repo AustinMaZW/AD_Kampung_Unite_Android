@@ -1,7 +1,6 @@
 package com.example.ad_project_kampung_unite.manage_grocery_list;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,10 +23,8 @@ import com.example.ad_project_kampung_unite.data.remote.GroceryItemService;
 import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
 import com.example.ad_project_kampung_unite.entities.GroceryItem;
 import com.example.ad_project_kampung_unite.entities.GroceryList;
-import com.example.ad_project_kampung_unite.ml.HitcherDetailActivity;
 import com.example.ad_project_kampung_unite.ml.HitcherDetailFragment;
 import com.example.ad_project_kampung_unite.search_product.SearchFragment;
-import com.example.ad_project_kampung_unite.search_product.SearchProductListAdapter;
 import com.google.android.material.chip.Chip;
 
 import java.util.List;
@@ -97,9 +94,6 @@ public class EditGroceryListFragment extends Fragment {
                 trans.replace(R.id.fragment_container,hitcerDetail);
                 trans.addToBackStack(null);
                 trans.commit();
-//                Intent intent = new Intent(context_, HitcherDetailActivity.class);
-//                startActivity(intent);
-
             }
         });
         addButton = layoutRoot.findViewById(R.id.add);

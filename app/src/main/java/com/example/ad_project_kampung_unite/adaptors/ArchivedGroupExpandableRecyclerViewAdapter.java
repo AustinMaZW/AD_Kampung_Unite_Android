@@ -101,7 +101,6 @@ public class ArchivedGroupExpandableRecyclerViewAdapter extends RecyclerView.Ada
     public void onBindViewHolder(ArchivedGroupExpandableRecyclerViewAdapter.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         HitchRequest hitchRequest = hitchRequestsList.get(position);
         List<GroceryItem> groceryItemsCount = groceryItemList.get(position);
-        String mhitchRequestStatus = hitchRequest.getRequestStatus().getDisplayStatus();
         Double groceryItemsTotal = 0.0;
         for(int i = 0; i<groceryItemsCount.size();i++){
             groceryItemsTotal = groceryItemsTotal + groceryItemsCount.get(i).getSubtotal();
@@ -111,23 +110,16 @@ public class ArchivedGroupExpandableRecyclerViewAdapter extends RecyclerView.Ada
         TextView pickup = holder.pickuptime;
         TextView itemcount = holder.itemcount;
         Chip requestStatusChip = holder.mrequeststatus;
+        ImageButton dropBtn = holder.dropBtn;
 
         name.setText(groceryItemList.get(position).get(0).getGroceryList().getName());
         pickup.setVisibility(View.GONE);
         itemcount.setText("Items: " + Integer.toString(groceryItemsCount.size()));
+        dropBtn.setVisibility(View.INVISIBLE);
 
-        requestStatusChip.setText(mhitchRequestStatus);
-        if(mhitchRequestStatus.equals("Pending Approval")){
-            requestStatusChip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.Kampong_Yellow)));
-        }
-        else if(mhitchRequestStatus.equals("Accepted")){
-            requestStatusChip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.Kampong_Green)));
-        }
-        else if(mhitchRequestStatus.equals("Rejected")){
-            requestStatusChip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.Kampong_Gray)));
-        }
+        requestStatusChip.setVisibility(View.GONE);
 
-        if (groupPlanStatus == GroupPlanStatus.SHOPPINGCOMPLETED) {
+        if (groupPlanStatus == GroupPlanStatus.SHOPPINGCOMPLETED || groupPlanStatus == GroupPlanStatus.CLOSED) {
             if (hitchRequest.isBuyerConfirmTransaction()) {
                 if (hitchRequest.isHitcherConfirmTransaction()) {
                     holder.paymentstatus.setText(R.string.transaction_complete);

@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
@@ -48,8 +49,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -68,13 +71,16 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
     private Context context;
     private GroupPlanService groupPlanService;
     private List<Integer> requestIds = new ArrayList<>();
+    private Map<Integer,List<String>> slotsList;
 
-    public BuyerListAdapter(List<GroupPlan> plans, Context context,List<Integer> planIds,int hitcherDetailId,Recommendation recommendation) {
+
+    public BuyerListAdapter(List<GroupPlan> plans, Context context,List<Integer> planIds,int hitcherDetailId,Recommendation recommendation,Map<Integer,List<String>> slotsList) {
         this.plans = plans;
         this.context = context;
         this.planIds = planIds;
         this.hitcherDetailId = hitcherDetailId;
         this.recommendation = recommendation;
+        this.slotsList = slotsList;
     }
 
 
@@ -87,20 +93,42 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
         groupPlanService = RetrofitClient.createService(GroupPlanService.class);
         return new MyViewHolder(view);
     }
-
-    @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
+    public void createView(MyViewHolder holder,int position,String slos){
         DecimalFormat df = new DecimalFormat("0.00%");
         holder.buyerName.setText(String.format("%s (Similarity %s)",plans.get(position).getStoreName(),df.format(recommendation.getProduct_score().get(position))));
         holder.pickUpDate.setText(String.format("Pick Up: %tF",plans.get(position).getPickupDate()));
-        List<AvailableTime> slos = plans.get(position).getAvailableTimes();
-        if(slos != null){
-            String slots = slos.stream().map(AvailableTime::getPickupSlots).map(LocalTime::toString).reduce((x,y) -> x.concat(String.format(" , ",y))).toString();
-            holder.timeSlot.setText(slots);
+        List<String> slots_str = this.slotsList.get(planIds.get(position));
+        System.out.println("get the slots by map");
+        if(slots_str != null && slots_str.size() > 0){
+            System.out.println(slots_str.get(0));
+            String slot = slots_str.stream().reduce((x,y)->x.concat(String.format(" %s",y))).toString();
+            holder.timeSlot.setText(slot);
         }else{
             holder.timeSlot.setText("No Available time");
         }
-//        List<String> slots = slos.stream().map(AvailableTime::getPickupSlots).map(LocalTime::toString).collect(Collectors.toList());
+        holder.location.setText(String.format("Address: %s (Distance: %.2f)",plans.get(position).getPickupAddress(),recommendation.getDistance().get(position)));
+        holder.sendRequest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                queryPronductsInplan(planIds.get(position), v,position); //use id
+            }
+        });
+    }
+    @Override
+    public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
+
+        DecimalFormat df = new DecimalFormat("0.00%");
+        holder.buyerName.setText(String.format("%s (Similarity %s)",plans.get(position).getStoreName(),df.format(recommendation.getProduct_score().get(position))));
+        holder.pickUpDate.setText(String.format("Pick Up: %tF",plans.get(position).getPickupDate()));
+        List<String> slots_str = this.slotsList.get(planIds.get(position));
+        if(slots_str != null && slots_str.size() > 0){
+            StringBuilder bler = new StringBuilder();
+            slots_str.stream().forEach(x->bler.append(String.format("%s ",x)));
+            String slot = bler.toString();
+            holder.timeSlot.setText(slot);
+        }else{
+            holder.timeSlot.setText("No Available time");
+        }
 
         System.out.print("shit");
 
@@ -120,7 +148,17 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
         }
         return plans.size();
     }
-
+    private void backgroudAlpha(float f,Activity myActivity){
+        WindowManager.LayoutParams lp =myActivity.getWindow().getAttributes();
+        lp.alpha=f;
+        myActivity.getWindow().setAttributes(lp);
+    }
+    private Activity getActivity(Context context) {
+        if (context == null) return null;
+        if (context instanceof Activity) return (Activity) context;
+        if (context instanceof ContextWrapper) return getActivity(((ContextWrapper)context).getBaseContext());
+        return null;
+    }
     public void queryPronductsInplan(int planId, View v,int position) {
         GroupPlanService p = RetrofitClient.createService(GroupPlanService.class);
         Call<List<Product>> call = p.getProductsByPlanId(planId);
@@ -130,14 +168,13 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
             public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
                 List<Product> pList = response.body();
                 pList.stream().forEach(x -> System.out.println(x.getProductId()));
-//                View view = LayoutInflater.from(v.getContext()).inflate(R.layout.buyer_list_item_pop_item,null);
                 View view = View.inflate(context, R.layout.buyer_list_item_pop, null);
                 PopupWindow popupWindow = popMaker(view, pList,position);
                 popupWindow_ = popupWindow;
-//                popupWindow.showAsDropDown(view);
                 popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
-            }
+                backgroudAlpha(0.4f,getActivity(context));
 
+            }
             //when request is fail, call back this
             @Override
             public void onFailure(Call<List<Product>> call, Throwable t) {
@@ -162,54 +199,72 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
         Button ok = popView.findViewById(R.id.goToSlot);
 
         PopupWindow popupWindow = new PopupWindow(popView, ViewGroup.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.WRAP_CONTENT, true);
-//                popupWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.arrow_back));
+        popupWindow.setAnimationStyle(R.style.showPopupAnimation);
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                backgroudAlpha(1.0f,getActivity(context));
+            }
+        });
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.e("cancel", "cancel");
                 popupWindow.dismiss();
-
             }
         });
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showRadioDialog(position);
-                Log.e("ok", "ok");
+                getSlotsByPlanId(planIds.get(position),position);
             }
         });
         return popupWindow;
     }
+    private void getSlotsByPlanId(int planId,int position){
+        List<String> slot = slotsList.get(planId);
+        if(slot != null && slot.size()>0){
+            String[] slots = new String[slot.size()];
+            IntStream.range(0,slots.length).forEach(x->slots[x] = slot.get(x));
+            showRadioDialog(position,slots);
+        }else{
+            showRadioDialog(position,null);
+        }
+    }
     private int pos;
-    private void showRadioDialog(int position) {
-        final String[] radioItems = new String[]{"9:00 am - 9:30 am", "9:30 am - 10:00 am", "10:00 am - 10:30 am"};
-        final LocalTime[] timeslots = new LocalTime[]{LocalTime.of(9,0),LocalTime.of(9,30),LocalTime.of(10,0)};
+    private void showRadioDialog(int position,String[] pSlots){
+        if(pSlots != null && pSlots.length >0){
+            showSelectionDialog(position,pSlots);
+        }else{
+            final String[] timeslots = new String[]{LocalTime.of(9,0).toString(),LocalTime.of(9,30).toString(),LocalTime.of(10,0).toString()};
+            showSelectionDialog(position,timeslots);
+        }
+    }
+    private void showSelectionDialog(int position,String[] radioItems){
         AlertDialog.Builder radioDialog = new AlertDialog.Builder(context);
-
+        System.out.println(plans.get(position).getStoreName());
         radioDialog.setTitle("Time Slots");
         radioDialog.setIcon(R.drawable.logo_small);
         radioDialog.setSingleChoiceItems(radioItems, 0, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-//                Toast.makeText(context, Integer.toString(which), Toast.LENGTH_SHORT).show();
                 pos = which;
             }
         });
-
-
         radioDialog.setPositiveButton("Ok"
                 , new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
-                        LocalTime timeslot = timeslots[pos];
-                        LocalDateTime pickUpTime = LocalDateTime.of(plans.get(position).getPickupDate(),timeslot);
-                        sendRequest(planIds.get(position),hitcherDetailId,pickUpTime);
+                        String timeslot = radioItems[pos];
+                        LocalTime time = LocalTime.parse(timeslot,DateTimeFormatter.ISO_TIME);
+                        LocalDateTime pickUpDateTime = LocalDateTime.of(plans.get(position).getPickupDate(),time);
+                        sendRequest(planIds.get(position),hitcherDetailId,pickUpDateTime);
                         dialog.dismiss();
                         popupWindow_.dismiss();
                         Intent backToMain = new Intent(context, MainActivity.class);
                         backToMain.putExtra("hitcherDetail",false);
                         Toast.makeText(context,"Request Sent!",Toast.LENGTH_SHORT).show();
+                        backgroudAlpha(0.4f,getActivity(context));
                         context.startActivity(backToMain);
                     }
                 }).setNegativeButton("Back", new DialogInterface.OnClickListener() {
@@ -221,22 +276,16 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
         });
         radioDialog.create().show();
     }
-
     private void sendRequest(int planId, int hitcherDetailId, LocalDateTime pickUpTime){
-        int requestId = -1;
-        DateTimeFormatter dfter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String dd = pickUpTime.format(dfter);
-        Log.e("date",pickUpTime.toString());
-        Call<Integer> saveRequest = groupPlanService.saveRequest(planId,hitcherDetailId,dd);
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String pickUpTime_str = df.format(pickUpTime);
+        Call<Integer> saveRequest = groupPlanService.saveRequest(planId,hitcherDetailId,pickUpTime_str);
         saveRequest.enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 int idd = response.body();
-//                Log.e("id",);
                 if(idd > 0){
                     requestIds.add(idd);
-                    Log.e("dd","succ");
-                    System.out.println(idd);
                 }
             }
 
@@ -246,9 +295,6 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
             }
         });
     }
-
-
-
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView buyerName, pickUpDate, timeSlot, location;

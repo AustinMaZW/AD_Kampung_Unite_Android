@@ -7,6 +7,7 @@ import com.example.ad_project_kampung_unite.ml.Recommendation;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -59,4 +60,10 @@ public interface GroupPlanService {
                                     @Query("time1") String time1,
                                     @Query("time2") String time2,
                                     @Query("time3") String time3);
+
+    @POST("groupplan/availableTime/{planId}")
+    Call<List<String>> getSlots(@Path("planId") int planId);
+
+    @POST("groupplan/availableTimes")
+    Call<Map<Integer,List<String>>> getSlotsByPlanIds(@Body List<Integer> planIds);
 }

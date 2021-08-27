@@ -1,9 +1,9 @@
 package com.example.ad_project_kampung_unite.entities.enums;
 
 public enum GroupPlanStatus {
-    AVAILABLE("Available"),
+    AVAILABLE("Open to hitch requests"),
     SHOPPINGCOMPLETED("Shopping Completed"),
-    CLOSED("Closed"),
+    CLOSED("Time to buy groceries"),
     CANCELLED("Cancelled");
 
     private final String displayStatus;

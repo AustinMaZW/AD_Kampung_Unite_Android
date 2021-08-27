@@ -72,11 +72,6 @@ public class HitcherDetailFragment extends Fragment{
     @Override
     public void onStart() {
         super.onStart();
-        View view = getView();
-        Log.e("Hitcher Detail","yes_4");
-
-        Log.e("Hitcher Detail","yes_5");
-
     }
 
     public static HitcherDetailFragment newInstance(String param1, String param2) {
@@ -167,8 +162,8 @@ public class HitcherDetailFragment extends Fragment{
             @Override
             public void run() {
                 Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(MLBASEURL) //设置网络请求的Url地址
-                        .addConverterFactory(GsonConverterFactory.create()) //设置数据解析器
+                        .baseUrl(MLBASEURL)
+                        .addConverterFactory(GsonConverterFactory.create())
                         .build();
                 //create request interface object
                 GroupPlanService request = retrofit.create(GroupPlanService.class);
@@ -180,6 +175,7 @@ public class HitcherDetailFragment extends Fragment{
                         recommendation = response.body();
                         intent_buyerList.putExtra("recommendation",recommendation);
                         intent_buyerList.putExtra("hitcherDetailId",id);
+                        intent_buyerList.putExtra("groceryList",gList);
                         System.out.println("Successful!!!!");
                         startActivity(intent_buyerList);
 
@@ -188,6 +184,7 @@ public class HitcherDetailFragment extends Fragment{
                     @Override
                     public void onFailure(Call<Recommendation> call, Throwable t) {
                         System.out.println("fail_1");
+                        submitBtn.setEnabled(true);
                     }
                 });
             }
