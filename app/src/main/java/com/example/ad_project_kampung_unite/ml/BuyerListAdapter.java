@@ -198,7 +198,7 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
         Button cancel = popView.findViewById(R.id.cancelPopBtn);
         Button ok = popView.findViewById(R.id.goToSlot);
 
-        PopupWindow popupWindow = new PopupWindow(popView, ViewGroup.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.WRAP_CONTENT, true);
+        PopupWindow popupWindow = new PopupWindow(popView, ViewGroup.LayoutParams.WRAP_CONTENT, 900, true);
         popupWindow.setAnimationStyle(R.style.showPopupAnimation);
         popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
