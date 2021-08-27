@@ -55,5 +55,8 @@ public interface GroupPlanService {
                                     @Query("storeName") String storeName,
                                     @Query("shoppingDate") String shoppingDate,
                                     @Query("pickUpAddress") String pickupAddress,
-                                    @Query("pickUpDate") String pickupDate);
+                                    @Query("pickUpDate") String pickupDate,
+                                    @Query("time1") String time1,
+                                    @Query("time2") String time2,
+                                    @Query("time3") String time3);
 }

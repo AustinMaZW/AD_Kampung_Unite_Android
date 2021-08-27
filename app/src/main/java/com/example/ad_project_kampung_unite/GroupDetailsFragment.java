@@ -240,7 +240,7 @@ public class GroupDetailsFragment extends Fragment {
 
                 if (response.isSuccessful()) {
                     hitchRequestList = response.body();
-                    Log.d("Success", String.valueOf(hitchRequestList.get(0).toString())); //for testing
+//                    Log.d("Success", String.valueOf(hitchRequestList.get(0).toString())); //for testing
 
                     //get hitchRequestsId from hitchRequest that are not "rejected" and create hitchrequest list to be passed to adapter
                     List<Integer> hitchRequestIds = new ArrayList<>();

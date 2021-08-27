@@ -20,6 +20,7 @@ import com.example.ad_project_kampung_unite.data.remote.GroupPlanService;
 import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
 import com.example.ad_project_kampung_unite.entities.GroceryList;
 import com.example.ad_project_kampung_unite.entities.GroupPlan;
+import com.example.ad_project_kampung_unite.entities.HitcherDetail;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -83,28 +84,41 @@ public class BuyerFragment extends Fragment {
 
     public void saveGroupPlanDetails() {
         DateTimeFormatter df_date = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter df_time =DateTimeFormatter.ofPattern("HH:mm:ss");
         String gName = groupName.getText().toString();
         String sName = storeName.getText().toString();
         String pDate = LocalDate.parse(purchaseDate.getText().toString()).format(df_date);
         String puDate = LocalDate.parse(pickupDate.getText().toString()).format(df_date);
         String add = address.getText().toString();
+        String puTime1 = LocalTime.parse(pickupTime1.getText().toString()).format(df_time);
+        String puTime2 = LocalTime.parse(pickupTime2.getText().toString()).format(df_time);
+        String puTime3 = LocalTime.parse(pickupTime3.getText().toString()).format(df_time);
 
+        if(gName == "") {
+            gName = "Group";
+        }
 
-        groupPlanService = RetrofitClient.createService(GroupPlanService.class);
-        Call<GroupPlan> call = groupPlanService.createGroupPlan(gName, sName, pDate, add, puDate);
-        call.enqueue(new Callback<GroupPlan>() {
-            @Override
-            public void onResponse(Call<GroupPlan> call, Response<GroupPlan> response) {
-                groupPlan = response.body();
-                System.out.println("succesfully created group plan" + groupPlan.getId());
-                updateBuyerRoleAndGroceryList();
-            }
+        if(!gName.equals(null) && !pDate.equals(null)
+                && !puDate.equals(null) && !add.isEmpty()
+                && !add.equals(null) && !puTime1.equals(null)
+                && !puTime2.equals(null) && !puTime3.equals(null)){
+            groupPlanService = RetrofitClient.createService(GroupPlanService.class);
+            Call<GroupPlan> call = groupPlanService.createGroupPlan(gName, sName, pDate, add, puDate, puTime1, puTime2, puTime3);
+            call.enqueue(new Callback<GroupPlan>() {
+                @Override
+                public void onResponse(Call<GroupPlan> call, Response<GroupPlan> response) {
+                    groupPlan = response.body();
+                    System.out.println("succesfully created group plan" + groupPlan.getId());
+                    updateBuyerRoleAndGroceryList();
+                }
 
-            @Override
-            public void onFailure(Call<GroupPlan> call, Throwable t) {
-                System.out.println("FAILURE");
-            }
-        });
+                @Override
+                public void onFailure(Call<GroupPlan> call, Throwable t) {
+                    System.out.println("FAILURE");
+                }
+            });
+
+        }
     }
 
     public void updateBuyerRoleAndGroceryList() {
