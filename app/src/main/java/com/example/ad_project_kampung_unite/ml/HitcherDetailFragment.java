@@ -42,7 +42,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * create an instance of this fragment.
  */
 public class HitcherDetailFragment extends Fragment{
-    public static final String MLBASEURL = "http://10.0.2.2:5000";
+    public static final String MLBASEURL = "http://10.0.2.2:80";
     private Recommendation recommendation;
     private EditText pickUpDate,location,timeSlot;
     private Button submitBtn;
