@@ -17,6 +17,7 @@
         android:layout_height="wrap_content"
         android:paddingTop="16dp"
         android:text="@string/greeting"
+        android:id="@+id/nav_username"
         android:textSize="16dp"
         android:textStyle="bold"
         android:textColor="@color/Kampong_Blue"/>
