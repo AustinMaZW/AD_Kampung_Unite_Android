@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ad_project_kampung_unite.R;
 import com.example.ad_project_kampung_unite.entities.Product;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 import java.util.zip.Inflater;
@@ -40,6 +42,8 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ProductListViewHolder holder, int position) {
+        String url = pList.get(position).getImgURL();
+        Picasso.get().load(url).into(holder.itemImg);
         holder.item.setText(pList.get(position).getProductName());
     }
 
@@ -53,10 +57,12 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
 
     public class ProductListViewHolder extends RecyclerView.ViewHolder {
         private TextView item;
+        private ImageView itemImg;
 
         public ProductListViewHolder(@NonNull View itemView) {
             super(itemView);
             item = itemView.findViewById(R.id.productInplan);
+            itemImg = itemView.findViewById(R.id.productImg);
         }
     }
 }
