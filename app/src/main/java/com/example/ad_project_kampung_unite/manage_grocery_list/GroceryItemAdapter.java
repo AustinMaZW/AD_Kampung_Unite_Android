@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ad_project_kampung_unite.R;
 import com.example.ad_project_kampung_unite.entities.GroceryItem;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -61,6 +62,9 @@ public class GroceryItemAdapter extends RecyclerView.Adapter<GroceryItemAdapter.
         TextView pName = holder.pName;
         TextView pDesc = holder.pDesc;
         TextView pQty = holder.pQty;
+
+        String url = groceryItem.getProduct().getImgURL();
+        Picasso.get().load(url).into(pImage);
 
         pName.setText(groceryItem.getProduct().getProductName());
         pDesc.setText(groceryItem.getProduct().getProductDescription());
