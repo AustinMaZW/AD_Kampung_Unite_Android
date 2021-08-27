@@ -1,5 +1,8 @@
 package com.example.ad_project_kampung_unite.search_product;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +20,11 @@ import com.example.ad_project_kampung_unite.entities.GroceryItem;
 import com.example.ad_project_kampung_unite.entities.GroceryList;
 import com.example.ad_project_kampung_unite.entities.Product;
 import com.google.android.material.chip.Chip;
+import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,7 +59,10 @@ public class SearchProductListAdapter extends RecyclerView.Adapter<SearchProduct
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final Product product = productList.get(position);
-//        holder.imageView.setImageURI(Uri.parse(productList[position].getImgURL()));
+
+        String url = product.getImgURL();
+        Picasso.get().load(url).into(holder.imageView);
+
         holder.productNameView.setText(productList.get(position).getProductName());
         holder.productDescView.setText(productList.get(position).getProductDescription());
         holder.add.setOnClickListener(new View.OnClickListener() {
