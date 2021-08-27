@@ -132,17 +132,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new GroupsFragment()).commit();
                 break;
-            // test, later delete
-            case R.id.nav_update_price:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new UpdatePriceFragment()).commit();
-                break;
-
-            //test, later delete
-            case R.id.nav_combined_list:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new CombinedListFragment()).commit();
-                break;
+//            // test, later delete
+//            case R.id.nav_update_price:
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+//                        new UpdatePriceFragment()).commit();
+//                break;
+//
+//            //test, later delete
+//            case R.id.nav_combined_list:
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+//                        new CombinedListFragment()).commit();
+//                break;
 
             case R.id.nav_logout:
                 //logout request
