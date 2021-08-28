@@ -46,7 +46,10 @@ public class MyGroceryListsAdapter extends RecyclerView.Adapter<MyGroceryListsHo
             myholder.mPickupDetail.setText(lists.get(i).getGroupPlanGL().getPickupDate().format(DateTimeFormatter.ISO_DATE));
         }
 
-        System.out.println(groceryList.getGroceryItems());
+        myholder.status.setText(groceryList.getStatus().getGLStatus());
+
+
+
 
         myholder.setItemClickListener(new ItemClickListener() {
             @Override

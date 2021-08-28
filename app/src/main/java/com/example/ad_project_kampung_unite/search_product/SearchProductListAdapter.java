@@ -60,8 +60,10 @@ public class SearchProductListAdapter extends RecyclerView.Adapter<SearchProduct
     public void onBindViewHolder(ViewHolder holder, int position) {
         final Product product = productList.get(position);
 
-        String url = product.getImgURL();
-        Picasso.get().load(url).into(holder.imageView);
+        if(product.getImgURL() != null) {
+            String url = product.getImgURL();
+            Picasso.get().load(url).into(holder.imageView);
+        }
 
         holder.productNameView.setText(productList.get(position).getProductName());
         holder.productDescView.setText(productList.get(position).getProductDescription());
@@ -84,10 +86,8 @@ public class SearchProductListAdapter extends RecyclerView.Adapter<SearchProduct
                             // check if item exists in grocery list
                             if(addedProducts.stream().filter(x -> x.getProductId() == product.getProductId()).findFirst().orElse(null) != null) {
                                 Product existProduct = addedProducts.stream().filter(x -> x.getProductId() == product.getProductId()).findFirst().get();
-                                System.out.println("product found" + existProduct.getProductId());
 
                                 GroceryItem existItem = addedGroceryItems.stream().filter(x -> x.getProduct().getProductId() == product.getProductId()).findFirst().get();
-                                System.out.println("grocery item found" + existItem.getId());
 
                                 int quantity = existItem.getQuantity() + 1;
 
@@ -95,7 +95,7 @@ public class SearchProductListAdapter extends RecyclerView.Adapter<SearchProduct
                                 call1.enqueue(new Callback<Integer>() {
                                     @Override
                                     public void onResponse(Call<Integer> call, Response<Integer> response) {
-                                        Toast.makeText(view.getContext(),"Added "+ product.getProductName() +" to grocery list",Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(view.getContext(),quantity + " " + product.getProductName() + " added",Toast.LENGTH_SHORT).show();
                                     }
 
                                     @Override
@@ -106,13 +106,12 @@ public class SearchProductListAdapter extends RecyclerView.Adapter<SearchProduct
                                     }
                                 });
                             } else {
-                                System.out.println("product not found");
                                 int productId = product.getProductId();
                                 Call<Integer> call2 = groceryItemService.addGroceryItemToGroceryList(productId, 1, groceryList.getId());
                                 call2.enqueue(new Callback<Integer>() {
                                     @Override
                                     public void onResponse(Call<Integer> call, Response<Integer> response) {
-                                        Toast.makeText(view.getContext(),"Added "+ product.getProductName() +" to grocery list",Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(view.getContext(),"1 "+ product.getProductName() + " added",Toast.LENGTH_SHORT).show();
                                     }
 
                                     @Override

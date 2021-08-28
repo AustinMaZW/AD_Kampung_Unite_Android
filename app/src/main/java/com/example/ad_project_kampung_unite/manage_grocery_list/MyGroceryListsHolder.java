@@ -13,7 +13,7 @@ import com.example.ad_project_kampung_unite.R;
 //each row is a separate grocery list
 public class MyGroceryListsHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    TextView mGroceryListName, mPickupDetail, mNumOfItems;
+    TextView mGroceryListName, mPickupDetail, status;
     ItemClickListener itemClickListener;
 
     MyGroceryListsHolder(@NonNull View itemView){
@@ -21,7 +21,7 @@ public class MyGroceryListsHolder extends RecyclerView.ViewHolder implements Vie
 
         this.mGroceryListName = itemView.findViewById(R.id.grocerylistname);
         this.mPickupDetail = itemView.findViewById(R.id.pickupdetails);
-        this.mNumOfItems = itemView.findViewById(R.id.numItems);
+        this.status = itemView.findViewById(R.id.status);
 
         itemView.setOnClickListener(this);
     }
