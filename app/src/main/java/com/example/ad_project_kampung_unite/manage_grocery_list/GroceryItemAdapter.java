@@ -1,5 +1,6 @@
 package com.example.ad_project_kampung_unite.manage_grocery_list;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -70,7 +71,7 @@ public class GroceryItemAdapter extends RecyclerView.Adapter<GroceryItemAdapter.
 
     // Involves populating data into the item through holder
     @Override
-    public void onBindViewHolder(GroceryItemAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(GroceryItemAdapter.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         // Get the data model based on position
         GroceryItem groceryItem = groceryItemList.get(position);
 
@@ -89,7 +90,6 @@ public class GroceryItemAdapter extends RecyclerView.Adapter<GroceryItemAdapter.
         pName.setText(groceryItem.getProduct().getProductName());
         pDesc.setText(groceryItem.getProduct().getProductDescription());
         pQty.setText(String.valueOf(groceryItem.getQuantity()));
-
 
         minus.setOnClickListener(new View.OnClickListener() {
             @Override
