@@ -7,11 +7,12 @@
     android:gravity="center"
     android:background="@drawable/roundcornerpop">
     <TextView
+        android:id="@+id/poptitle"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:text="The buyer is also buying:"
         android:textStyle="bold"
-        android:textSize="25sp"
+        android:textSize="20sp"
         android:layout_gravity="left"
         android:textColor="#293250"/>
     <LinearLayout
