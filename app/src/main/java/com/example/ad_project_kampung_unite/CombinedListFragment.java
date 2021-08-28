@@ -23,13 +23,17 @@ import com.android.volley.toolbox.Volley;
 import com.example.ad_project_kampung_unite.adaptors.ShoppingListAdapter;
 import com.example.ad_project_kampung_unite.data.remote.CPListService;
 import com.example.ad_project_kampung_unite.entities.CombinedPurchaseList;
+import com.example.ad_project_kampung_unite.entities.GroupPlan;
+import com.example.ad_project_kampung_unite.entities.enums.GroupPlanStatus;
 import com.google.android.material.button.MaterialButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
@@ -41,12 +45,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class CombinedListFragment extends Fragment {
 
-    private MaterialButton finishShopping;
-    private SharedPreferences sharedPreferences;
+    private MaterialButton finishShopping, finishShoppingDisabled;
     private List<CombinedPurchaseList> cplList;
     private RecyclerView combinedListItems;
     private ShoppingListAdapter shoppingListAdapter;
     private View combinedListView;
+    private GroupPlan groupPlan;
+    boolean iscompleted;
+
 
     public CombinedListFragment() {
         // Required empty public constructor
@@ -62,8 +68,10 @@ public class CombinedListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
+//        iscompleted = false;
         combinedListView = inflater.inflate(R.layout.fragment_combined_list, container, false);
+        finishShopping = combinedListView.findViewById(R.id.finish_shopping_button);
+        finishShoppingDisabled = combinedListView.findViewById(R.id.finish_shopping_button_disabled);
 
         //Demo Code to get from GroupPlanID = 18;
 //        Integer groupPlanID = 18;
@@ -71,18 +79,19 @@ public class CombinedListFragment extends Fragment {
         //Acutal code get data from server, groupPlanId from bundle
         Bundle bundle = getArguments();
         Integer groupPlanID = bundle.getInt("gpId");
-
         String url = getResources().getString(R.string.base_url)+getString(R.string.get_list_id)+groupPlanID;
+//        String getGrpPlanURL = getResources().getString(R.string.base_url)+getString(R.string.get_groupplan_by_id)+ groupPlanID;
+        RequestQueue queueRequest = Volley.newRequestQueue(getActivity());
 
         StringRequest getListRequest = new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                System.out.println("List"+response);
                 if (response != null | response != ""){
                     try {
                         JSONArray jsonArray = new JSONArray(response);
-                        //parseArray and save it to  List<CombinedPurchaseList> cplList
                         parseArray(jsonArray);
-//                        parseArray(jsonArray,combinedListView);
+                        finishShoppingButton();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -97,11 +106,36 @@ public class CombinedListFragment extends Fragment {
                         .show();
             }
         });
-        RequestQueue queueRequest = Volley.newRequestQueue(getActivity());
+
+//        StringRequest getGrpPlanRequest = new StringRequest(getGrpPlanURL, new Response.Listener<String>() {
+//            @Override
+//            public void onResponse(String response) {
+//                System.out.println("grpPlan" +response);
+//                if (response != null | !response.matches("")){
+//
+//                    try {
+//                        JSONObject object = new JSONObject(response);
+//                        buildGroupPlan(object);
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                Toast.makeText(getActivity().getApplicationContext(),
+//                        error.toString(),
+//                        Toast.LENGTH_SHORT)
+//                        .show();
+//            }
+//        });
+
+//        queueRequest.add(getGrpPlanRequest);
         queueRequest.add(getListRequest);
+//        queueRequest.start();
 
         //Finish Shopping Button
-        finishShopping = combinedListView.findViewById(R.id.finish_shopping_button);
         finishShopping.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -145,12 +179,39 @@ public class CombinedListFragment extends Fragment {
         });
 
 
+        //finishShoppingDisabled button
+        finishShoppingDisabled.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity().getApplicationContext(), "Close requests before buying items", Toast.LENGTH_LONG).show();
+            }
+        });
+
+
+
+
+
 
         return combinedListView;
     }
 
+    private void finishShoppingButton(){
+        if (iscompleted){
+            finishShoppingDisabled.setVisibility(View.GONE);
+        }else{
+            finishShopping.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+    }
+
     private void parseArray(JSONArray jsonArray) {
         cplList = new ArrayList<>();
+        String gps[] = new String[(jsonArray.length())];
         for (int i = 0; i < jsonArray.length(); i++) {
             try {
                 JSONObject object = jsonArray.getJSONObject(i);
@@ -159,13 +220,19 @@ public class CombinedListFragment extends Fragment {
                         object.getJSONObject("product").getInt("id"),
                         object.getJSONObject("product").getString("name"),
                         object.getInt("quantity"),
-                        object.getBoolean("purchasedStatus")
-                );
+                        object.getBoolean("purchasedStatus"));
+                gps[i] = object.getJSONObject("groupPlan").getString("groupPlanStatus");
                 cplList.add(cpl);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
+        Arrays.stream(gps).forEach(x-> System.out.println(x));
+//        status = gps[0];
+        if(gps[0].matches("CLOSED")){
+            iscompleted = true;
+        }
+
         inflateItemView();
     }
 
@@ -175,6 +242,7 @@ public class CombinedListFragment extends Fragment {
         //passed cplList to ShoppingListAdapter
         shoppingListAdapter = new ShoppingListAdapter(cplList);
         combinedListItems.setAdapter(shoppingListAdapter);
+
     }
 
 
@@ -314,23 +382,40 @@ public class CombinedListFragment extends Fragment {
 //        }
 //        return product;
 //    }
-//
-//    private GroupPlan buildGroupPlan(JSONObject object) {
-//        GroupPlan groupPlan = null;
-//        try {
-//            groupPlan = new GroupPlan(
-//                    object.getJSONObject("groupPlan").getInt("id"),
-//                    object.getJSONObject("groupPlan").getString("planName"),
-//                    object.getJSONObject("groupPlan").getString("storeName"),
-//                    LocalDate.parse(object.getJSONObject("groupPlan").getString("shoppingDate")),
-//                    object.getJSONObject("groupPlan").getString("pickupAddress"),
-//                    LocalDate.parse(object.getJSONObject("groupPlan").getString("pickupDate")),
-//                    GroupPlanStatus.valueOf(object.getJSONObject("groupPlan").getString("groupPlanStatus"))
-//            );
-//
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//        return groupPlan;
-//    }
+
+    private void buildGroupPlan(JSONObject jsonObject) {
+        groupPlan = new GroupPlan();
+        try {
+                groupPlan.setId(jsonObject.getInt("id"));
+                groupPlan.setPlanName(jsonObject.getString("planName"));
+                groupPlan.setGroupPlanStatus(gpStatusCheck(jsonObject.getString("groupPlanStatus")));
+                groupPlan.setPickupDate(LocalDate.parse(jsonObject.getString("pickupDate")));
+                groupPlan.setStoreName(jsonObject.getString("storeName"));
+                groupPlan.setShoppingDate(LocalDate.parse(jsonObject.getString("shoppingDate")));
+                groupPlan.setPickupAddress(jsonObject.getString("pickupAddress"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private GroupPlanStatus gpStatusCheck(String string){
+        switch (string) {
+            case "AVAILABLE":
+                return GroupPlanStatus.AVAILABLE;
+
+            case "SHOPPINGCOMPLETED":
+                return GroupPlanStatus.SHOPPINGCOMPLETED;
+
+            case "CLOSED":
+                return GroupPlanStatus.CLOSED;
+
+            case "CANCELLED":
+                return GroupPlanStatus.CANCELLED;
+
+            default:
+                return null;
+        }
+    }
+
 }
