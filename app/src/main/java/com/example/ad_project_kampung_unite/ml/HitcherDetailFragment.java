@@ -190,7 +190,9 @@ public class HitcherDetailFragment extends Fragment{
                             intent_buyerList.putExtra("hitcherDetailId",id);
                             intent_buyerList.putExtra("groceryList",gList);
                             System.out.println("Successful!!!!");
+
                             startActivity(intent_buyerList);
+                            getActivity().overridePendingTransition(R.anim.in_from_right,R.anim.out_to_left);
                         }
                         else{
                             AlertDialog.Builder radioDialog_ = new AlertDialog.Builder(getContext());

@@ -81,6 +81,7 @@ public class BuyerListActivity extends AppCompatActivity implements View.OnClick
         back.putExtra("hitcherDetail",true);
         back.putExtra("groceryList",gList);
         startActivity(back);
+        this.overridePendingTransition(R.anim.in_from_left,R.anim.out_to_right);
         finish();
     }
 

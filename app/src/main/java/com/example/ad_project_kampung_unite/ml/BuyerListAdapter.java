@@ -294,9 +294,9 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
                     Activity o = getActivity(context);
                     // refresh activity
                     o.finish();
-                    o.overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
+                    o.overridePendingTransition(R.anim.in_from_right,R.anim.out_to_left);
                     o.startActivity(o.getIntent());
-                    o.overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
+                    o.overridePendingTransition(R.anim.in_from_left,R.anim.out_to_right);
                 }
             }
 
