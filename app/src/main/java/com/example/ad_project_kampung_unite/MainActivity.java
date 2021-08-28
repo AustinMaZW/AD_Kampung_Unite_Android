@@ -71,21 +71,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     new MyGroceryListsFragment()).commit();
             navigationView.setCheckedItem(R.id.nav_grocerylists);
         }
-        Intent back = getIntent();
-        boolean hd = back.getBooleanExtra("hitcherDetail",false);
-        if(hd){
-            FragmentManager fm = getSupportFragmentManager();
-            HitcherDetailFragment hitcerDetail = new HitcherDetailFragment();
-            GroceryList gList = (GroceryList) back.getSerializableExtra("groceryList");
-            if(gList != null)
-                hitcerDetail.setgList(gList);
-            FragmentTransaction trans = fm.beginTransaction();
-            trans.replace(R.id.fragment_container,hitcerDetail);
-            trans.addToBackStack(null);
-            trans.commit();
+        if(getIntent().getBooleanExtra("hitcherDetail",false)){
+            goToHitcherDetail(getIntent());
         }
     }
-
+    public void goToHitcherDetail(Intent back){
+        getIntent().putExtra("hitcherDetail",false);
+        FragmentManager fm = getSupportFragmentManager();
+        HitcherDetailFragment hitcerDetail = new HitcherDetailFragment();
+        GroceryList gList = (GroceryList) back.getSerializableExtra("groceryList");
+        if(gList != null)
+            hitcerDetail.setgList(gList);
+        FragmentTransaction trans = fm.beginTransaction();
+        trans.replace(R.id.fragment_container,hitcerDetail);
+        trans.addToBackStack(null);
+        trans.commit();
+    }
     public void setGreeting() {
         // set greeting for user
         greetingView = (TextView) header.findViewById(R.id.nav_username);
@@ -182,7 +183,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        }
+        else {
             super.onBackPressed();
         }
     }
