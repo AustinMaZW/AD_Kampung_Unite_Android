@@ -118,7 +118,7 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
     public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
 
         DecimalFormat df = new DecimalFormat("0.00%");
-        holder.buyerName.setText(String.format("%s (Similarity %s)",plans.get(position).getStoreName(),df.format(recommendation.getProduct_score().get(position))));
+        holder.buyerName.setText(String.format("%s (Similarity %s)",plans.get(position).getPlanName(),df.format(recommendation.getProduct_score().get(position))));
         holder.pickUpDate.setText(String.format("Pick Up: %tF",plans.get(position).getPickupDate()));
         List<String> slots_str = this.slotsList.get(planIds.get(position));
         if(slots_str != null && slots_str.size() > 0){
@@ -194,11 +194,14 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
     private PopupWindow popupWindow_;
     private PopupWindow popMaker(View layoutRoot, List<Product> pList,int position) {
         View popView = LayoutInflater.from(context).inflate(R.layout.buyer_list_item_pop, null, false);
+        TextView title = popView.findViewById(R.id.poptitle);
+        String newTitle = String.format("%s [%s]",title.getText().toString(),plans.get(position).getStoreName());
+        title.setText(newTitle);
         buildRecyclerView(popView, pList);
         Button cancel = popView.findViewById(R.id.cancelPopBtn);
         Button ok = popView.findViewById(R.id.goToSlot);
 
-        PopupWindow popupWindow = new PopupWindow(popView, ViewGroup.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.WRAP_CONTENT, true);
+        PopupWindow popupWindow = new PopupWindow(popView, ViewGroup.LayoutParams.WRAP_CONTENT, 900, true);
         popupWindow.setAnimationStyle(R.style.showPopupAnimation);
         popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override

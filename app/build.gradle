@@ -47,6 +47,9 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 /* Logging interceptor to know what kind of data is being sent and received by Retrofit */
 
+    // load images using picasso
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
     implementation 'com.squareup.okhttp3:logging-interceptor:3.5.0' /* Logging interceptor to know what kind of data is being sent and received by Retrofit */
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

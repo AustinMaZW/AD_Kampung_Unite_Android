@@ -3,8 +3,9 @@ package com.example.ad_project_kampung_unite;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,15 +22,25 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
+import com.example.ad_project_kampung_unite.data.remote.UserDetailService;
 import com.example.ad_project_kampung_unite.entities.GroceryList;
+import com.example.ad_project_kampung_unite.entities.UserDetail;
 import com.example.ad_project_kampung_unite.manage_grocery_list.MyGroceryListsFragment;
 import com.example.ad_project_kampung_unite.ml.HitcherDetailFragment;
 import com.google.android.material.navigation.NavigationView;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawer;
-
+    private View header;
+    private TextView greetingView;
+    private int userId;
+    private UserDetailService userDetailService;
+    private UserDetail user;
 
     SharedPreferences sharedPreferences;
     private static final String LOGIN_CREDENTIALS = "LoginCredentials";
@@ -46,6 +57,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        header = navigationView.getHeaderView(0);
+        setGreeting();
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -72,6 +86,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    public void setGreeting() {
+        // set greeting for user
+        greetingView = (TextView) header.findViewById(R.id.nav_username);
+
+        // get userid from sharedprefs
+        sharedPreferences = getSharedPreferences(LOGIN_CREDENTIALS, MODE_PRIVATE);
+        userId = sharedPreferences.getInt(KEY_USERID, 0);
+
+        // find user's name
+        userDetailService = RetrofitClient.createService(UserDetailService.class);
+        Call<UserDetail> call = userDetailService.findUserById(userId);
+        call.enqueue(new Callback<UserDetail>() {
+            @Override
+            public void onResponse(Call<UserDetail> call, retrofit2.Response<UserDetail> response) {
+                user = response.body();
+                String name = user.getFirstName();
+                String greeting = "Hello, " + name + "!";
+                greetingView.setText(greeting);
+            }
+            @Override
+            public void onFailure(Call<UserDetail> call, Throwable t) {
+                greetingView.setText("Hello!");
+            }
+        });
+    }
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
@@ -92,17 +132,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new GroupsFragment()).commit();
                 break;
-            // test, later delete
-            case R.id.nav_update_price:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new UpdatePriceFragment()).commit();
-                break;
-
-            //test, later delete
-            case R.id.nav_combined_list:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new CombinedListFragment()).commit();
-                break;
+//            // test, later delete
+//            case R.id.nav_update_price:
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+//                        new UpdatePriceFragment()).commit();
+//                break;
+//
+//            //test, later delete
+//            case R.id.nav_combined_list:
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+//                        new CombinedListFragment()).commit();
+//                break;
 
             case R.id.nav_logout:
                 //logout request
