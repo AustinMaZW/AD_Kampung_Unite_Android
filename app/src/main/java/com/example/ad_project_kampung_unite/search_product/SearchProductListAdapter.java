@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +26,7 @@ import com.squareup.picasso.Picasso;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,6 +36,7 @@ import retrofit2.Response;
 
 public class SearchProductListAdapter extends RecyclerView.Adapter<SearchProductListAdapter.ViewHolder> {
 
+    private List<Product> productListFull;
     private List<Product> productList;
     private GroceryList groceryList;
     private List<GroceryItem> addedGroceryItems;
@@ -43,6 +46,7 @@ public class SearchProductListAdapter extends RecyclerView.Adapter<SearchProduct
     // RecyclerView recyclerView;
     public SearchProductListAdapter(List<Product> productList, GroceryList groceryList) {
         this.productList = productList;
+        productListFull = new ArrayList<>(productList);
         this.groceryList = groceryList;
     }
     @Override
@@ -51,22 +55,20 @@ public class SearchProductListAdapter extends RecyclerView.Adapter<SearchProduct
         View listItem= layoutInflater.inflate(R.layout.find_products_item, parent, false);
         ViewHolder viewHolder = new ViewHolder(listItem);
 
-
-
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final Product product = productList.get(position);
+        Product product = productList.get(position);
 
         if(product.getImgURL() != null) {
             String url = product.getImgURL();
             Picasso.get().load(url).into(holder.imageView);
         }
 
-        holder.productNameView.setText(productList.get(position).getProductName());
-        holder.productDescView.setText(productList.get(position).getProductDescription());
+        holder.productNameView.setText(product.getProductName());
+        holder.productDescView.setText(product.getProductDescription());
         holder.add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -142,6 +144,40 @@ public class SearchProductListAdapter extends RecyclerView.Adapter<SearchProduct
     public int getItemCount() {
         return productList.size();
     }
+
+    public Filter getFilter() {
+        return filter;
+    }
+
+    private Filter filter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<Product> filteredProducts = new ArrayList<>();
+            if(constraint == null || constraint.length() == 0) {
+                filteredProducts.addAll(productListFull);
+            } else {
+                String filterPattern = constraint.toString().toLowerCase().trim();
+
+                for(Product item : productListFull) {
+                    if(item.getProductName().toLowerCase().contains(filterPattern)) {
+                        filteredProducts.add(item);
+                    }
+                }
+            }
+
+            FilterResults results = new FilterResults();
+            results.values = filteredProducts;
+
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            productList.clear();
+            productList.addAll((List) results.values);
+            notifyDataSetChanged();
+        }
+    };
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView imageView;
