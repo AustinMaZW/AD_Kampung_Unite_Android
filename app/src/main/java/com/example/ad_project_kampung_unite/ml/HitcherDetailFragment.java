@@ -1,8 +1,10 @@
 package com.example.ad_project_kampung_unite.ml;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -42,7 +44,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * create an instance of this fragment.
  */
 public class HitcherDetailFragment extends Fragment{
-    public static final String MLBASEURL = "http://10.0.2.2:80";
+    public static final String MLBASEURL = "http://10.0.2.2:5000";
     private Recommendation recommendation;
     private EditText pickUpDate,location,timeSlot;
     private Button submitBtn;
@@ -110,7 +112,11 @@ public class HitcherDetailFragment extends Fragment{
             public void onClick(View v) {
                 submitBtn.setEnabled(false);
                 Toast.makeText(getContext(),"Please Wait",Toast.LENGTH_SHORT).show();
-                saveHitcherDetail();
+                try{
+                    saveHitcherDetail();
+                }catch (Exception e){
+                    Toast.makeText(getContext(),"Network Issue! Please try again!",Toast.LENGTH_SHORT).show();
+                }
             }
         });
         return view;
@@ -161,6 +167,11 @@ public class HitcherDetailFragment extends Fragment{
         new Thread(new Runnable() {
             @Override
             public void run() {
+                try{
+
+                }catch (Exception e){
+
+                }
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl(MLBASEURL)
                         .addConverterFactory(GsonConverterFactory.create())
@@ -173,12 +184,28 @@ public class HitcherDetailFragment extends Fragment{
                     @Override
                     public void onResponse(Call<Recommendation> call, Response<Recommendation> response) {
                         recommendation = response.body();
-                        intent_buyerList.putExtra("recommendation",recommendation);
-                        intent_buyerList.putExtra("hitcherDetailId",id);
-                        intent_buyerList.putExtra("groceryList",gList);
-                        System.out.println("Successful!!!!");
-                        startActivity(intent_buyerList);
-
+                        if(recommendation.getPlandIds().size() > 0){
+                            intent_buyerList.putExtra("recommendation",recommendation);
+                            intent_buyerList.putExtra("hitcherDetailId",id);
+                            intent_buyerList.putExtra("groceryList",gList);
+                            System.out.println("Successful!!!!");
+                            startActivity(intent_buyerList);
+                        }
+                        else{
+                            AlertDialog.Builder radioDialog_ = new AlertDialog.Builder(getContext());
+                            radioDialog_.setTitle("Warning!!!!!!").setIcon(R.drawable.logo_small).setMessage("There is no group plan matched!!!")
+                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            }).setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                @Override
+                                public void onDismiss(DialogInterface dialog) {
+                                    submitBtn.setEnabled(true);
+                                }
+                            }).show();
+                        }
                     }
                     //when request is fail, call back this
                     @Override
