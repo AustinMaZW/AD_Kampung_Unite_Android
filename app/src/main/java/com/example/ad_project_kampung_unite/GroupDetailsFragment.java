@@ -395,6 +395,11 @@ public class GroupDetailsFragment extends Fragment {
                 if (response.isSuccessful()) {
                     Log.d("Success, hitchrequests updated", String.valueOf(hitchRequest)); //for testing
 
+                    FragmentManager fm = ((AppCompatActivity)layoutRoot.getContext()).getSupportFragmentManager();
+                    Fragment currentFrag = fm.findFragmentByTag("GROUP_DETAILS_FRAG");
+                    fm.beginTransaction().detach(currentFrag).commitNow();
+                    fm.beginTransaction().attach(currentFrag).commitNow();
+
                 } else {
                     Log.e("Error", response.errorBody().toString());
                 }
@@ -529,28 +534,14 @@ public class GroupDetailsFragment extends Fragment {
 
                 Snackbar.make(rvHitchRequests, "Hitch request rejected", Snackbar.LENGTH_LONG).show();
 
-                FragmentManager fm = ((AppCompatActivity)layoutRoot.getContext()).getSupportFragmentManager();
-                Fragment currentFrag = fm.findFragmentByTag("GROUP_DETAILS_FRAG");
-                fm.beginTransaction().detach(currentFrag).commitNow();
-                fm.beginTransaction().attach(currentFrag).commitNow();
+
             }
             else if (direction == ItemTouchHelper.RIGHT){
                 hitchRq.setRequestStatus(RequestStatus.ACCEPTED);
-                updateHitchRequestStatusToServer(hitchRq);  //send http rq to server to approve
+                approveHitchRqToServer(hitchRq.getId());
 
                 Snackbar.make(rvHitchRequests, "Hitch request accepted", Snackbar.LENGTH_LONG).show();
 
-                try {
-                    Thread.sleep(250);      //need to wait or database hasn't updated...
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                //below to refresh the ui after accepting hitch rq
-                FragmentManager fm = ((AppCompatActivity)layoutRoot.getContext()).getSupportFragmentManager();
-                Fragment currentFrag = fm.findFragmentByTag("GROUP_DETAILS_FRAG");
-                fm.beginTransaction().detach(currentFrag).commitNow();
-                fm.beginTransaction().attach(currentFrag).commitNow();
             }
         }
 
