@@ -38,4 +38,7 @@ public interface GroceryListService {
     @GET("grocerylists/update/buyerrole")
     Call<GroceryList> updateBuyerRoleById(@Query("groceryListId") int groceryListId, @Query("groupPlanId") int groupPlanId);
 
+    @GET("grocerylists/buyer/{groupPlanId}")
+    Call <GroceryList> findGroceryListByGroupPlanId(@Path("groupPlanId") int groupPlanId);
+
 }

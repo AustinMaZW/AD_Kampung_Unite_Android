@@ -60,8 +60,8 @@ public class SearchProductListAdapter extends RecyclerView.Adapter<SearchProduct
     public void onBindViewHolder(ViewHolder holder, int position) {
         final Product product = productList.get(position);
 
-        String url = product.getImgURL();
-        Picasso.get().load(url).into(holder.imageView);
+//        String url = product.getImgURL();
+//        Picasso.get().load(url).into(holder.imageView);
 
         holder.productNameView.setText(productList.get(position).getProductName());
         holder.productDescView.setText(productList.get(position).getProductDescription());

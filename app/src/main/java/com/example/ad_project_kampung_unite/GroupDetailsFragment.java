@@ -66,6 +66,7 @@ public class GroupDetailsFragment extends Fragment {
     private List<HitchRequest> hitchRequestList = new ArrayList<>();
     private List<HitchRequest> hitchRequestList_excludeRejected;
     private List<List<GroceryItem>> childListHolder = new ArrayList<>();
+    private GroceryList buyerGroceryList;
 
     List<Integer> hitchids = new ArrayList<>();
     private GroupPlan groupPlan;
@@ -76,6 +77,7 @@ public class GroupDetailsFragment extends Fragment {
     private MaterialButton closeRequestBtn, combinedListBtn;
 
     private GroupPlanService groupPlanService;
+    private GroceryListService groceryListService;
     private GroceryItemService groceryItemService;
     private HitchRequestService hitchRequestService;
 
@@ -98,6 +100,7 @@ public class GroupDetailsFragment extends Fragment {
 
         //if group status is not "available", buyer cannot edit their own grocery list
         editBtn = layoutRoot.findViewById(R.id.groupDetails_buyerEditBtn);
+
         if(groupStatus!="Open to hitch requests"){
             editBtn.setVisibility(View.GONE);
         }
@@ -106,8 +109,12 @@ public class GroupDetailsFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
 
-                    GroceryList buyerGroceryList = buyerGroceryItemList.get(0).getGroceryList();
-                    Bundle result = new Bundle();;
+                    if(buyerGroceryItemList.size()>0) {
+                       buyerGroceryList = buyerGroceryItemList.get(0).getGroceryList();
+                    }
+
+                    Bundle result = new Bundle();
+
                     result.putSerializable("bundleKey1", buyerGroceryList);
                     FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                     fragmentManager.setFragmentResult("requestKey1", result);
@@ -116,20 +123,24 @@ public class GroupDetailsFragment extends Fragment {
                     FragmentManager parentFragmentManager = getParentFragmentManager();
                     EditGroceryListFragment editGroceryListFragment = new EditGroceryListFragment();
                     parentFragmentManager.beginTransaction()
-                            .replace(R.id.fragment_container,editGroceryListFragment)
+                            .replace(R.id.fragment_container, editGroceryListFragment)
                             .addToBackStack(null)
                             .commit();
+
                 }
             });
         }
         groupPlanService = RetrofitClient.createService(GroupPlanService.class);
         getGroupPlanFromServer();
 
-        groceryItemService = RetrofitClient.createService(GroceryItemService.class);
-        getBuyerGroceryItemsFromServer();
-
         requestComment = layoutRoot.findViewById(R.id.group_details_requestcomment);
         requestComment.setVisibility(View.GONE);
+
+        groceryListService = RetrofitClient.createService(GroceryListService.class);
+        getBuyerGroceryListFromServer();
+
+        groceryItemService = RetrofitClient.createService(GroceryItemService.class);
+        getBuyerGroceryItemsFromServer();
 
         hitchRequestService = RetrofitClient.createService(HitchRequestService.class);
         getHitchRequestsFromServer();
@@ -168,12 +179,6 @@ public class GroupDetailsFragment extends Fragment {
                                     System.out.println(GroupPlanStatus.CLOSED);
                                     updateGroupPlanStatusToServer(groupId,GroupPlanStatus.CLOSED);
 
-                                    FragmentManager fm = ((AppCompatActivity)layoutRoot.getContext()).getSupportFragmentManager();
-                                    Fragment currentFrag = fm.findFragmentByTag("GROUP_DETAILS_FRAG");
-                                    fm.beginTransaction().detach(currentFrag).commitNow();
-                                    fm.beginTransaction().attach(currentFrag).commitNow();
-
-                                    closeRequestBtn.setVisibility(View.INVISIBLE);
                                 }
                             });
                             alert.show();
@@ -213,6 +218,32 @@ public class GroupDetailsFragment extends Fragment {
         });
 
         return layoutRoot;
+    }
+
+    private void getBuyerGroceryListFromServer(){
+        Call<GroceryList> call = groceryListService.findGroceryListByGroupPlanId(groupId);
+
+        call.enqueue(new Callback<GroceryList>() {
+            @Override
+            public void onResponse(Call<GroceryList> call, Response<GroceryList> response) {
+
+                if (response.isSuccessful()) {
+                    buyerGroceryList = response.body();
+//                    Log.d("Success", String.valueOf(buyerGroceryItemList.get(0).getProduct().getProductName())); //for testing
+
+                } else {
+                    Log.e("Error", response.errorBody().toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GroceryList> call, Throwable t) {
+                // like no internet connection / the website doesn't exist
+                call.cancel();
+                Log.w("Failure", "Failure!");
+                t.printStackTrace();
+            }
+        });
     }
 
     private void getBuyerGroceryItemsFromServer(){
@@ -269,6 +300,8 @@ public class GroupDetailsFragment extends Fragment {
                                 hitchRequestIds.add(id);
                             }
                         }
+                        if(hitchRequestList_excludeRejected.size()==0)
+                            requestComment.setVisibility(View.VISIBLE);
                         getHitcherGroceryItemsFromServer(hitchRequestIds);
                     }
                     else{
@@ -386,6 +419,12 @@ public class GroupDetailsFragment extends Fragment {
 
                 if (response.isSuccessful()) {
                     Log.d("Success, hitchrequests updated", response.toString()); //for testing
+                    FragmentManager fm = ((AppCompatActivity)layoutRoot.getContext()).getSupportFragmentManager();
+                    Fragment currentFrag = fm.findFragmentByTag("GROUP_DETAILS_FRAG");
+                    fm.beginTransaction().detach(currentFrag).commitNow();
+                    fm.beginTransaction().attach(currentFrag).commitNow();
+
+                    closeRequestBtn.setVisibility(View.INVISIBLE);
 
                 } else {
                     Log.e("Error", response.errorBody().toString());
@@ -428,8 +467,8 @@ public class GroupDetailsFragment extends Fragment {
         rvHitchRequests.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext()));
         rvHitchRequests.setAdapter(expandableCategoryRecyclerViewAdapter);
 
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
-        itemTouchHelper.attachToRecyclerView(rvHitchRequests);
+//        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+//        itemTouchHelper.attachToRecyclerView(rvHitchRequests);
     }
 
     //defining what each swipe action does
@@ -443,46 +482,42 @@ public class GroupDetailsFragment extends Fragment {
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
 
             int position = viewHolder.getAbsoluteAdapterPosition();
+            HitchRequest hitchRq = hitchRequestList.get(position);
+            List<HitchRequest> tempHitchRequestList = new ArrayList<>();
 
-            switch (direction){
-                case ItemTouchHelper.LEFT:
-                    HitchRequest hitchRq = hitchRequestList.get(position);     //get id of hitchRq
-                    hitchRq.setRequestStatus(RequestStatus.REJECTED);
-                    updateHitchRequestStatusToServer(hitchRq);  //send http rq to server to approve
+            if(direction == ItemTouchHelper.LEFT){
+                hitchRq.setRequestStatus(RequestStatus.REJECTED);
+                updateHitchRequestStatusToServer(hitchRq);  //send http rq to server to approve
 
-                    hitchRequestList.remove(position);
+                hitchRequestList.remove(position);
+                tempHitchRequestList = hitchRequestList;
+                hitchRequestList.clear();
+                hitchRequestList = tempHitchRequestList;
 
-                    Snackbar.make(rvHitchRequests, "Hitch request rejected", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(rvHitchRequests, "Hitch request rejected", Snackbar.LENGTH_LONG).show();
 
-                    FragmentManager fm = ((AppCompatActivity)layoutRoot.getContext()).getSupportFragmentManager();
-                    Fragment currentFrag = fm.findFragmentByTag("GROUP_DETAILS_FRAG");
-                    fm.beginTransaction().detach(currentFrag).commitNow();
-                    fm.beginTransaction().attach(currentFrag).commitNow();
+                FragmentManager fm = ((AppCompatActivity)layoutRoot.getContext()).getSupportFragmentManager();
+                Fragment currentFrag = fm.findFragmentByTag("GROUP_DETAILS_FRAG");
+                fm.beginTransaction().detach(currentFrag).commitNow();
+                fm.beginTransaction().attach(currentFrag).commitNow();
+            }
+            else if (direction == ItemTouchHelper.RIGHT){
+                hitchRq.setRequestStatus(RequestStatus.ACCEPTED);
+                updateHitchRequestStatusToServer(hitchRq);  //send http rq to server to approve
 
-                    break;
-                case ItemTouchHelper.RIGHT:
-                    hitchRq = hitchRequestList.get(position);     //get id of hitchRq
-                    hitchRq.setRequestStatus(RequestStatus.ACCEPTED);
-                    updateHitchRequestStatusToServer(hitchRq);  //send http rq to server to approve
+                Snackbar.make(rvHitchRequests, "Hitch request accepted", Snackbar.LENGTH_LONG).show();
 
-                    hitchRequestList.remove(position);
-//                    ExpandableRecyclerViewAdapter.notifyItemRemoved(position);
+                try {
+                    Thread.sleep(250);      //need to wait or database hasn't updated...
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
-                    Snackbar.make(rvHitchRequests, "Hitch request accepted", Snackbar.LENGTH_LONG).show();
-
-                    try {
-                        Thread.sleep(250);      //need to wait or database hasn't updated...
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-                    //below to refresh the ui after accepting hitch rq
-                    fm = ((AppCompatActivity)layoutRoot.getContext()).getSupportFragmentManager();
-                    currentFrag = fm.findFragmentByTag("GROUP_DETAILS_FRAG");
-                    fm.beginTransaction().detach(currentFrag).commitNow();
-                    fm.beginTransaction().attach(currentFrag).commitNow();
-
-                    break;
+                //below to refresh the ui after accepting hitch rq
+                FragmentManager fm = ((AppCompatActivity)layoutRoot.getContext()).getSupportFragmentManager();
+                Fragment currentFrag = fm.findFragmentByTag("GROUP_DETAILS_FRAG");
+                fm.beginTransaction().detach(currentFrag).commitNow();
+                fm.beginTransaction().attach(currentFrag).commitNow();
             }
         }
 
