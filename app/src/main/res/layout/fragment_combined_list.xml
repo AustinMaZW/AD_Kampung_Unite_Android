@@ -62,4 +62,14 @@
         android:text="@string/finish_shopping"
         android:textColor="@color/Kampong_Blue" />
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/finish_shopping_button_disabled"
+        style="@style/Widget.MaterialComponents.Button"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:backgroundTint="@color/Kampong_Gray"
+        android:text="@string/finish_shopping"
+        android:textColor="@color/Kampong_Blue" />
+
 </FrameLayout>
