@@ -50,12 +50,17 @@ public class BuyerListActivity extends AppCompatActivity implements View.OnClick
         tbar = findViewById(R.id.toolbar_allbuyers);
         tbar.setOnClickListener(this);
         back = new Intent(this, MainActivity.class);
-
         this.fm = getSupportFragmentManager();
-        replaceFraments(this.fm,recommendation,hitcherDetailId,R.id.lists_byrv);
 
     }
-    private void replaceFraments(FragmentManager fm,Recommendation recommendation,int hitcherDetailId,int id){
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        replaceFraments(this.fm,recommendation,hitcherDetailId,R.id.lists_byrv);
+    }
+
+    public void replaceFraments(FragmentManager fm, Recommendation recommendation, int hitcherDetailId, int id){
         BuyerRecycleFragment brv = new BuyerRecycleFragment();
         FragmentTransaction trans = fm.beginTransaction();
         brv.setRecommendation(recommendation);
@@ -64,36 +69,25 @@ public class BuyerListActivity extends AppCompatActivity implements View.OnClick
         trans.addToBackStack(null);
         trans.commit();
     }
-    private void backMethod(){
-        Call<Integer> rm = p.removeHitcherDetail(hitcherDetailId);
-        rm.enqueue(new Callback<Integer>() {
-            @Override
-            public void onResponse(Call<Integer> call, Response<Integer> response) {
-                int _id = response.body();
-                System.out.println(_id);
-                back.putExtra("hitcherDetail",true);
-                back.putExtra("groceryList",gList);
-                startActivity(back);
-            }
-            @Override
-            public void onFailure(Call<Integer> call, Throwable t) {
-                System.out.println(hitcherDetailId);
-                System.out.println("False");
-            }
-        });
-    }
     @Override
     public void onClick(View v) {
         int id = v.getId();
         if(id == R.id.toolbar_allbuyers){
-            backMethod();
+            onBackPressed();
         }
     }
     @Override
     public void onBackPressed() {
-        backMethod();
+        back.putExtra("hitcherDetail",true);
+        back.putExtra("groceryList",gList);
+        startActivity(back);
+        finish();
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
 }
 
 
