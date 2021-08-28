@@ -116,23 +116,8 @@ public class ActiveGroupExpandableRecyclerViewAdapter extends RecyclerView.Adapt
             requestStatusChip.setChipBackgroundColor(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.Kampong_Gray)));
         }
 
-/*        if (groupPlanStatus == GroupPlanStatus.SHOPPINGCOMPLETED) {
-            if (hitchRequest.isBuyerConfirmTransaction()) {
-                if (hitchRequest.isHitcherConfirmTransaction()) {
-                    holder.paymentstatus.setText(R.string.transaction_complete);
-                    holder.paymentstatus.setBackground(context.getResources().getDrawable(R.drawable.rounded_bg_green, null));
-                } else {
-                    holder.paymentstatus.setText(R.string.pending_payment);
-                    holder.paymentstatus.setBackground(context.getResources().getDrawable(R.drawable.rounded_bg_yellow, null));
-                }
-                holder.receivepaymentBtn.setVisibility(View.GONE);
-            } else {
-                holder.paymentstatus.setVisibility(View.GONE);
-            }
-        } else {*/
-            holder.receivepaymentBtn.setVisibility(View.GONE);
-            holder.paymentstatus.setVisibility(View.GONE);
-//        }
+        holder.receivepaymentBtn.setVisibility(View.GONE);
+        holder.paymentstatus.setVisibility(View.GONE);
 
         InnerRecyclerViewAdapter itemInnerRecyclerView = new InnerRecyclerViewAdapter(groceryItemList.get(position));
         holder.cardRecyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false));
@@ -152,13 +137,6 @@ public class ActiveGroupExpandableRecyclerViewAdapter extends RecyclerView.Adapt
         });
         holder.cardRecyclerView.setAdapter(itemInnerRecyclerView);
 
-/*        holder.completepaymentBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                hitchRequest.setBuyerConfirmTransaction(true);
-                updateConrirmTransaction(hitchRequest, holder);
-            }
-        });*/
     }
 
     // Returns the total count of items in the list
@@ -167,35 +145,4 @@ public class ActiveGroupExpandableRecyclerViewAdapter extends RecyclerView.Adapt
         return (int)hitchRequestsList.stream().count();
     }
 
-/*    private void updateConrirmTransaction(HitchRequest hitchRequest, ViewHolder holder) {
-        hitchRequestService = RetrofitClient.createService(HitchRequestService.class);
-        Call<HitchRequest> call = hitchRequestService.updateHitchRequest(hitchRequest);
-        call.enqueue(new Callback<HitchRequest>() {
-            @Override
-            public void onResponse(Call<HitchRequest> call, Response<HitchRequest> response) {
-                if (response.isSuccessful()) {
-                    HitchRequest updatedHR = response.body();
-
-                    if (updatedHR.isHitcherConfirmTransaction()) {
-                        holder.paymentstatus.setText(R.string.transaction_complete);
-                        holder.paymentstatus.setBackground(context.getResources().getDrawable(R.drawable.rounded_bg_green, null));
-                    } else {
-                        holder.paymentstatus.setText(R.string.pending_payment);
-                        holder.paymentstatus.setBackground(context.getResources().getDrawable(R.drawable.rounded_bg_yellow, null));
-                    }
-                    holder.receivepaymentBtn.setVisibility(View.GONE);
-                    holder.paymentstatus.setVisibility(View.VISIBLE);
-                }
-                else {
-                    Log.e("updateHitchRequest Error", response.errorBody().toString());
-                }
-            }
-            @Override
-            public void onFailure(Call<HitchRequest> call, Throwable t) {
-                call.cancel();
-                Log.w("Failure", "Failure!");
-                t.printStackTrace();
-            }
-        });
-    }*/
 }
