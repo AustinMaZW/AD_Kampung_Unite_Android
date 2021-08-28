@@ -55,7 +55,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:text="TBC"
+                android:text="To Be Confirmed"
                 android:textColor="@color/black"
                 android:textSize="14dp" />
         </LinearLayout>
@@ -73,17 +73,17 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:text="Number of Items: "
+                android:text="Status: "
                 android:textColor="@color/black"
                 android:textSize="14dp" />
             <TextView
-                android:id="@+id/numItems"
+                android:id="@+id/status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:text="0"
+                android:text="Pending"
                 android:textColor="@color/black"
                 android:textSize="14dp" />
         </LinearLayout>
