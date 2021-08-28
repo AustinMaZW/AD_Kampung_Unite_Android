@@ -98,10 +98,7 @@ public class HitchRequestAdaptor extends RecyclerView.Adapter<HitchRequestAdapto
                         dialog.dismiss();
                         cancelHitchRequestToServer(hitchRequests.get(position).getId());
 
-                        FragmentManager fm = ((AppCompatActivity)context).getSupportFragmentManager();
-                        Fragment currentFrag = fm.findFragmentByTag("VIEW_HITCHER_GL_FRAG");
-                        fm.beginTransaction().detach(currentFrag).commitNow();
-                        fm.beginTransaction().attach(currentFrag).commitNow();
+
                     }
                 });
                 builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -131,6 +128,11 @@ public class HitchRequestAdaptor extends RecyclerView.Adapter<HitchRequestAdapto
                 if (response.isSuccessful()) {
                     Boolean result = response.body();
                     Log.d("Success", result.toString()); //for testing
+
+                    FragmentManager fm = ((AppCompatActivity)context).getSupportFragmentManager();
+                    Fragment currentFrag = fm.findFragmentByTag("VIEW_HITCHER_GL_FRAG");
+                    fm.beginTransaction().detach(currentFrag).commitNow();
+                    fm.beginTransaction().attach(currentFrag).commitNow();
                 } else {
                     Log.e("Error", response.errorBody().toString());
                 }

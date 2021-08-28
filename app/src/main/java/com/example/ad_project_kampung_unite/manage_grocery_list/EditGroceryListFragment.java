@@ -56,6 +56,11 @@ public class EditGroceryListFragment extends Fragment {
         super.onResume();
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(groceryList.getName());
         getGroceryItems();
+
+        if(groceryList.getHitcherDetail() != null || groceryList.getGroupPlanGL() != null) {
+            findMatch.setVisibility(View.GONE);
+            startGroup.setVisibility(View.GONE);
+        }
     }
 
     @Override

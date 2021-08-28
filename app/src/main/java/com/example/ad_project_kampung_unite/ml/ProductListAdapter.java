@@ -42,8 +42,11 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ProductListViewHolder holder, int position) {
-        String url = pList.get(position).getImgURL();
-        Picasso.get().load(url).into(holder.itemImg);
+
+        if(pList.get(position).getImgURL() != null) {
+            String url = pList.get(position).getImgURL();
+            Picasso.get().load(url).into(holder.itemImg);
+        }
         holder.item.setText(pList.get(position).getProductName());
     }
 

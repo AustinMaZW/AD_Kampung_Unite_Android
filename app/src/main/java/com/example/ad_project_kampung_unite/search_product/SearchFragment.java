@@ -2,8 +2,10 @@ package com.example.ad_project_kampung_unite.search_product;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.SearchView;
 
 import androidx.annotation.Nullable;
@@ -57,22 +59,37 @@ public class SearchFragment extends Fragment {
         RecyclerView recyclerView = (RecyclerView) layoutRoot.findViewById(R.id.searchRecyclerView);
 
         // get products from database
-        List<Product> products = new ArrayList<>();
         productService = RetrofitClient.createService(ProductService.class);
 
         Call<List<Product>> call = productService.getProductList();
         call.enqueue(new Callback<List<Product>>() {
             @Override
             public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
-                List<Product> result = response.body();
-                if(result!=null) {
-                    result.stream().forEach(x -> products.add(x));
-                }
+                List<Product> products = response.body();
+//                if(result!=null) {
+//                    result.stream().forEach(x -> products.add(x));
+//                }
 
                 SearchProductListAdapter adapter = new SearchProductListAdapter(products, groceryList);
                 recyclerView.setHasFixedSize(true);
                 recyclerView.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext()));
                 recyclerView.setAdapter(adapter);
+
+                searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+
+                searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+                        adapter.getFilter().filter(newText);
+
+                        return false;
+                    }
+                });
 
             }
 
