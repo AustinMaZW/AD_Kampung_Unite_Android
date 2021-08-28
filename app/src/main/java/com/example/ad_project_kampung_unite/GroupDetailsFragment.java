@@ -402,6 +402,39 @@ public class GroupDetailsFragment extends Fragment {
         });
     }
 
+    private void approveHitchRqToServer(int hitchRqId) {
+        HitchRequestService hitchRequestService = RetrofitClient.createService(HitchRequestService.class);
+        Call<Boolean> call = hitchRequestService.approveHitchRq(hitchRqId); //hard coded hitchRqId here, replace later
+
+        call.enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+
+                if (response.isSuccessful()) {
+                    Boolean status = response.body();
+                    Log.d("Success", status.toString()); //for testing
+
+                    FragmentManager fm = ((AppCompatActivity)layoutRoot.getContext()).getSupportFragmentManager();
+                    Fragment currentFrag = fm.findFragmentByTag("GROUP_DETAILS_FRAG");
+                    fm.beginTransaction().detach(currentFrag).commitNow();
+                    fm.beginTransaction().attach(currentFrag).commitNow();
+
+                    //logic to change any UI here, but shouldn't need since other parts of this frag should've handled it
+                } else {
+                    Log.e("Error", response.errorBody().toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+                // like no internet connection / the website doesn't exist
+                call.cancel();
+                Log.w("Failure", "Failure!");
+                t.printStackTrace();
+            }
+        });
+    }
+
     private void initiateExpanderForActiveList() {
 
         rvHitchRequests = layoutRoot.findViewById(R.id.groupDetails_expandableRecyclerView);
@@ -463,7 +496,7 @@ public class GroupDetailsFragment extends Fragment {
                 case ItemTouchHelper.RIGHT:
                     hitchRq = hitchRequestList.get(position);     //get id of hitchRq
                     hitchRq.setRequestStatus(RequestStatus.ACCEPTED);
-                    updateHitchRequestStatusToServer(hitchRq);  //send http rq to server to approve
+                    approveHitchRqToServer(hitchRq.getId());  //send http rq to server to approve
 
                     hitchRequestList.remove(position);
 //                    ExpandableRecyclerViewAdapter.notifyItemRemoved(position);
@@ -477,10 +510,7 @@ public class GroupDetailsFragment extends Fragment {
                     }
 
                     //below to refresh the ui after accepting hitch rq
-                    fm = ((AppCompatActivity)layoutRoot.getContext()).getSupportFragmentManager();
-                    currentFrag = fm.findFragmentByTag("GROUP_DETAILS_FRAG");
-                    fm.beginTransaction().detach(currentFrag).commitNow();
-                    fm.beginTransaction().attach(currentFrag).commitNow();
+
 
                     break;
             }
