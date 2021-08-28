@@ -89,6 +89,7 @@ public class GroceryItemAdapter extends RecyclerView.Adapter<GroceryItemAdapter.
         }
         pName.setText(groceryItem.getProduct().getProductName());
         pDesc.setText(groceryItem.getProduct().getProductDescription());
+        pQty.setText(String.valueOf(groceryItem.getQuantity()));
 
         minus.setOnClickListener(new View.OnClickListener() {
             @Override
