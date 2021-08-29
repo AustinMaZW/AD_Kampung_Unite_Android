@@ -49,6 +49,11 @@ import org.json.JSONObject;
 import java.security.acl.Group;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 import retrofit2.Call;
@@ -182,6 +187,7 @@ public class GroupDetailsFragment extends Fragment {
                                 public void onClick(DialogInterface dialog, int which) {
                                     //change Group plan status to "closed" and update pending requests status to "rejected"
                                     //change all hitch request with status "Pending approval" to "Rejected"
+
                                     hitchRequestList.stream().forEach(x->{
                                         if(x.getRequestStatus().equals(RequestStatus.PENDING)){
                                             x.setRequestStatus(RequestStatus.REJECTED);
@@ -193,6 +199,17 @@ public class GroupDetailsFragment extends Fragment {
                                     System.out.println(GroupPlanStatus.CLOSED);
                                     updateGroupPlanStatusToServer(groupId,GroupPlanStatus.CLOSED);
 
+                                    //For debug purposes only
+//                                    List<Integer> hitchRequestIds = new ArrayList<>();
+//                                    for (int i = 0; i < hitchRequestList.size(); i++) {
+//                                        Integer id = hitchRequestList.get(i).getId();
+//
+//                                        if (hitchRequestList.get(i).getRequestStatus().getDisplayStatus() != "Rejected") {
+//                                            hitchRequestList_excludeRejected.add(hitchRequestList.get(i));
+//                                            hitchRequestIds.add(id);
+//                                        }
+//                                    }
+//                                    getHitcherGroceryItemsFromServer(hitchRequestIds);
                                 }
                             });
                             alert.show();
@@ -516,12 +533,22 @@ public class GroupDetailsFragment extends Fragment {
         });
     }
 
+    public static <T> Predicate<T> distinctByHitchRequestKey(Function<? super T, ?> keyExtractor){
+        Map<Object, Boolean> seen = new ConcurrentHashMap<>();
+        return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
+    }
+
     private void initiateExpanderForActiveList() {
 
         rvHitchRequests = layoutRoot.findViewById(R.id.groupDetails_expandableRecyclerView);
 
+        List<HitchRequest> mHitchRequestList = new ArrayList<>();
+        mHitchRequestList = hitchRequestList_excludeRejected.stream()
+                .filter(distinctByHitchRequestKey(hr -> hr.getId()))
+                .collect(Collectors.toList());
+
         ActiveGroupExpandableRecyclerViewAdapter expandableCategoryRecyclerViewAdapter =
-                new ActiveGroupExpandableRecyclerViewAdapter(layoutRoot.getContext(), hitchRequestList_excludeRejected,
+                new ActiveGroupExpandableRecyclerViewAdapter(layoutRoot.getContext(), mHitchRequestList,
                         childListHolder/*, groupPlan.getGroupPlanStatus()*/);
 
         rvHitchRequests.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext()));
