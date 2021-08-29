@@ -63,7 +63,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyViewHolder> {
     private View view;
-    private View root;
     private Recommendation recommendation;
     private List<GroupPlan> plans;
     private List<Integer> planIds;
@@ -83,40 +82,15 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
         this.slotsList = slotsList;
     }
 
-
-
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         view = View.inflate(context, R.layout.recycle_view_buyer_item, null);
-        root = View.inflate(context, R.layout.buyer_list_item_pop, null);
         groupPlanService = RetrofitClient.createService(GroupPlanService.class);
         return new MyViewHolder(view);
     }
-    public void createView(MyViewHolder holder,int position,String slos){
-        DecimalFormat df = new DecimalFormat("0.00%");
-        holder.buyerName.setText(String.format("%s (Similarity %s)",plans.get(position).getStoreName(),df.format(recommendation.getProduct_score().get(position))));
-        holder.pickUpDate.setText(String.format("Pick Up: %tF",plans.get(position).getPickupDate()));
-        List<String> slots_str = this.slotsList.get(planIds.get(position));
-        System.out.println("get the slots by map");
-        if(slots_str != null && slots_str.size() > 0){
-            System.out.println(slots_str.get(0));
-            String slot = slots_str.stream().reduce((x,y)->x.concat(String.format(" %s",y))).toString();
-            holder.timeSlot.setText(slot);
-        }else{
-            holder.timeSlot.setText("No Available time");
-        }
-        holder.location.setText(String.format("Address: %s (Distance: %.2f)",plans.get(position).getPickupAddress(),recommendation.getDistance().get(position)));
-        holder.sendRequest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                queryPronductsInplan(planIds.get(position), v,position); //use id
-            }
-        });
-    }
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
-
         DecimalFormat df = new DecimalFormat("0.00%");
         holder.buyerName.setText(String.format("%s (Similarity %s)",plans.get(position).getPlanName(),df.format(recommendation.getProduct_score().get(position))));
         holder.pickUpDate.setText(String.format("Pick Up: %tF",plans.get(position).getPickupDate()));
@@ -124,20 +98,15 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
         if(slots_str != null && slots_str.size() > 0){
             StringBuilder bler = new StringBuilder();
             slots_str.stream().forEach(x->bler.append(String.format("%s ",x)));
-            String slot = bler.toString();
-            holder.timeSlot.setText(slot);
+            holder.timeSlot.setText(bler.toString());
         }else{
             holder.timeSlot.setText("No Available time");
         }
-
-        System.out.print("shit");
-
         holder.location.setText(String.format("Address: %s (Distance: %.2f)",plans.get(position).getPickupAddress(),recommendation.getDistance().get(position)));
         holder.sendRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 queryPronductsInplan(planIds.get(position), v,position); //use id
-
             }
         });
     }
@@ -173,12 +142,11 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
                 popupWindow_ = popupWindow;
                 popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
                 backgroudAlpha(0.4f,getActivity(context));
-
             }
             //when request is fail, call back this
             @Override
             public void onFailure(Call<List<Product>> call, Throwable t) {
-                System.out.println("fail_2");
+                System.out.println("Query plan fail");
             }
         });
     }
@@ -189,18 +157,16 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
         recyclerView.setLayoutManager(linear);
         ProductListAdapter myAdapter = new ProductListAdapter(pList, layoutRoot.getContext(),planIds);
         recyclerView.setAdapter(myAdapter);
-
     }
     private PopupWindow popupWindow_;
     private PopupWindow popMaker(View layoutRoot, List<Product> pList,int position) {
         View popView = LayoutInflater.from(context).inflate(R.layout.buyer_list_item_pop, null, false);
+        Button cancel = popView.findViewById(R.id.cancelPopBtn);
+        Button ok = popView.findViewById(R.id.goToSlot);
         TextView title = popView.findViewById(R.id.poptitle);
         String newTitle = String.format("%s [%s]",title.getText().toString(),plans.get(position).getStoreName());
         title.setText(newTitle);
         buildRecyclerView(popView, pList);
-        Button cancel = popView.findViewById(R.id.cancelPopBtn);
-        Button ok = popView.findViewById(R.id.goToSlot);
-
         PopupWindow popupWindow = new PopupWindow(popView, ViewGroup.LayoutParams.WRAP_CONTENT, 900, true);
         popupWindow.setAnimationStyle(R.style.showPopupAnimation);
         popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
