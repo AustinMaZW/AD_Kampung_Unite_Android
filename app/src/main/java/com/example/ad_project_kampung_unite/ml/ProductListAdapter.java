@@ -42,6 +42,7 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ProductListViewHolder holder, int position) {
+        //to avoid url is valid or empty or null to make our program crash
         try{
             if(pList.get(position).getImgURL() != null && pList.get(position).getImgURL().length() >0) {
             String url = pList.get(position).getImgURL();

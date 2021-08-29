@@ -30,12 +30,18 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class BuyerListActivity extends AppCompatActivity implements View.OnClickListener{
+    //Retrofit interface
     private GroupPlanService p;
+    //the result of machine learning, get from the intent
     private Recommendation recommendation;
     private Toolbar tbar;
+    //the fragment for showing the plan list
     private FragmentManager fm;
+    //the current hitcther detail id
     private int hitcherDetailId;
+    //the intent for back button
     private Intent back;
+    //current grocery list
     private GroceryList gList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +63,10 @@ public class BuyerListActivity extends AppCompatActivity implements View.OnClick
     @Override
     protected void onStart() {
         super.onStart();
+        //loading the plan list by replace fragment and using recycler view
         replaceFraments(this.fm,recommendation,hitcherDetailId,R.id.lists_byrv);
     }
-
+    //replace fragment
     public void replaceFraments(FragmentManager fm, Recommendation recommendation, int hitcherDetailId, int id){
         BuyerRecycleFragment brv = new BuyerRecycleFragment();
         FragmentTransaction trans = fm.beginTransaction();
@@ -76,12 +83,15 @@ public class BuyerListActivity extends AppCompatActivity implements View.OnClick
             onBackPressed();
         }
     }
+    //back button, let user go back to hitcher detail input page, and never come back again
     @Override
     public void onBackPressed() {
         back.putExtra("hitcherDetail",true);
         back.putExtra("groceryList",gList);
         startActivity(back);
+        //set animation
         this.overridePendingTransition(R.anim.in_from_left,R.anim.out_to_right);
+        //over this activity to avoid user to click on back button back to this activity
         finish();
     }
 
