@@ -23,8 +23,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingTop="20dp"
                 android:paddingLeft="10dp"
+                android:paddingTop="20dp"
                 android:paddingBottom="5dp">
 
                 <RelativeLayout
@@ -51,9 +51,9 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/group_details_status"
                         android:text="Fruits &amp; Vegetables"
-                        android:textSize="16sp"
                         android:textColor="@color/black"
-                        android:textStyle="bold"/>
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/groceryDetailPickupTime"
@@ -78,10 +78,10 @@
                         android:layout_alignBaseline="@+id/categoryExpandBtn"
                         android:layout_alignBottom="@+id/categoryExpandBtn"
                         android:layout_toLeftOf="@+id/categoryExpandBtn"
-                        android:textSize="12sp"
+                        android:background="@drawable/rounded_bg_yellow"
                         android:textColor="@color/Kampong_Blue"
-                        android:textStyle="bold"
-                        android:background="@drawable/rounded_bg_yellow"/>
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
 
                     <Button
                         android:id="@+id/receive_payment_btn"
@@ -90,10 +90,10 @@
                         android:layout_alignBaseline="@+id/categoryExpandBtn"
                         android:layout_alignTop="@+id/categoryExpandBtn"
                         android:layout_toLeftOf="@+id/categoryExpandBtn"
-                        android:text="@string/receive_payment"
-                        android:textSize="10sp"
+                        android:paddingHorizontal="8dp"
                         android:paddingVertical="0dp"
-                        android:paddingHorizontal="8dp"/>
+                        android:text="@string/receive_payment"
+                        android:textSize="10sp" />
 
                     <ImageButton
                         android:id="@+id/categoryExpandBtn"
