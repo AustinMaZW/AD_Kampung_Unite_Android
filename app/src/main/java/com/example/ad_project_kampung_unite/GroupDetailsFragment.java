@@ -520,17 +520,17 @@ public class GroupDetailsFragment extends Fragment {
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
 
             int position = viewHolder.getAbsoluteAdapterPosition();
-            HitchRequest hitchRq = hitchRequestList.get(position);
+            HitchRequest hitchRq = hitchRequestList_excludeRejected.get(position);
             List<HitchRequest> tempHitchRequestList = new ArrayList<>();
 
             if(direction == ItemTouchHelper.LEFT){
                 hitchRq.setRequestStatus(RequestStatus.REJECTED);
                 updateHitchRequestStatusToServer(hitchRq);  //send http rq to server to approve
 
-                hitchRequestList.remove(position);
-                tempHitchRequestList = hitchRequestList;
-                hitchRequestList.clear();
-                hitchRequestList = tempHitchRequestList;
+//                hitchRequestList.remove(position);
+//                tempHitchRequestList = hitchRequestList;
+//                hitchRequestList.clear();
+//                hitchRequestList = tempHitchRequestList;
 
                 Snackbar.make(rvHitchRequests, "Hitch request rejected", Snackbar.LENGTH_LONG).show();
 

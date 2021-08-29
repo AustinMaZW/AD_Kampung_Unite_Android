@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.ad_project_kampung_unite.R;
 import com.example.ad_project_kampung_unite.entities.GroceryItem;
 import com.example.ad_project_kampung_unite.entities.GroupPlan;
+import com.example.ad_project_kampung_unite.entities.enums.GroupPlanStatus;
 
 import java.util.List;
 
@@ -64,7 +65,19 @@ public class GroceryListItemAdaptor extends RecyclerView.Adapter<GroceryListItem
         itemQuantity.setText(String.valueOf(groceryItem.getQuantity()) + "x");
         itemName.setText(groceryItem.getProduct().getProductName());
         //add condition checking whether the prices are updated
-        itemAmount.setText("$" + String.valueOf(groceryItem.getSubtotal()));
+        if(groceryItem.getGroceryList().getGroupPlanGL()==null){
+            itemAmount.setVisibility(View.GONE);
+        }
+        else{
+            if(groceryItem.getGroceryList().getGroupPlanGL().getGroupPlanStatus()== GroupPlanStatus.SHOPPINGCOMPLETED){
+                if(groceryItem.getSubtotal()==0){
+                    itemAmount.setText("Not Purchase");
+                }
+                else{
+                    itemAmount.setText("$" + String.valueOf(groceryItem.getSubtotal()));
+                }
+            }
+        }
 //        itemAmount.setVisibility(View.INVISIBLE);
     }
 
