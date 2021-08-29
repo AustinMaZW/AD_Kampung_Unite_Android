@@ -112,11 +112,10 @@ public class HitcherDetailFragment extends Fragment{
             @Override
             public void onClick(View v) {
                 submitBtn.setEnabled(false);
-                Toast.makeText(getContext(),"Please Wait",Toast.LENGTH_SHORT).show();
                 try{
                     saveHitcherDetail();
                 }catch (Exception e){
-                    Toast.makeText(getContext(),"Network Issue! Please try again!",Toast.LENGTH_SHORT).show();
+                    showDialog("Warning!!!!!!!!","Invalid Hitcher Detail");
                 }
             }
         });
@@ -124,7 +123,20 @@ public class HitcherDetailFragment extends Fragment{
 
     }
 
-
+    private void showDialog(String title,String msg){
+        AlertDialog.Builder radioDialog = new AlertDialog.Builder(getContext());
+        radioDialog.setTitle(title).setMessage(msg).setIcon(R.drawable.logo_small).setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                submitBtn.setEnabled(true);
+            }
+        }).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        }).show();
+    }
 
     private void saveHitcherDetail(){
         LocalDate pickDate = LocalDate.parse(pickUpDate.getText().toString());
@@ -143,7 +155,7 @@ public class HitcherDetailFragment extends Fragment{
         String date = pickUpDate.format(df_date);
         String time = pickUpTime.format(df_time);
         id = -1;
-//        Call<Integer> create = hds.saveHitcherDetail(date,time,address);
+        Toast.makeText(getContext(),"Please Wait",Toast.LENGTH_SHORT).show();
         Call<Integer> create_withList = hds.saveHitcherDetails(date,time,address,gList.getId());
         create_withList.enqueue(new Callback<Integer>() {
             @Override
@@ -168,11 +180,6 @@ public class HitcherDetailFragment extends Fragment{
         new Thread(new Runnable() {
             @Override
             public void run() {
-                try{
-
-                }catch (Exception e){
-
-                }
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl(MLBASEURL)
                         .addConverterFactory(GsonConverterFactory.create())

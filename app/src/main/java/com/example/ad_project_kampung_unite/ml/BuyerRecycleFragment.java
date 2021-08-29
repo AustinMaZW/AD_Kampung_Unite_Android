@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.PopupWindow;
+import android.widget.Toast;
 
 
 import com.example.ad_project_kampung_unite.R;
@@ -97,11 +98,7 @@ public class BuyerRecycleFragment extends Fragment {
             }
             @Override
             public void onFailure(Call<Map<Integer, List<String>>> call, Throwable t) {
-//                recyclerView = layoutRoot.findViewById(R.id.buerlistrv);
-//                LinearLayoutManager linear = new LinearLayoutManager(layoutRoot.getContext());
-//                recyclerView.setLayoutManager(linear);
-//                myAdapter = new BuyerListAdapter(plans,layoutRoot.getContext(),planIds,hitcherDetailId,recommendation);
-//                recyclerView.setAdapter(myAdapter);
+                Toast.makeText(getContext(),"Network Not Available",Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -122,7 +119,7 @@ public class BuyerRecycleFragment extends Fragment {
                     //when request is fail, call back this
                     @Override
                     public void onFailure(Call<List<GroupPlan>> call, Throwable t) {
-                        System.out.println("fail_2");
+                        Toast.makeText(getContext(),"Network Not Available",Toast.LENGTH_SHORT).show();
                     }
                 });
             }

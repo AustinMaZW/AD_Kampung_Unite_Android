@@ -205,7 +205,7 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
         if(pSlots != null && pSlots.length >0){
             showSelectionDialog(position,pSlots);
         }else{
-            final String[] timeslots = new String[]{LocalTime.of(9,0).toString(),LocalTime.of(9,30).toString(),LocalTime.of(10,0).toString()};
+            final String[] timeslots = new String[]{LocalTime.of(9,0).toString(),LocalTime.of(12,0).toString(),LocalTime.of(15,0).toString()};
             showSelectionDialog(position,timeslots);
         }
     }
