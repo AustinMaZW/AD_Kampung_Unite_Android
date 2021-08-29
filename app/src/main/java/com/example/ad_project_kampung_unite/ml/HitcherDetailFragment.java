@@ -45,14 +45,18 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class HitcherDetailFragment extends Fragment{
     public static final String MLBASEURL = "http://10.0.2.2:5000";
-
+    // get from the machine leanring API, store planId, product score, total score, distance
     private Recommendation recommendation;
+    //Hicher detail components, for getting the information of hitcher detail
     private EditText pickUpDate,location,timeSlot;
+    // send request button, send request to spring boot API
     private Button submitBtn;
+    // retrofit interface
     private HitcherDetailService hds;
     private int id = -1;
-    private List<Integer> planIds;
+    //for jumping to buyer list activity after the request success
     private Intent intent_buyerList;
+    // grocery list which used to match the group plan, get from previous fragment
     private GroceryList gList;
 
     public void setgList(GroceryList gList) {
@@ -111,21 +115,36 @@ public class HitcherDetailFragment extends Fragment{
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // diable submit button, to avoid double click and send multiple request to spring api and machine learning api
                 submitBtn.setEnabled(false);
-                Toast.makeText(getContext(),"Please Wait",Toast.LENGTH_SHORT).show();
+                //to avoid program crash by inputting invalid hitcher detail
                 try{
                     saveHitcherDetail();
                 }catch (Exception e){
-                    Toast.makeText(getContext(),"Network Issue! Please try again!",Toast.LENGTH_SHORT).show();
+                    //if there is any accident, show dialog to user to tell them hitcher detail is invalid
+                    showDialog("Warning!!!!!!!!","Invalid Hitcher Detail");
                 }
             }
         });
         return view;
 
     }
-
-
-
+    //show dialog method
+    private void showDialog(String title,String msg){
+        AlertDialog.Builder radioDialog = new AlertDialog.Builder(getContext());
+        radioDialog.setTitle(title).setMessage(msg).setIcon(R.drawable.logo_small).setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                submitBtn.setEnabled(true);
+            }
+        }).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        }).show();
+    }
+    //if the hitcher detail is valid, need to parse the string to time format, and send to spring boot to bind the grocery list
     private void saveHitcherDetail(){
         LocalDate pickDate = LocalDate.parse(pickUpDate.getText().toString());
         LocalTime pickTime = LocalTime.parse(timeSlot.getText().toString());
@@ -136,14 +155,16 @@ public class HitcherDetailFragment extends Fragment{
             sendRequest(pickDate,pickTime,address);
         }
     }
+    //send hitcher detail information and grocery list id to spring boot to bind together
     private void sendRequest(LocalDate pickUpDate, LocalTime pickUpTime, String address){
         hds = RetrofitClient.createService(HitcherDetailService.class);
         DateTimeFormatter df_date = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         DateTimeFormatter df_time = DateTimeFormatter.ofPattern("HH:mm:ss");
         String date = pickUpDate.format(df_date);
         String time = pickUpTime.format(df_time);
+        //set default id, cause if the spring boot side cannot successfully bind the hitcher detail and grocery list, will return -1
         id = -1;
-//        Call<Integer> create = hds.saveHitcherDetail(date,time,address);
+        Toast.makeText(getContext(),"Please Wait",Toast.LENGTH_SHORT).show();
         Call<Integer> create_withList = hds.saveHitcherDetails(date,time,address,gList.getId());
         create_withList.enqueue(new Callback<Integer>() {
             @Override
@@ -151,6 +172,7 @@ public class HitcherDetailFragment extends Fragment{
                 Log.e("Request","Successful!!!!!");
                 id = response.body();
                 System.out.println(id);
+                //if the successfull bind the list and hitcher detail, send request to machine learning api to get recommendation
                 if(id >= 0){
                     getRecommendList(id);
                 }
@@ -158,21 +180,18 @@ public class HitcherDetailFragment extends Fragment{
 
             @Override
             public void onFailure(Call<Integer> call, Throwable t) {
+                //if binding fail, release submit button and show the toast message
                 Toast.makeText(getContext(),"Please submit again!",Toast.LENGTH_SHORT).show();
                 submitBtn.setEnabled(true);
             }
         });
     }
+    //send hitcher detail id to machine learning api to match group plan, we will get list of plan id
     private List<Integer> getRecommendList(int id){
         List<Integer> ids = new ArrayList<>();
         new Thread(new Runnable() {
             @Override
             public void run() {
-                try{
-
-                }catch (Exception e){
-
-                }
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl(MLBASEURL)
                         .addConverterFactory(GsonConverterFactory.create())
@@ -185,6 +204,7 @@ public class HitcherDetailFragment extends Fragment{
                     @Override
                     public void onResponse(Call<Recommendation> call, Response<Recommendation> response) {
                         recommendation = response.body();
+                        //check the return result is valid or not, because if there is no any plan can match, will show the dialog instead of going to next activity
                         if(recommendation.getPlandIds().size() > 0){
                             intent_buyerList.putExtra("recommendation",recommendation);
                             intent_buyerList.putExtra("hitcherDetailId",id);
@@ -195,6 +215,7 @@ public class HitcherDetailFragment extends Fragment{
                             getActivity().overridePendingTransition(R.anim.in_from_right,R.anim.out_to_left);
                         }
                         else{
+                            //if the return result is empty, show dialog
                             AlertDialog.Builder radioDialog_ = new AlertDialog.Builder(getContext());
                             radioDialog_.setTitle("Warning!!!!!!").setIcon(R.drawable.logo_small).setMessage("There is no group plan matched!!!")
                             .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -213,6 +234,7 @@ public class HitcherDetailFragment extends Fragment{
                     //when request is fail, call back this
                     @Override
                     public void onFailure(Call<Recommendation> call, Throwable t) {
+                        //if the request is fail, release submit button
                         System.out.println("fail_1");
                         submitBtn.setEnabled(true);
                     }

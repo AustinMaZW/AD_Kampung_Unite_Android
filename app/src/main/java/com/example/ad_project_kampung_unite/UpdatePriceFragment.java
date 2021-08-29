@@ -22,6 +22,7 @@ import com.example.ad_project_kampung_unite.entities.CombinedPurchaseList;
 import com.example.ad_project_kampung_unite.entities.GroceryItem;
 import com.example.ad_project_kampung_unite.entities.enums.GroupPlanStatus;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -42,7 +43,9 @@ public class UpdatePriceFragment extends Fragment implements View.OnClickListene
     private GroupPlanService gpService;
     private List<CombinedPurchaseList> combinedPurchaseLists;
     private UpdatePriceAdapter updatePriceAdapter;
-
+    private List<GroceryItem> items;
+    //booleans for updating prices
+    boolean saveCPL, saveGroceryItem, saveGroupPlanStatus;
     public UpdatePriceFragment() {
         // Required empty public constructor
     }
@@ -124,20 +127,10 @@ public class UpdatePriceFragment extends Fragment implements View.OnClickListene
             @Override
             public void onResponse(Call<List<GroceryItem>> call, Response<List<GroceryItem>> response) {
                 if (response.isSuccessful()) {
-                    List<GroceryItem> items = response.body();
-                    calculateSubtotalPriceForEachItem(items);
+                    items = response.body();
+                    calculateSubtotalPriceForEachItem();
 
-                    // go to group details fragment, passed group plan id
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("gpId", gpId);
 
-                    GroupDetailsFragment groupDetailsFragment = new GroupDetailsFragment();
-                    groupDetailsFragment.setArguments(bundle);
-                    getParentFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.fragment_container, groupDetailsFragment)
-                            .addToBackStack(null)
-                            .commit();
                 } else {
                     Log.e("getAcceptedGroceryItemsByGroupPlanId Error", response.errorBody().toString());
                 }
@@ -152,7 +145,7 @@ public class UpdatePriceFragment extends Fragment implements View.OnClickListene
         });
     }
 
-    private void calculateSubtotalPriceForEachItem(List<GroceryItem> items) {
+    private void calculateSubtotalPriceForEachItem() {
         Map<Integer, String> sm = updatePriceAdapter.getSubtotalMap();
         Map<Integer, String> dm = updatePriceAdapter.getDiscountMap();
 
@@ -183,20 +176,29 @@ public class UpdatePriceFragment extends Fragment implements View.OnClickListene
         }
         //save unit price of each product in CombinedPurchaseList table
         saveUnitPriceAndSubtotalInCombinedPurchaseList();
-        //save subtotal in GroceryItem table for all items of each grocery list of this group plan
-        saveSubtotalInGroceryItem(items);
-        //set group plan status 'shopping completed'
-        updateGroupPlanStatus();
+
+
         Log.i("test", "//////");
     }
 
     private void saveUnitPriceAndSubtotalInCombinedPurchaseList() {
         Call<Boolean> call = cplService.saveAll(combinedPurchaseLists);
+
+//        try {
+//            Response<Boolean> response = call.execute();
+//            saveCPL = response.body();
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
         call.enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                 if (response.isSuccessful()) {
-                    boolean isSuccess = response.body();
+                    saveCPL = response.body();
+                    //save subtotal in GroceryItem table for all items of each grocery list of this group plan
+                    saveSubtotalInGroceryItem(items);
                 } else {
                     Log.e("CPL saveAll Error", response.errorBody().toString());
                 }
@@ -213,11 +215,22 @@ public class UpdatePriceFragment extends Fragment implements View.OnClickListene
 
     private void saveSubtotalInGroceryItem(List<GroceryItem> items) {
         Call<Boolean> call = giService.saveAll(items);
+
+//        try {
+//            Response<Boolean> response = call.execute();
+//            saveCPL = response.body();
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
         call.enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                 if (response.isSuccessful()) {
-                    boolean isSuccess = response.body();
+                    saveGroceryItem = response.body();
+                    //set group plan status 'shopping completed'
+                    updateGroupPlanStatus();
                 } else {
                     Log.e("GroceryItem saveAll Error", response.errorBody().toString());
                 }
@@ -235,11 +248,34 @@ public class UpdatePriceFragment extends Fragment implements View.OnClickListene
     private void updateGroupPlanStatus() {
         gpService = RetrofitClient.createService(GroupPlanService.class);
         Call<Void> call = gpService.updateGroupPlanStatus(gpId, GroupPlanStatus.SHOPPINGCOMPLETED);
+
+//        try {
+//            Response<Void> response = call.execute();
+//            saveGroupPlanStatus = true;
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
                     Log.i("updateGroupPlanStatus", "Successful");
+                    saveGroupPlanStatus = true;
+                    // go to group details fragment, passed group plan id
+                    if(saveCPL && saveGroceryItem && saveGroupPlanStatus){
+                        Bundle bundle = new Bundle();
+                        bundle.putInt("gpId", gpId);
+
+                        GroupDetailsFragment groupDetailsFragment = new GroupDetailsFragment();
+                        groupDetailsFragment.setArguments(bundle);
+                        getParentFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.fragment_container, groupDetailsFragment)
+                                .addToBackStack(null)
+                                .commit();
+                    }
                 } else {
                     Log.e("updateGroupPlanStatus Error", response.errorBody().toString());
                 }
