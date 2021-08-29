@@ -287,24 +287,10 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
                     backgroudAlpha(1.0f,getActivity(context));
                     recommendation.removeByPlansId(planId);
                     if(recommendation.checkLengthOfPlanIds()){
-                        Toast.makeText(context,"Request Sent!",Toast.LENGTH_SHORT).show();
-                        Activity o = getActivity(context);
-                        // refresh activity
-                        backgroudAlpha(1.0f,getActivity(context));
-                        o.finish();
-                        o.overridePendingTransition(R.anim.in_from_right,R.anim.out_to_left);
-                        o.startActivity(o.getIntent());
-                        o.overridePendingTransition(R.anim.in_from_left,R.anim.out_to_right);
+                        goOthers(getActivity(context),null);
                     }else{
-                        Toast.makeText(context,"Request Sent!",Toast.LENGTH_SHORT).show();
-                        Activity o = getActivity(context);
-                        backgroudAlpha(1.0f,getActivity(context));
-                        // refresh activity
-                        o.finish();
-                        Intent toList = new Intent(getActivity(context),MainActivity.class);
-                        o.overridePendingTransition(R.anim.in_from_right,R.anim.out_to_left);
-                        o.startActivity(toList);
-                        o.overridePendingTransition(R.anim.in_from_left,R.anim.out_to_right);
+                        Intent goTo = new Intent(getActivity(context),MainActivity.class);
+                        goOthers(getActivity(context),goTo);
                     }
                 }
             }
@@ -315,7 +301,19 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
             }
         });
     }
-
+    private void goOthers(Activity activity,Intent intent){
+        Toast.makeText(context,"Request Sent!",Toast.LENGTH_SHORT).show();
+        // refresh activity
+        backgroudAlpha(1.0f,getActivity(context));
+        activity.finish();
+        activity.overridePendingTransition(R.anim.in_from_right,R.anim.out_to_left);
+        if(intent == null){
+            activity.startActivity(activity.getIntent());
+        }else {
+            activity.startActivity(intent);
+        }
+        activity.overridePendingTransition(R.anim.in_from_left,R.anim.out_to_right);
+    }
     public class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView buyerName, pickUpDate, timeSlot, location;
         private Button sendRequest;
