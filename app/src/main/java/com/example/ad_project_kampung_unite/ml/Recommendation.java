@@ -10,8 +10,20 @@ public class Recommendation implements Serializable {
     private List<Double> product_score;
     private List<Double> total_score;
 
-
-
+   public void removeByPlansId(int planId){
+        int removeId = this.plandIds.indexOf(planId);
+        this.plandIds.remove(removeId);
+        this.distance.remove(removeId);
+        this.product_score.remove(removeId);
+        this.total_score.remove(removeId);
+   }
+    public boolean checkLengthOfPlanIds(){
+       if(this.plandIds.size()>0){
+           return true;
+       }else {
+           return false;
+       }
+    }
 
     public Recommendation(List<Double> distance, List<Integer> plandIds, List<Double> product_score, List<Double> total_score) {
         this.distance = distance;

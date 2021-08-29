@@ -285,18 +285,27 @@ public class BuyerListAdapter extends RecyclerView.Adapter<BuyerListAdapter.MyVi
                 if(idd > 0){
                     requestIds.add(idd);
                     backgroudAlpha(1.0f,getActivity(context));
-                    int position = recommendation.getPlandIds().indexOf(planId);
-                    recommendation.getPlandIds().remove(position);
-                    recommendation.getDistance().remove(position);
-                    recommendation.getProduct_score().remove(position);
-                    recommendation.getTotal_score().remove(position);
-                    Toast.makeText(context,"Request Sent!",Toast.LENGTH_SHORT).show();
-                    Activity o = getActivity(context);
-                    // refresh activity
-                    o.finish();
-                    o.overridePendingTransition(R.anim.in_from_right,R.anim.out_to_left);
-                    o.startActivity(o.getIntent());
-                    o.overridePendingTransition(R.anim.in_from_left,R.anim.out_to_right);
+                    recommendation.removeByPlansId(planId);
+                    if(recommendation.checkLengthOfPlanIds()){
+                        Toast.makeText(context,"Request Sent!",Toast.LENGTH_SHORT).show();
+                        Activity o = getActivity(context);
+                        // refresh activity
+                        backgroudAlpha(1.0f,getActivity(context));
+                        o.finish();
+                        o.overridePendingTransition(R.anim.in_from_right,R.anim.out_to_left);
+                        o.startActivity(o.getIntent());
+                        o.overridePendingTransition(R.anim.in_from_left,R.anim.out_to_right);
+                    }else{
+                        Toast.makeText(context,"Request Sent!",Toast.LENGTH_SHORT).show();
+                        Activity o = getActivity(context);
+                        backgroudAlpha(1.0f,getActivity(context));
+                        // refresh activity
+                        o.finish();
+                        Intent toList = new Intent(getActivity(context),MainActivity.class);
+                        o.overridePendingTransition(R.anim.in_from_right,R.anim.out_to_left);
+                        o.startActivity(toList);
+                        o.overridePendingTransition(R.anim.in_from_left,R.anim.out_to_right);
+                    }
                 }
             }
 
