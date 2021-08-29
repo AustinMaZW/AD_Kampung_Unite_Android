@@ -229,7 +229,7 @@ public class CombinedListFragment extends Fragment {
         }
         Arrays.stream(gps).forEach(x-> System.out.println(x));
 //        status = gps[0];
-        if(gps[0].matches("CLOSED")){
+        if(gps[0].matches("CLOSED") | gps[0].matches("SHOPPINGCOMPLETED")){
             iscompleted = true;
         }
 

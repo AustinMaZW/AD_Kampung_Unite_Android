@@ -43,6 +43,8 @@ public class UpdatePriceFragment extends Fragment implements View.OnClickListene
     private List<CombinedPurchaseList> combinedPurchaseLists;
     private UpdatePriceAdapter updatePriceAdapter;
 
+    //booleans for updating prices
+    boolean saveCPL, saveGroceryItem, saveGroupPlanStatus;
     public UpdatePriceFragment() {
         // Required empty public constructor
     }
@@ -128,16 +130,18 @@ public class UpdatePriceFragment extends Fragment implements View.OnClickListene
                     calculateSubtotalPriceForEachItem(items);
 
                     // go to group details fragment, passed group plan id
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("gpId", gpId);
+                    if(saveCPL && saveGroceryItem && saveGroupPlanStatus){
+                        Bundle bundle = new Bundle();
+                        bundle.putInt("gpId", gpId);
 
-                    GroupDetailsFragment groupDetailsFragment = new GroupDetailsFragment();
-                    groupDetailsFragment.setArguments(bundle);
-                    getParentFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.fragment_container, groupDetailsFragment)
-                            .addToBackStack(null)
-                            .commit();
+                        GroupDetailsFragment groupDetailsFragment = new GroupDetailsFragment();
+                        groupDetailsFragment.setArguments(bundle);
+                        getParentFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.fragment_container, groupDetailsFragment)
+                                .addToBackStack(null)
+                                .commit();
+                    }
                 } else {
                     Log.e("getAcceptedGroceryItemsByGroupPlanId Error", response.errorBody().toString());
                 }
@@ -196,7 +200,7 @@ public class UpdatePriceFragment extends Fragment implements View.OnClickListene
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                 if (response.isSuccessful()) {
-                    boolean isSuccess = response.body();
+                    saveCPL = response.body();
                 } else {
                     Log.e("CPL saveAll Error", response.errorBody().toString());
                 }
@@ -217,7 +221,7 @@ public class UpdatePriceFragment extends Fragment implements View.OnClickListene
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                 if (response.isSuccessful()) {
-                    boolean isSuccess = response.body();
+                    saveGroceryItem = response.body();
                 } else {
                     Log.e("GroceryItem saveAll Error", response.errorBody().toString());
                 }
@@ -240,6 +244,7 @@ public class UpdatePriceFragment extends Fragment implements View.OnClickListene
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
                     Log.i("updateGroupPlanStatus", "Successful");
+                    saveGroupPlanStatus = true;
                 } else {
                     Log.e("updateGroupPlanStatus Error", response.errorBody().toString());
                 }
