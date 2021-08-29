@@ -47,7 +47,9 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
             String url = pList.get(position).getImgURL();
             Picasso.get().load(url).into(holder.itemImg);
             }
-        }catch (Exception e){}
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
         holder.item.setText(pList.get(position).getProductName());
     }

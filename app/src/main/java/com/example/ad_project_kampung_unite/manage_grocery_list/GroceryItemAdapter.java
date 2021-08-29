@@ -83,9 +83,11 @@ public class GroceryItemAdapter extends RecyclerView.Adapter<GroceryItemAdapter.
         Button plus = holder.plusBtn;
         Button minus = holder.minusBtn;
 
-        if(groceryItem.getProduct().getImgURL().length() > 0) {
+        try {
             String url = groceryItem.getProduct().getImgURL();
             Picasso.get().load(url).into(pImage);
+        }catch(Exception e){
+            e.printStackTrace();
         }
         pName.setText(groceryItem.getProduct().getProductName());
         pDesc.setText(groceryItem.getProduct().getProductDescription());
