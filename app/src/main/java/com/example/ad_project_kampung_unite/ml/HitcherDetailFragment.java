@@ -44,7 +44,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * create an instance of this fragment.
  */
 public class HitcherDetailFragment extends Fragment{
-    public static final String MLBASEURL = "http://10.0.2.2:80";
+    public static final String MLBASEURL = "http://10.0.2.2:5000";
 
     private Recommendation recommendation;
     private EditText pickUpDate,location,timeSlot;
@@ -190,7 +190,9 @@ public class HitcherDetailFragment extends Fragment{
                             intent_buyerList.putExtra("hitcherDetailId",id);
                             intent_buyerList.putExtra("groceryList",gList);
                             System.out.println("Successful!!!!");
+
                             startActivity(intent_buyerList);
+                            getActivity().overridePendingTransition(R.anim.in_from_right,R.anim.out_to_left);
                         }
                         else{
                             AlertDialog.Builder radioDialog_ = new AlertDialog.Builder(getContext());
