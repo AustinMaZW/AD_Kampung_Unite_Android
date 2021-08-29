@@ -77,6 +77,9 @@ public class GroceryListItemAdaptor extends RecyclerView.Adapter<GroceryListItem
                     itemAmount.setText("$" + String.valueOf(groceryItem.getSubtotal()));
                 }
             }
+            else{
+                itemAmount.setVisibility(View.GONE);
+            }
         }
 //        itemAmount.setVisibility(View.INVISIBLE);
     }

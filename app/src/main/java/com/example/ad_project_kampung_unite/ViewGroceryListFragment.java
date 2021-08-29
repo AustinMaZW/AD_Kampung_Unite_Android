@@ -277,15 +277,19 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
     }
 
 
-    private void updateApprovedStatUI(HitchRequest x) {
+    private void updateApprovedStatUI(HitchRequest hitchRequest) {
         System.out.println("There is an accepted request, change layout");
-        approvedGroupPlan = x.getGroupPlan();
+        if(hitchRequest.getGroupPlan().getGroupPlanStatus()!=GroupPlanStatus.AVAILABLE){
+            quitGroupBtn.setVisibility(View.GONE);
+        }
+        editListBtn.setVisibility(View.GONE);
+        approvedGroupPlan = hitchRequest.getGroupPlan();
         rqStatusTitle.setText("You found a buyer!");
         rqStatDescription.setVisibility(View.GONE);
         pickupStore.setText("Buyer will purchase from: " + approvedGroupPlan.getStoreName());
         pickupLoc.setText("Pick up Location: " + approvedGroupPlan.getPickupAddress());
 
-        LocalDateTime pickupTimeFrom =  x.getPickupTimeChosen();
+        LocalDateTime pickupTimeFrom =  hitchRequest.getPickupTimeChosen();
         LocalTime pickupTimeTo = pickupTimeFrom.plusMinutes(30).toLocalTime();
         DateTimeFormatter df1 = DateTimeFormatter.ofPattern("dd-MMM-yyyy h:mm a");
         DateTimeFormatter df2 = DateTimeFormatter.ofPattern("h:mm a");
