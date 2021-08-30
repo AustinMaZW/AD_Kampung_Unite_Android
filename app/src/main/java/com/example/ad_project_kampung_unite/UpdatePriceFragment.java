@@ -248,6 +248,7 @@ public class UpdatePriceFragment extends Fragment implements View.OnClickListene
     private void updateGroupPlanStatus() {
         gpService = RetrofitClient.createService(GroupPlanService.class);
         Call<Void> call = gpService.updateGroupPlanStatus(gpId, GroupPlanStatus.SHOPPINGCOMPLETED);
+//merge
 
 //        try {
 //            Response<Void> response = call.execute();
