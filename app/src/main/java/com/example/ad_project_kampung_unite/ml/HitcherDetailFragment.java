@@ -118,8 +118,9 @@ public class HitcherDetailFragment extends Fragment{
                         if(oldHd != null && oldHd.getPrefPickupLocation() != null && oldHd.getPrefPickupLocation().length() >0){
                             DateTimeFormatter df_date = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                             DateTimeFormatter df_time = DateTimeFormatter.ofPattern("HH:mm:ss");
+                            String[] locate = oldHd.getPrefPickupLocation().split(",");
                             pickUpDate.setText(oldHd.getPrefPickupTimeFrom().format(df_date).toString());
-                            location.setText(oldHd.getPrefPickupLocation());
+                            location.setText(locate[0]);
                             timeSlot.setText(oldHd.getPrefPickupTimeFrom().format(df_time).toString());
                         }
                     }catch (Exception e){
