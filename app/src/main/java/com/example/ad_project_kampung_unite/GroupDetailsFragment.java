@@ -62,7 +62,7 @@ import retrofit2.Response;
 
 
 public class GroupDetailsFragment extends Fragment {
-
+    //merge
     private int groupId;
     private String groupStatus;
     private List<GroceryItem> buyerGroceryItemList = new ArrayList<>();
