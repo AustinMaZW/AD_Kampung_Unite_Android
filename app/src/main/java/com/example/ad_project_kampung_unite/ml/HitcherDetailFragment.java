@@ -101,6 +101,7 @@ public class HitcherDetailFragment extends Fragment{
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
+    //load the exist hitcher detail of grocery list
     private void getHitcherDetail(){
         int listId = gList.getId();
         GroupPlanService gPlanService = RetrofitClient.createService(GroupPlanService.class);
@@ -110,6 +111,7 @@ public class HitcherDetailFragment extends Fragment{
             public void onResponse(Call<HitcherDetail> call, Response<HitcherDetail> response) {
                 HitcherDetail hd = response.body();
                 System.out.println(hd.getId());
+                //if the hitcher detail is valid, load in to the ui
                 if(hd != null && hd.getPrefPickupLocation() != null && hd.getPrefPickupLocation().length() >0 && !hd.getPrefPickupLocation().equals("not available")){
                     oldHd = hd;
                     try{
@@ -120,13 +122,14 @@ public class HitcherDetailFragment extends Fragment{
                             location.setText(oldHd.getPrefPickupLocation());
                             timeSlot.setText(oldHd.getPrefPickupTimeFrom().format(df_time).toString());
                         }
-                    }catch (Exception e){}
+                    }catch (Exception e){
+                        System.out.println("Request fail in hitcher detail request");
+                    }
                 }
             }
 
             @Override
             public void onFailure(Call<HitcherDetail> call, Throwable t) {
-                Toast.makeText(getContext(),"No Hitcher Detail",Toast.LENGTH_SHORT).show();
             }
         });
     }
