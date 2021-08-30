@@ -78,7 +78,7 @@ public class GroupDetailsFragment extends Fragment {
 
     private RecyclerView rvBuyerGrocery,rvHitchRequests;
     private ImageButton editBtn;
-    private TextView requestComment,hitcherTotalTag, hitcherTotalAmount, buyerTotalTag, buyerTotalAmount ;
+    private TextView requestComment,hitcherTotalTag,hitcherTotalTag2, hitcherTotalAmount, buyerTotalTag,buyerTotalTag2, buyerTotalAmount;
     private MaterialButton closeRequestBtn, combinedListBtn;
     private View hitcherTotalDivider, cardView;
 
@@ -103,6 +103,25 @@ public class GroupDetailsFragment extends Fragment {
         Bundle bundle = getArguments();
         groupId = bundle.getInt("gpId");
         groupStatus = bundle.getString("gpStatus");
+
+        buyerTotalTag = layoutRoot.findViewById(R.id.group_details_buyer_total_tag);
+        buyerTotalTag2 = layoutRoot.findViewById(R.id.groceryDetailBuyerTotal_tag);
+        buyerTotalAmount = layoutRoot.findViewById(R.id.group_details_buyer_total_amount);
+        buyerTotalTag.setVisibility(View.GONE);
+        buyerTotalTag2.setVisibility(View.GONE);
+        buyerTotalAmount.setVisibility(View.GONE);
+
+        hitcherTotalTag = layoutRoot.findViewById(R.id.group_details_hitcher_total_tag);
+        hitcherTotalTag2 = layoutRoot.findViewById(R.id.groceryDetailHitcherTotal_tag);
+        hitcherTotalAmount = layoutRoot.findViewById(R.id.group_details_hitcher_total_amount);
+        hitcherTotalDivider = layoutRoot.findViewById(R.id.group_details_page_divider_hitcher_total_top);
+        hitcherTotalTag.setVisibility(View.GONE);
+        hitcherTotalTag2.setVisibility(View.GONE);
+        hitcherTotalAmount.setVisibility(View.GONE);
+        hitcherTotalDivider.setVisibility(View.GONE);
+
+        requestComment = layoutRoot.findViewById(R.id.group_details_requestcomment);
+        requestComment.setVisibility(View.GONE);
 
         //if group status is not "available", buyer cannot edit their own grocery list
         editBtn = layoutRoot.findViewById(R.id.groupDetails_buyerEditBtn);
@@ -136,24 +155,9 @@ public class GroupDetailsFragment extends Fragment {
                 }
             });
         }
+
         groupPlanService = RetrofitClient.createService(GroupPlanService.class);
         getGroupPlanFromServer();
-
-        buyerTotalTag = layoutRoot.findViewById(R.id.group_details_buyer_total_tag);
-        buyerTotalAmount = layoutRoot.findViewById(R.id.group_details_buyer_total_amount);
-        buyerTotalTag.setVisibility(View.GONE);
-        buyerTotalAmount.setVisibility(View.GONE);
-
-        hitcherTotalTag = layoutRoot.findViewById(R.id.group_details_hitcher_total_tag);
-        hitcherTotalAmount = layoutRoot.findViewById(R.id.group_details_hitcher_total_amount);
-        hitcherTotalDivider = layoutRoot.findViewById(R.id.group_details_page_divider_hitcher_total_top);
-
-        hitcherTotalTag.setVisibility(View.GONE);
-        hitcherTotalAmount.setVisibility(View.GONE);
-        hitcherTotalDivider.setVisibility(View.GONE);
-
-        requestComment = layoutRoot.findViewById(R.id.group_details_requestcomment);
-        requestComment.setVisibility(View.GONE);
 
         groceryListService = RetrofitClient.createService(GroceryListService.class);
         getBuyerGroceryListFromServer();
@@ -199,17 +203,6 @@ public class GroupDetailsFragment extends Fragment {
                                     System.out.println(GroupPlanStatus.CLOSED);
                                     updateGroupPlanStatusToServer(groupId,GroupPlanStatus.CLOSED);
 
-                                    //For debug purposes only
-//                                    List<Integer> hitchRequestIds = new ArrayList<>();
-//                                    for (int i = 0; i < hitchRequestList.size(); i++) {
-//                                        Integer id = hitchRequestList.get(i).getId();
-//
-//                                        if (hitchRequestList.get(i).getRequestStatus().getDisplayStatus() != "Rejected") {
-//                                            hitchRequestList_excludeRejected.add(hitchRequestList.get(i));
-//                                            hitchRequestIds.add(id);
-//                                        }
-//                                    }
-//                                    getHitcherGroceryItemsFromServer(hitchRequestIds);
                                 }
                             });
                             alert.show();
@@ -228,7 +221,7 @@ public class GroupDetailsFragment extends Fragment {
 
         //Button to link to Combined List Fragment
         combinedListBtn = layoutRoot.findViewById(R.id.combinedListButton);
-//        if(groupStatus!="Closed"){
+//        if(groupStatus=="Shopping Completed"){
 //            combinedListBtn.setVisibility(View.GONE);
 //        }
         combinedListBtn.setOnClickListener(new View.OnClickListener() {
@@ -286,13 +279,19 @@ public class GroupDetailsFragment extends Fragment {
                 if (response.isSuccessful()) {
                     buyerGroceryItemList = response.body();
 //                    Log.d("Success", String.valueOf(buyerGroceryItemList.get(0).getProduct().getProductName())); //for testing
+                    Double buyerAmount = 0.0;
 
-                    if(groupStatus!="Open to hitch requests"){
-                        Double buyerAmount = 0.0;
+                    if(groupStatus!="Shopping Completed"){
                         for(int i = 0; i<buyerGroceryItemList.size(); i++){
                             buyerAmount = buyerAmount + buyerGroceryItemList.get(i).getSubtotal();
                         }
+                        //7% GST, 5% service fee
+                        buyerAmount = buyerAmount + buyerAmount * 0.13;
+                    }
+
+                    if(groupStatus=="Shopping Completed"){
                         buyerTotalTag.setVisibility(View.VISIBLE);
+                        buyerTotalTag2.setVisibility(View.VISIBLE);
                         buyerTotalAmount.setVisibility(View.VISIBLE);
                         buyerTotalAmount.setText("$ " + buyerAmount.toString());
                     }
@@ -378,15 +377,19 @@ public class GroupDetailsFragment extends Fragment {
                     Log.d("Success", String.valueOf(childListHolder.get(0).toString())); //for testing
                     System.out.println("childlistholder updated ");
 
-                    if(groupStatus!="Open to hitch requests"){
-                        Double hitcherAmount = 0.0;
+                    Double hitcherAmount = 0.0;
+
+                    if(groupStatus=="Shopping Completed"){
                         for(int i = 0; i < childListHolder.size(); i++){
                             for(int j = 0; j< childListHolder.get(i).size(); j++){
                                 hitcherAmount = hitcherAmount + childListHolder.get(i).get(j).getSubtotal();
                             }
                         }
+                    }
 
+                    if(groupStatus=="Shopping Completed"){
                         hitcherTotalTag.setVisibility(View.VISIBLE);
+                        hitcherTotalTag2.setVisibility(View.VISIBLE);
                         hitcherTotalAmount.setVisibility(View.VISIBLE);
                         hitcherTotalAmount.setText("$ " + hitcherAmount.toString());
                         hitcherTotalDivider.setVisibility(View.VISIBLE);
