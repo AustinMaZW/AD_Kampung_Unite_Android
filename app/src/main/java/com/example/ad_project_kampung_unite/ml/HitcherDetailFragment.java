@@ -44,7 +44,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * create an instance of this fragment.
  */
 public class HitcherDetailFragment extends Fragment{
-    public static final String MLBASEURL = "http://10.0.2.2:5000";
+    public static final String MLBASEURL = "http://kampung-unite-flask.us-east-1.elasticbeanstalk.com/";
     // get from the machine leanring API, store planId, product score, total score, distance
     private Recommendation recommendation;
     //Hicher detail components, for getting the information of hitcher detail

@@ -284,8 +284,9 @@ public class GroupDetailsFragment extends Fragment {
                         for(int i = 0; i<buyerGroceryItemList.size(); i++){
                             buyerAmount = buyerAmount + buyerGroceryItemList.get(i).getSubtotal();
                         }
-                        //7% GST, 5% service fee
-                        buyerAmount = buyerAmount + buyerAmount * 0.13;
+                        //7% GST
+                        buyerAmount = buyerAmount + buyerAmount * 0.07;
+                        buyerAmount = Math.round(buyerAmount*100.0)/100.0;
                     }
 
                     if(groupStatus=="Shopping Completed"){
@@ -382,9 +383,13 @@ public class GroupDetailsFragment extends Fragment {
                         for(int i = 0; i < childListHolder.size(); i++){
                             for(int j = 0; j< childListHolder.get(i).size(); j++){
                                 hitcherAmount = hitcherAmount + childListHolder.get(i).get(j).getSubtotal();
+
                             }
                         }
+                        hitcherAmount = hitcherAmount*1.07*1.05;
+                        hitcherAmount = Math.round(hitcherAmount*100.0)/100.0;
                     }
+
 
                     if(groupStatus=="Shopping Completed"){
                         hitcherTotalTag.setVisibility(View.VISIBLE);
