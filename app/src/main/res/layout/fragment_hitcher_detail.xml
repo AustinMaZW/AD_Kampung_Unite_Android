@@ -26,15 +26,14 @@
             android:id="@+id/pick_up_date"
             android:layout_width="200dp"
             android:layout_height="50dp"
-            android:hint="Pick Up Date"
+            android:hint="yyyy-MM-dd"
             android:layout_gravity="center"
             android:textColorHint="#95a1aa"
             android:inputType="date"
             android:drawableLeft="@drawable/canlendar_input"
             android:drawablePadding="10dp"
             android:paddingLeft="10dp"
-            android:layout_marginBottom="20dp"
-            android:text="2021-10-29"/>
+            android:layout_marginBottom="20dp" />
         <EditText
             android:id="@+id/locationAd"
             android:layout_width="200dp"
@@ -46,21 +45,19 @@
             android:drawableLeft="@drawable/location_input"
             android:drawablePadding="10dp"
             android:paddingLeft="10dp"
-            android:layout_marginBottom="20dp"
-            android:text="220 Prince Edward Road"/>
+            android:layout_marginBottom="20dp" />
         <EditText
             android:id="@+id/timeSlot_"
             android:layout_width="200dp"
             android:layout_height="50dp"
-            android:hint="Time Slot"
+            android:hint="HH:mm:ss"
             android:layout_gravity="center"
             android:textColorHint="#95a1aa"
             android:inputType="time"
             android:drawableLeft="@drawable/time_to_slot"
             android:drawablePadding="10dp"
             android:paddingLeft="10dp"
-            android:layout_marginBottom="20dp"
-            android:text="12:00:00"/>
+            android:layout_marginBottom="20dp" />
         <com.google.android.material.button.MaterialButton
             style="@style/Widget.MaterialComponents.Button"
             android:id="@+id/submitBtn"

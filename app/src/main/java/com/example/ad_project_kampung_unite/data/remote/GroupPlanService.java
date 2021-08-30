@@ -1,6 +1,7 @@
 package com.example.ad_project_kampung_unite.data.remote;
 
 import com.example.ad_project_kampung_unite.entities.GroupPlan;
+import com.example.ad_project_kampung_unite.entities.HitcherDetail;
 import com.example.ad_project_kampung_unite.entities.Product;
 import com.example.ad_project_kampung_unite.entities.enums.GroupPlanStatus;
 import com.example.ad_project_kampung_unite.ml.Recommendation;
@@ -66,4 +67,8 @@ public interface GroupPlanService {
 
     @POST("groupplan/availableTimes")
     Call<Map<Integer,List<String>>> getSlotsByPlanIds(@Body List<Integer> planIds);
+
+
+    @GET("groupplan/findHd/{listId}")
+    Call<HitcherDetail> getHitcherDetail(@Path("listId") int listId);
 }
