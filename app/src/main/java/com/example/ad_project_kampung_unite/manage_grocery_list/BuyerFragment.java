@@ -89,7 +89,7 @@ public class BuyerFragment extends Fragment {
         String sName = storeName.getText().toString();
         String pDate = LocalDate.parse(purchaseDate.getText().toString()).format(df_date);
         String puDate = LocalDate.parse(pickupDate.getText().toString()).format(df_date);
-        String add = address.getText().toString();
+        String add = address.getText().toString().concat(", Singapore, Singapore");
         String puTime1 = LocalTime.parse(pickupTime1.getText().toString()).format(df_time);
         String puTime2 = LocalTime.parse(pickupTime2.getText().toString()).format(df_time);
         String puTime3 = LocalTime.parse(pickupTime3.getText().toString()).format(df_time);

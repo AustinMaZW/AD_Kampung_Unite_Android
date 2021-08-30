@@ -57,11 +57,10 @@
                 android:id="@+id/purchase_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Purchase Date"
+                android:hint="YYYY-MM-DD"
                 android:inputType="date"
                 android:drawableLeft="@drawable/canlendar_input"
                 android:drawablePadding="12dp"
-                android:text="2021-10-29"
                 app:layout_constraintTop_toBottomOf="@+id/header_1"/>
 
             <EditText
@@ -69,11 +68,10 @@
                 android:id="@+id/purchase_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Purchase Time"
+                android:hint="HH:MM:SS"
                 android:inputType="time"
                 android:drawableLeft="@drawable/time_to_slot"
                 android:drawablePadding="12dp"
-                android:text="12:00:00"
                 app:layout_constraintTop_toBottomOf="@id/purchase_date"/>
 
             <TextView
@@ -90,11 +88,10 @@
                 android:id="@+id/pickup_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Purchase Date"
+                android:hint="YYYY-MM-DD"
                 android:inputType="date"
                 android:drawableLeft="@drawable/canlendar_input"
                 android:drawablePadding="12dp"
-                android:text="2021-10-29"
                 app:layout_constraintTop_toBottomOf="@id/header_2"/>
 
             <EditText
@@ -103,7 +100,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Location"
-                android:text="220 Prince Edward Road, Singapore, Singapore"
                 android:inputType="textPostalAddress"
                 android:drawableLeft="@drawable/location_input"
                 android:drawablePadding="12dp"
@@ -114,8 +110,7 @@
                 android:id="@+id/pickup_time_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Time Slot 1"
-                android:text="09:00:00"
+                android:hint="HH:MM:SS"
                 android:inputType="time"
                 android:drawableLeft="@drawable/time_to_slot"
                 android:drawablePadding="12dp"
@@ -126,8 +121,7 @@
                 android:id="@+id/pickup_time_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Time Slot 2"
-                android:text="12:00:00"
+                android:hint="HH:MM:SS"
                 android:inputType="time"
                 android:drawableLeft="@drawable/time_to_slot"
                 android:drawablePadding="12dp"
@@ -138,8 +132,7 @@
                 android:id="@+id/pickup_time_3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Time Slot 3"
-                android:text="15:00:00"
+                android:hint="HH:MM:SS"
                 android:inputType="time"
                 android:drawableLeft="@drawable/time_to_slot"
                 android:drawablePadding="12dp"
