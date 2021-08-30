@@ -72,7 +72,7 @@ public class UpdatePriceFragment extends Fragment implements View.OnClickListene
 
     private void loadCombinedPurchaseLists() {
         cplService = RetrofitClient.createService(CPListService.class);
-//        Call<List<CombinedPurchaseList>> call = cplService.getAllCPLists();
+
         Call<List<CombinedPurchaseList>> call = cplService.getCPListByGroupPlanIdAndPurchasedStatus(gpId, true);
         call.enqueue(new Callback<List<CombinedPurchaseList>>() {
             @Override
@@ -105,15 +105,6 @@ public class UpdatePriceFragment extends Fragment implements View.OnClickListene
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.submit_btn) {
-            /*for (int i=0; i<combinedPurchaseLists.size(); i++) {
-                View holder = rvCombinedList.getChildAt(i);
-                EditText etSubtotal = holder.findViewById(R.id.subtotal);
-                String subtotal = etSubtotal.getText().toString();
-                EditText etDiscount = holder.findViewById(R.id.discount);
-                String discount = etDiscount.getText().toString();
-                Log.i("Update Price", subtotal + ", " + discount.isEmpty());
-            }*/
-
             if (!updatePriceAdapter.hasError()) {
                 getGroceryItemsForGroupPlan();
             }
@@ -129,8 +120,6 @@ public class UpdatePriceFragment extends Fragment implements View.OnClickListene
                 if (response.isSuccessful()) {
                     items = response.body();
                     calculateSubtotalPriceForEachItem();
-
-
                 } else {
                     Log.e("getAcceptedGroceryItemsByGroupPlanId Error", response.errorBody().toString());
                 }
@@ -183,15 +172,6 @@ public class UpdatePriceFragment extends Fragment implements View.OnClickListene
 
     private void saveUnitPriceAndSubtotalInCombinedPurchaseList() {
         Call<Boolean> call = cplService.saveAll(combinedPurchaseLists);
-
-//        try {
-//            Response<Boolean> response = call.execute();
-//            saveCPL = response.body();
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
         call.enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
@@ -215,15 +195,6 @@ public class UpdatePriceFragment extends Fragment implements View.OnClickListene
 
     private void saveSubtotalInGroceryItem(List<GroceryItem> items) {
         Call<Boolean> call = giService.saveAll(items);
-
-//        try {
-//            Response<Boolean> response = call.execute();
-//            saveCPL = response.body();
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
         call.enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
@@ -248,16 +219,6 @@ public class UpdatePriceFragment extends Fragment implements View.OnClickListene
     private void updateGroupPlanStatus() {
         gpService = RetrofitClient.createService(GroupPlanService.class);
         Call<Void> call = gpService.updateGroupPlanStatus(gpId, GroupPlanStatus.SHOPPINGCOMPLETED);
-//merge
-
-//        try {
-//            Response<Void> response = call.execute();
-//            saveGroupPlanStatus = true;
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
