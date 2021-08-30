@@ -62,7 +62,7 @@ import retrofit2.Response;
 
 
 public class GroupDetailsFragment extends Fragment {
-    //merge
+
     private int groupId;
     private String groupStatus;
     private List<GroceryItem> buyerGroceryItemList = new ArrayList<>();
@@ -72,15 +72,13 @@ public class GroupDetailsFragment extends Fragment {
     private List<HitchRequest> hitchRequestList_excludeRejected;
     private List<List<GroceryItem>> childListHolder = new ArrayList<>();
     private GroceryList buyerGroceryList;
-
-    List<Integer> hitchids = new ArrayList<>();
     private GroupPlan groupPlan;
 
     private RecyclerView rvBuyerGrocery,rvHitchRequests;
     private ImageButton editBtn;
     private TextView requestComment,hitcherTotalTag,hitcherTotalTag2,hitcherTotalAmount,buyerTotalTag,buyerTotalTag2, buyerTotalAmount;
     private MaterialButton closeRequestBtn, combinedListBtn;
-    private View hitcherTotalDivider, cardView;
+    private View hitcherTotalDivider;
 
     private GroupPlanService groupPlanService;
     private GroceryListService groceryListService;
@@ -220,9 +218,7 @@ public class GroupDetailsFragment extends Fragment {
 
         //Button to link to Combined List Fragment
         combinedListBtn = layoutRoot.findViewById(R.id.combinedListButton);
-//        if(groupStatus=="Shopping Completed"){
-//            combinedListBtn.setVisibility(View.GONE);
-//        }
+
         combinedListBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -277,7 +273,6 @@ public class GroupDetailsFragment extends Fragment {
 
                 if (response.isSuccessful()) {
                     buyerGroceryItemList = response.body();
-//                    Log.d("Success", String.valueOf(buyerGroceryItemList.get(0).getProduct().getProductName())); //for testing
                     Double buyerAmount = 0.0;
 
                     if(groupStatus=="Shopping Completed"){
@@ -310,7 +305,6 @@ public class GroupDetailsFragment extends Fragment {
 
             @Override
             public void onFailure(Call<List<GroceryItem>> call, Throwable t) {
-                // like no internet connection / the website doesn't exist
                 call.cancel();
                 Log.w("Failure", "Failure!");
                 t.printStackTrace();
@@ -355,7 +349,6 @@ public class GroupDetailsFragment extends Fragment {
 
             @Override
             public void onFailure(Call<List<HitchRequest>> call, Throwable t) {
-                // like no internet connection / the website doesn't exist
                 call.cancel();
                 Log.w("Failure", "Failure!");
                 t.printStackTrace();
@@ -374,9 +367,6 @@ public class GroupDetailsFragment extends Fragment {
 
                 if (response.isSuccessful()) {
                     childListHolder = response.body();
-                    Log.d("Success", String.valueOf(childListHolder.get(0).toString())); //for testing
-                    System.out.println("childlistholder updated ");
-
                     Double hitcherAmount = 0.0;
 
                     if(groupStatus=="Shopping Completed"){
@@ -386,8 +376,14 @@ public class GroupDetailsFragment extends Fragment {
 
                             }
                         }
-                        hitcherAmount = hitcherAmount*1.07*1.05;
-                        hitcherAmount = Math.round(hitcherAmount*100.0)/100.0;
+                        double gst = hitcherAmount * 7 / 100;
+                        gst = Math.round(gst * 100.0) / 100.0;
+
+                        double servicefee = hitcherAmount * 5 / 100;
+                        servicefee = Math.round(servicefee * 100.0) / 100.0;
+
+                        double total = hitcherAmount + gst + servicefee;
+                        hitcherAmount = Math.round(total * 100.0) / 100.0;
                     }
 
 
@@ -413,7 +409,6 @@ public class GroupDetailsFragment extends Fragment {
 
             @Override
             public void onFailure(Call<List<List<GroceryItem>>> call, Throwable t) {
-                // like no internet connection / the website doesn't exist
                 call.cancel();
                 Log.w("Failure", "Failure!");
                 t.printStackTrace();
@@ -438,7 +433,6 @@ public class GroupDetailsFragment extends Fragment {
 
             @Override
             public void onFailure(Call<GroupPlan> call, Throwable t) {
-                // like no internet connection / the website doesn't exist
                 call.cancel();
                 Log.w("Failure", "Failure!");
                 t.printStackTrace();
@@ -468,7 +462,6 @@ public class GroupDetailsFragment extends Fragment {
 
             @Override
             public void onFailure(Call<HitchRequest> call, Throwable t) {
-                // like no internet connection / the website doesn't exist
                 call.cancel();
                 Log.w("Failure", "Failure!");
                 t.printStackTrace();
@@ -499,7 +492,6 @@ public class GroupDetailsFragment extends Fragment {
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                // like no internet connection / the website doesn't exist
                 call.cancel();
                 Log.w("Failure", "Failure!");
                 t.printStackTrace();
@@ -517,14 +509,12 @@ public class GroupDetailsFragment extends Fragment {
 
                 if (response.isSuccessful()) {
                     Boolean status = response.body();
-                    Log.d("Success", status.toString()); //for testing
 
                     FragmentManager fm = ((AppCompatActivity)layoutRoot.getContext()).getSupportFragmentManager();
                     Fragment currentFrag = fm.findFragmentByTag("GROUP_DETAILS_FRAG");
                     fm.beginTransaction().detach(currentFrag).commitNow();
                     fm.beginTransaction().attach(currentFrag).commitNow();
 
-                    //logic to change any UI here, but shouldn't need since other parts of this frag should've handled it
                 } else {
                     Log.e("Error", response.errorBody().toString());
                 }
@@ -532,7 +522,6 @@ public class GroupDetailsFragment extends Fragment {
 
             @Override
             public void onFailure(Call<Boolean> call, Throwable t) {
-                // like no internet connection / the website doesn't exist
                 call.cancel();
                 Log.w("Failure", "Failure!");
                 t.printStackTrace();
@@ -556,7 +545,7 @@ public class GroupDetailsFragment extends Fragment {
 
         ActiveGroupExpandableRecyclerViewAdapter expandableCategoryRecyclerViewAdapter =
                 new ActiveGroupExpandableRecyclerViewAdapter(layoutRoot.getContext(), mHitchRequestList,
-                        childListHolder/*, groupPlan.getGroupPlanStatus()*/);
+                        childListHolder);
 
         rvHitchRequests.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext()));
         rvHitchRequests.setAdapter(expandableCategoryRecyclerViewAdapter);
@@ -594,11 +583,6 @@ public class GroupDetailsFragment extends Fragment {
             if(direction == ItemTouchHelper.LEFT){
                 hitchRq.setRequestStatus(RequestStatus.REJECTED);
                 updateHitchRequestStatusToServer(hitchRq);  //send http rq to server to approve
-
-//                hitchRequestList.remove(position);
-//                tempHitchRequestList = hitchRequestList;
-//                hitchRequestList.clear();
-//                hitchRequestList = tempHitchRequestList;
 
                 Snackbar.make(rvHitchRequests, "Hitch request rejected", Snackbar.LENGTH_LONG).show();
 

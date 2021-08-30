@@ -20,30 +20,24 @@ import com.example.ad_project_kampung_unite.entities.GroceryItem;
 import com.example.ad_project_kampung_unite.entities.HitchRequest;
 import com.google.android.material.chip.Chip;
 
-import org.w3c.dom.Text;
-
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ActiveGroupExpandableRecyclerViewAdapter extends RecyclerView.Adapter<ActiveGroupExpandableRecyclerViewAdapter.ViewHolder> {
 
-//    private HitchRequestService hitchRequestService;
     private List<HitchRequest> hitchRequestsList;
     private List<List<GroceryItem>> groceryItemList;
-//    private GroupPlanStatus groupPlanStatus;
     List<Integer> counter = new ArrayList<>();
 
     Context context;
 
     public ActiveGroupExpandableRecyclerViewAdapter(Context context,
                                          List<HitchRequest> hitchRequestsList,
-                                         List<List<GroceryItem>> groceryItemList/*,
-                                         GroupPlanStatus groupPlanStatus*/){
+                                         List<List<GroceryItem>> groceryItemList){
         this.context = context;
         this.hitchRequestsList = hitchRequestsList;
         this.groceryItemList = groceryItemList;
-//        this.groupPlanStatus = groupPlanStatus;
 
         for (int i = 0; i < hitchRequestsList.size(); i++) {
             counter.add(0);
