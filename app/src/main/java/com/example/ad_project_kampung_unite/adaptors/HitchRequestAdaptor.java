@@ -91,7 +91,6 @@ public class HitchRequestAdaptor extends RecyclerView.Adapter<HitchRequestAdapto
 
                 //alert dialog below
                 AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-//                builder.setTitle("Title Here");
                 builder.setMessage("Confirm Cancel Request?");
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
@@ -127,7 +126,6 @@ public class HitchRequestAdaptor extends RecyclerView.Adapter<HitchRequestAdapto
 
                 if (response.isSuccessful()) {
                     Boolean result = response.body();
-                    Log.d("Success", result.toString()); //for testing
 
                     FragmentManager fm = ((AppCompatActivity)context).getSupportFragmentManager();
                     Fragment currentFrag = fm.findFragmentByTag("VIEW_HITCHER_GL_FRAG");
@@ -140,7 +138,6 @@ public class HitchRequestAdaptor extends RecyclerView.Adapter<HitchRequestAdapto
 
             @Override
             public void onFailure(Call<Boolean> call, Throwable t) {
-                // like no internet connection / the website doesn't exist
                 call.cancel();
                 Log.w("Failure", "Failure!");
                 t.printStackTrace();
