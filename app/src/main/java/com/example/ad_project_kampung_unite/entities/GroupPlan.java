@@ -2,10 +2,11 @@ package com.example.ad_project_kampung_unite.entities;
 
 import com.example.ad_project_kampung_unite.entities.enums.GroupPlanStatus;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
-public class GroupPlan {
+public class GroupPlan implements Serializable {
     private int id;
     private String planName;
     private String storeName;
