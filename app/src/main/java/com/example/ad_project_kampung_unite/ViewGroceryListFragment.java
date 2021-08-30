@@ -85,22 +85,7 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         layoutRoot = inflater.inflate(R.layout.fragment_view_grocery_list, container, false);
-//        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Grocery List Name");     //need grocery list name passed from previous frag
-
         context = layoutRoot.getContext();
-
-        // old code to receive grocerylist, but couldnt make it work for refresh purposes
-//        getParentFragmentManager().setFragmentResultListener("requestKey", this, new FragmentResultListener() {
-//            @Override
-//            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
-//                groceryList = (GroceryList) bundle.getSerializable("bundleKey");
-//                // Do something with the result
-//                ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(groceryList.getName());
-//
-//                getGroceryItemsFromServer();            //call to retrieve groceryitems
-//                getHitchRequestsFromServer();           //call to retrieve requests
-//            }
-//        });
 
         //new code to get result in bundle
         Bundle bundle = getArguments();
@@ -212,7 +197,7 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
     //below code to be completed for hitch request
     private void getHitchRequestsFromServer(){
         hitchRequestService = RetrofitClient.createService(HitchRequestService.class);
-        Call<List<HitchRequest>> call = hitchRequestService.getHitchRequestsByGroceryListId(groceryList.getId());    //for test data 38 is pending status, 36 is approved, 249 is for quit list test
+        Call<List<HitchRequest>> call = hitchRequestService.getHitchRequestsByGroceryListId(groceryList.getId());
         approvedGroupPlan = null;   //reset this upon new request
 
         call.enqueue(new Callback<List<HitchRequest>>() {
@@ -263,7 +248,12 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
                 if (response.isSuccessful()) {
                     Boolean result = response.body();
                     Log.d("Success", result.toString()); //for testing
+                    //below to refresh ui
+                    FragmentManager fm = ((AppCompatActivity)context).getSupportFragmentManager();
 
+                    Fragment currentFrag = fm.findFragmentByTag("VIEW_HITCHER_GL_FRAG");
+                    fm.beginTransaction().detach(currentFrag).commitNow();
+                    fm.beginTransaction().attach(currentFrag).commitNow();
                 } else {
                     Log.e("quitGroupPlanByGroceryListId Error", response.errorBody().toString());
                 }
@@ -354,18 +344,6 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.dismiss();
                         quitGroupPlan();
-
-                        try {
-                            Thread.sleep(500);      //need to wait or database hasn't updated...
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-
-                        FragmentManager fm = ((AppCompatActivity)context).getSupportFragmentManager();     //below to refresh ui
-
-                        Fragment currentFrag = fm.findFragmentByTag("VIEW_HITCHER_GL_FRAG");
-                        fm.beginTransaction().detach(currentFrag).commitNow();
-                        fm.beginTransaction().attach(currentFrag).commitNow();
                     }
                 });
                 builder.setNegativeButton("No", new DialogInterface.OnClickListener() {

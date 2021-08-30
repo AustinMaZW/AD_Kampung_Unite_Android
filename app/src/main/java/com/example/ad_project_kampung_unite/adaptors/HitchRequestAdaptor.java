@@ -79,7 +79,7 @@ public class HitchRequestAdaptor extends RecyclerView.Adapter<HitchRequestAdapto
 
         // Set item views based on your views and data model
         TextView textView = holder.groupPlanName;
-        textView.setText(hitchRequest.getGroupPlan().getPlanName());    //change this to getName later when name is added to group plan as attr
+        textView.setText(hitchRequest.getGroupPlan().getPlanName());
 
         hitchRequestService = RetrofitClient.createService(HitchRequestService.class);
 
@@ -118,7 +118,7 @@ public class HitchRequestAdaptor extends RecyclerView.Adapter<HitchRequestAdapto
     }
 
     private void cancelHitchRequestToServer(int hitchRqId){
-        Call<Boolean> call = hitchRequestService.cancelHitchRequest(hitchRqId); //hard coded grocerylistid here, replace later
+        Call<Boolean> call = hitchRequestService.cancelHitchRequest(hitchRqId);
 
         call.enqueue(new Callback<Boolean>() {
             @Override
