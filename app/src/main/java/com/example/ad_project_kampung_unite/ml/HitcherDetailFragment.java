@@ -58,6 +58,7 @@ public class HitcherDetailFragment extends Fragment{
     private Intent intent_buyerList;
     // grocery list which used to match the group plan, get from previous fragment
     private GroceryList gList;
+    private HitcherDetail oldHd;
 
     public void setgList(GroceryList gList) {
         this.gList = gList;
@@ -79,6 +80,7 @@ public class HitcherDetailFragment extends Fragment{
     @Override
     public void onStart() {
         super.onStart();
+
     }
 
     public static HitcherDetailFragment newInstance(String param1, String param2) {
@@ -93,12 +95,45 @@ public class HitcherDetailFragment extends Fragment{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
+    //load the exist hitcher detail of grocery list
+    private void getHitcherDetail(){
+        int listId = gList.getId();
+        GroupPlanService gPlanService = RetrofitClient.createService(GroupPlanService.class);
+        Call<HitcherDetail> getHitcherDetail = gPlanService.getHitcherDetail(this.gList.getId());
+        getHitcherDetail.enqueue(new Callback<HitcherDetail>() {
+            @Override
+            public void onResponse(Call<HitcherDetail> call, Response<HitcherDetail> response) {
+                HitcherDetail hd = response.body();
+                System.out.println(hd.getId());
+                //if the hitcher detail is valid, load in to the ui
+                if(hd != null && hd.getPrefPickupLocation() != null && hd.getPrefPickupLocation().length() >0 && !hd.getPrefPickupLocation().equals("not available")){
+                    oldHd = hd;
+                    try{
+                        if(oldHd != null && oldHd.getPrefPickupLocation() != null && oldHd.getPrefPickupLocation().length() >0){
+                            DateTimeFormatter df_date = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                            DateTimeFormatter df_time = DateTimeFormatter.ofPattern("HH:mm:ss");
+                            String[] locate = oldHd.getPrefPickupLocation().split(",");
+                            pickUpDate.setText(oldHd.getPrefPickupTimeFrom().format(df_date).toString());
+                            location.setText(locate[0]);
+                            timeSlot.setText(oldHd.getPrefPickupTimeFrom().format(df_time).toString());
+                        }
+                    }catch (Exception e){
+                        System.out.println("Request fail in hitcher detail request");
+                    }
+                }
+            }
 
+            @Override
+            public void onFailure(Call<HitcherDetail> call, Throwable t) {
+            }
+        });
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -112,6 +147,7 @@ public class HitcherDetailFragment extends Fragment{
         location = view.findViewById(R.id.locationAd);
         timeSlot = view.findViewById(R.id.timeSlot_);
         submitBtn = view.findViewById(R.id.submitBtn);
+        getHitcherDetail();
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

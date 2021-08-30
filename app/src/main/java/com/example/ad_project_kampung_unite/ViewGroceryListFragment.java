@@ -73,6 +73,7 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
     private TextView tvSubtotalAmount, tvGstAmount, tvServicefeeAmount, tvTotalAmount, tvPaymentStatus;
     private Button hitchRqButton, quitGroupBtn, btnCompletePayment, editListBtn;
     private LinearLayout llPaymentComponent;
+    private LinearLayout fragRoot;
 
     public ViewGroceryListFragment() {
         // Required empty public constructor
@@ -122,6 +123,8 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
         setQuitGroupBtn();       //for quitGroup
         editListBtn = layoutRoot.findViewById(R.id.edit_groceries);
         editListBtn.setOnClickListener(this);
+        fragRoot = layoutRoot.findViewById(R.id.hitcher_grocery_root);
+        fragRoot.setVisibility(View.GONE);
 
         return layoutRoot;
     }
@@ -233,7 +236,7 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
                         layoutRoot.findViewById(R.id.status_approved).setVisibility(View.GONE);
                         buildHitchRequestRV();
                     }
-
+                    fragRoot.setVisibility(View.VISIBLE);
                 } else {
                     Log.e("getHitchRequestsByGroceryListId Error", response.errorBody().toString());
                 }
