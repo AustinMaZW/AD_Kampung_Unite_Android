@@ -24,10 +24,6 @@ public interface GroupPlanService {
     @GET("groupplan/{userDetailId}")
     Call<List<GroupPlan>> findGroupPlansByUserDetailId(@Path("userDetailId") int id);
 
-
-    @GET("/native/{id}")
-    Call<List<Integer>> getRecommendIds(@Path("id") int id);
-
     @GET("/native/{id}")
     Call<Recommendation> getRecommendId(@Path("id") int id);
 
@@ -40,9 +36,6 @@ public interface GroupPlanService {
 
     @GET("hitchrequest/savereq")
     Call<Integer> saveRequest(@Query("planId") int planId, @Query("hitcherDetailId") int hitcherDetailId, @Query("pickUpTime") String pickUpTime);
-
-    @GET("HitcherDetail/removedetail")
-    Call<Integer> removeHitcherDetail(@Query("hdid") int hdid);
 
     @GET("groupplan/update/status/{id}/{status}")
     Call<Void> updateGroupPlanStatus(@Path("id") int id, @Path("status") GroupPlanStatus status);
@@ -61,9 +54,6 @@ public interface GroupPlanService {
                                     @Query("time1") String time1,
                                     @Query("time2") String time2,
                                     @Query("time3") String time3);
-
-    @POST("groupplan/availableTime/{planId}")
-    Call<List<String>> getSlots(@Path("planId") int planId);
 
     @POST("groupplan/availableTimes")
     Call<Map<Integer,List<String>>> getSlotsByPlanIds(@Body List<Integer> planIds);
