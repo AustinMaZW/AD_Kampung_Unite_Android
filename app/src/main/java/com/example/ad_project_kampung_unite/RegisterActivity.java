@@ -88,7 +88,6 @@ public class RegisterActivity extends AppCompatActivity {
                                 }
                             }
                         }
-
                         @Override
                         public void onFailure(Call<UserDetail> call, Throwable t) {
                             Toast.makeText(RegisterActivity.this, "Something went wrong :(", Toast.LENGTH_SHORT).show();
@@ -97,7 +96,6 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
 
     private boolean pwdConfirm() {

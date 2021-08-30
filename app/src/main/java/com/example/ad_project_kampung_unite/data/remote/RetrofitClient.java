@@ -77,14 +77,6 @@ public class RetrofitClient {
         }
     }
 
-//    public static class LocalDateTimeDeserializer implements JsonDeserializer<LocalDateTime> {
-//
-//        @Override
-//        public LocalDateTime deserialize(JsonElement jsonElement, Type typeOF, JsonDeserializationContext context) throws JsonParseException {
-//            return LocalDateTime.parse(jsonElement.getAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss").withLocale(Locale.ENGLISH));
-//        }
-//    }
-
     // convert Date object to json to pass in http request
     public static class LocalDateSerializer implements JsonSerializer<LocalDate> {
         private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");

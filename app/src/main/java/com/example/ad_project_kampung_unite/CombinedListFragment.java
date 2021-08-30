@@ -1,8 +1,5 @@
 package com.example.ad_project_kampung_unite;
 
-import static android.content.Context.MODE_PRIVATE;
-
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -23,15 +20,12 @@ import com.android.volley.toolbox.Volley;
 import com.example.ad_project_kampung_unite.adaptors.ShoppingListAdapter;
 import com.example.ad_project_kampung_unite.data.remote.CPListService;
 import com.example.ad_project_kampung_unite.entities.CombinedPurchaseList;
-import com.example.ad_project_kampung_unite.entities.GroupPlan;
-import com.example.ad_project_kampung_unite.entities.enums.GroupPlanStatus;
 import com.google.android.material.button.MaterialButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -50,7 +44,6 @@ public class CombinedListFragment extends Fragment {
     private RecyclerView combinedListItems;
     private ShoppingListAdapter shoppingListAdapter;
     private View combinedListView;
-    private GroupPlan groupPlan;
     boolean iscompleted;
 
 
@@ -68,21 +61,16 @@ public class CombinedListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-//        iscompleted = false;
         combinedListView = inflater.inflate(R.layout.fragment_combined_list, container, false);
         finishShopping = combinedListView.findViewById(R.id.finish_shopping_button);
         finishShoppingDisabled = combinedListView.findViewById(R.id.finish_shopping_button_disabled);
-
-        //Demo Code to get from GroupPlanID = 18;
-//        Integer groupPlanID = 18;
 
         //Acutal code get data from server, groupPlanId from bundle
         Bundle bundle = getArguments();
         Integer groupPlanID = bundle.getInt("gpId");
         String url = getResources().getString(R.string.base_url)+getString(R.string.get_list_id)+groupPlanID;
-//        String getGrpPlanURL = getResources().getString(R.string.base_url)+getString(R.string.get_groupplan_by_id)+ groupPlanID;
-        RequestQueue queueRequest = Volley.newRequestQueue(getActivity());
 
+        RequestQueue queueRequest = Volley.newRequestQueue(getActivity());
         StringRequest getListRequest = new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -107,33 +95,7 @@ public class CombinedListFragment extends Fragment {
             }
         });
 
-//        StringRequest getGrpPlanRequest = new StringRequest(getGrpPlanURL, new Response.Listener<String>() {
-//            @Override
-//            public void onResponse(String response) {
-//                System.out.println("grpPlan" +response);
-//                if (response != null | !response.matches("")){
-//
-//                    try {
-//                        JSONObject object = new JSONObject(response);
-//                        buildGroupPlan(object);
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//        }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Toast.makeText(getActivity().getApplicationContext(),
-//                        error.toString(),
-//                        Toast.LENGTH_SHORT)
-//                        .show();
-//            }
-//        });
-
-//        queueRequest.add(getGrpPlanRequest);
         queueRequest.add(getListRequest);
-//        queueRequest.start();
 
         //Finish Shopping Button
         finishShopping.setOnClickListener(new View.OnClickListener() {
@@ -149,15 +111,12 @@ public class CombinedListFragment extends Fragment {
                 Retrofit retrofit = builder.build();
                 CPListService combinedPurchaseList = retrofit.create(CPListService.class);
                 List<CombinedPurchaseList> purchasedList = shoppingListAdapter.getPurchasedList();
-//                purchasedList.stream().forEach(x-> System.out.println(x));
                 Call<List<CombinedPurchaseList>> call = combinedPurchaseList.update(purchasedList);
-                //List<CombinedPurchaseList> is as desired up to this point.....
                 call.enqueue(new Callback<List<CombinedPurchaseList>>() {
                     @Override
                     public void onResponse(Call<List<CombinedPurchaseList>> call, retrofit2.Response<List<CombinedPurchaseList>> response) {
                         if (response.isSuccessful()){
                             Toast.makeText(getActivity().getApplicationContext(), "List updated", Toast.LENGTH_SHORT).show();
-//                            System.out.println(response.body());
                             //redirect to enter unit price
                             Bundle bundle = new Bundle();
                             bundle.putInt("gpId", groupPlanID);
@@ -178,7 +137,6 @@ public class CombinedListFragment extends Fragment {
             }
         });
 
-
         //finishShoppingDisabled button
         finishShoppingDisabled.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -186,12 +144,6 @@ public class CombinedListFragment extends Fragment {
                 Toast.makeText(getActivity().getApplicationContext(), "Close requests before buying items", Toast.LENGTH_LONG).show();
             }
         });
-
-
-
-
-
-
         return combinedListView;
     }
 
@@ -201,12 +153,6 @@ public class CombinedListFragment extends Fragment {
         }else{
             finishShopping.setVisibility(View.GONE);
         }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
     }
 
     private void parseArray(JSONArray jsonArray) {
@@ -228,11 +174,9 @@ public class CombinedListFragment extends Fragment {
             }
         }
         Arrays.stream(gps).forEach(x-> System.out.println(x));
-//        status = gps[0];
         if(gps[0].matches("CLOSED") | gps[0].matches("SHOPPINGCOMPLETED")){
             iscompleted = true;
         }
-
         inflateItemView();
     }
 
@@ -245,177 +189,5 @@ public class CombinedListFragment extends Fragment {
 
     }
 
-
-//    private void inflateViewWithDetails(List<CombinedPurchaseList> cplList, View combinedListView) {
-//        combinedListItems = combinedListView.findViewById(R.id.CL_items);
-//        for(CombinedPurchaseList cpl : cplList)
-//        {
-//            combinedListItems.setAdapter(new BaseAdapter() {
-//                @Override
-//                public int getCount() {
-//                    return cplList.size();
-//                }
-//
-//                @Override
-//                public Object getItem(int position) {
-//                    return cplList.get(position);
-//                }
-//
-//                @Override
-//                public long getItemId(int position) {
-//                    return cplList.get(position).getId();
-//                }
-//
-//                @Override
-//                public View getView(int position, View convertView, ViewGroup parent) {
-//                    View view = getLayoutInflater().inflate(R.layout.combined_item, null);;
-//                    TextView itemName = view.findViewById(R.id.CIitemName);
-//                    itemName.setText(cpl.getProductName());
-//                    TextView quantity = view.findViewById(R.id.CIquantity);
-//                    quantity.setText(String.valueOf(cpl.getQuantity()));
-//
-//                    //test
-////                    checkBoxes[position] = view.findViewById(R.id.CIcheckbox);
-////                    boolean isChecked = checkBoxes[position].isChecked();
-////                    updateCheckBoxStatus(isChecked,position);
-//                    CheckBox checkBox = view.findViewById(R.id.CIcheckbox);
-//                    checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//                        @Override
-//                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                            if(buttonView.isChecked()){
-//                                cplList.get(position).setPurchased(true);
-//                            }else
-//                                cplList.get(position).setPurchased(false);
-//                        }
-//                    });
-//
-//                    return view;
-//                }
-//            });
-//        }
-//
-//    }
-//
-//    private void updateCheckBoxStatus(boolean isChecked, int position) {
-//        if(isChecked){
-//            cplList.get(position).setPurchased(true);
-//        }else{
-//            cplList.get(position).setPurchased(false);
-//        }
-//    }
-//
-//
-//
-//
-//    private void parseArray(JSONArray jsonArray, View view) {
-//        for (int i = 0; i < jsonArray.length(); i++) {
-//            try {
-//                JSONObject object = jsonArray.getJSONObject(i);
-//                CombinedPurchaseList cpl = new CombinedPurchaseList(
-//                        object.getInt("id"),
-//                        object.getJSONObject("product").getInt("id"),
-//                        object.getJSONObject("product").getString("name"),
-//                        object.getInt("quantity")
-//                );
-//                cplList.add(cpl);
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//            // start fill up individual item with data
-//            combinedListItems = view.findViewById(R.id.CL_items);
-//            combinedListItems.setAdapter(new BaseAdapter() {
-//                @Override
-//                public int getCount() {
-//                    return cplList.size();
-//                }
-//                @Override
-//                public Object getItem(int position) {
-//                    return null;
-//                }
-//                @Override
-//                public long getItemId(int position) {
-//                    return 0;
-//                }
-//                @Override
-//                public View getView(int position, View convertView, ViewGroup parent) {
-//                    //working UI only
-//                    View view = getLayoutInflater().inflate(R.layout.combined_item, null);
-//                    CombinedPurchaseList cpl = cplList.get(position);
-//                    //get TextView and set text for item name
-//                    TextView itemName = view.findViewById(R.id.CIitemName);
-//                    itemName.setText(cpl.getProductName());
-//                    //get TextView and set text for quantity
-//                    TextView quantity = view.findViewById(R.id.CIquantity);
-//                    quantity.setText(String.valueOf(cpl.getQuantity()));
-//                    CheckBox checkBox = view.findViewById(R.id.CIcheckbox);
-//                    checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//                        @Override
-//                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                            if(isChecked){
-//                                cpl.setPurchased(true);
-//                            }
-//                            else
-//                                cpl.setPurchased(false);
-//                        }
-//                    });
-//                    //end of working UI only
-//                    return view;
-//                }
-//            });
-//
-//            //End of fill up item with item detail
-//        }
-//    }
-//
-//    private Product buildProduct(JSONObject object) {
-//        Product product = null;
-//        try {
-//            product = new Product(
-//                    object.getJSONObject("product").getInt("id"),
-//                    object.getJSONObject("product").getString("name"),
-//                    object.getJSONObject("product").getString("description"),
-//                    object.getJSONObject("product").getString("category"),
-//                    object.getJSONObject("product").getString("imgURL")
-//            );
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//        return product;
-//    }
-
-    private void buildGroupPlan(JSONObject jsonObject) {
-        groupPlan = new GroupPlan();
-        try {
-                groupPlan.setId(jsonObject.getInt("id"));
-                groupPlan.setPlanName(jsonObject.getString("planName"));
-                groupPlan.setGroupPlanStatus(gpStatusCheck(jsonObject.getString("groupPlanStatus")));
-                groupPlan.setPickupDate(LocalDate.parse(jsonObject.getString("pickupDate")));
-                groupPlan.setStoreName(jsonObject.getString("storeName"));
-                groupPlan.setShoppingDate(LocalDate.parse(jsonObject.getString("shoppingDate")));
-                groupPlan.setPickupAddress(jsonObject.getString("pickupAddress"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    private GroupPlanStatus gpStatusCheck(String string){
-        switch (string) {
-            case "AVAILABLE":
-                return GroupPlanStatus.AVAILABLE;
-
-            case "SHOPPINGCOMPLETED":
-                return GroupPlanStatus.SHOPPINGCOMPLETED;
-
-            case "CLOSED":
-                return GroupPlanStatus.CLOSED;
-
-            case "CANCELLED":
-                return GroupPlanStatus.CANCELLED;
-
-            default:
-                return null;
-        }
-    }
 
 }

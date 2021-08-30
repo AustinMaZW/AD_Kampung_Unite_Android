@@ -81,7 +81,6 @@ public class GroceryListItemAdaptor extends RecyclerView.Adapter<GroceryListItem
                 itemAmount.setVisibility(View.GONE);
             }
         }
-//        itemAmount.setVisibility(View.INVISIBLE);
     }
 
     // Returns the total count of items in the list

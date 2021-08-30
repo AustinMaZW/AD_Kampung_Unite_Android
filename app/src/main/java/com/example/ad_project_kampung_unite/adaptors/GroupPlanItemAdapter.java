@@ -50,7 +50,6 @@ public class GroupPlanItemAdapter extends RecyclerView.Adapter<MyGroupPlansHolde
         myholder.mGroupPlanName.setText(lists.get(i).getPlanName());
         myholder.mGroupPlanShoppingDate.setText(lists.get(i).getShoppingDate().toString());
         myholder.mGroupPlanRequests.setText(lists.get(i).getGroupPlanStatus().getDisplayStatus());
-        //.setImageResource to set image.
 
         myholder.setItemClickListener(new ItemClickListener() {
             private GroupDetailsFragment groupDetailsFragment;
