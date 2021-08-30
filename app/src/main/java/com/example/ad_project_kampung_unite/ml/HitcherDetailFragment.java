@@ -80,7 +80,7 @@ public class HitcherDetailFragment extends Fragment{
     @Override
     public void onStart() {
         super.onStart();
-        getHitcherDetail();
+
     }
 
     public static HitcherDetailFragment newInstance(String param1, String param2) {
@@ -110,7 +110,7 @@ public class HitcherDetailFragment extends Fragment{
             public void onResponse(Call<HitcherDetail> call, Response<HitcherDetail> response) {
                 HitcherDetail hd = response.body();
                 System.out.println(hd.getId());
-                if(hd != null && hd.getPrefPickupLocation() != null && hd.getPrefPickupLocation().length() >0){
+                if(hd != null && hd.getPrefPickupLocation() != null && hd.getPrefPickupLocation().length() >0 && !hd.getPrefPickupLocation().equals("not available")){
                     oldHd = hd;
                     try{
                         if(oldHd != null && oldHd.getPrefPickupLocation() != null && oldHd.getPrefPickupLocation().length() >0){
@@ -143,6 +143,7 @@ public class HitcherDetailFragment extends Fragment{
         location = view.findViewById(R.id.locationAd);
         timeSlot = view.findViewById(R.id.timeSlot_);
         submitBtn = view.findViewById(R.id.submitBtn);
+        getHitcherDetail();
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
