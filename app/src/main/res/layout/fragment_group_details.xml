@@ -79,18 +79,44 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toTopOf="@id/group_details_text2">
 
-        <TextView
-            android:id="@+id/group_details_buyer_total_tag"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:padding="15dp"
-            android:text="Total"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="18dp"
-            android:textStyle="bold"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/group_details_buyer_total_amount"/>
+            app:layout_constraintRight_toLeftOf="@id/group_details_buyer_total_amount">
+
+            <TextView
+                android:id="@+id/group_details_buyer_total_tag"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingTop="15dp"
+                android:paddingBottom="0dp"
+                android:text="My Total"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"/>
+
+            <TextView
+                android:id="@+id/groceryDetailBuyerTotal_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-2dp"
+                android:paddingLeft="5dp"
+                android:text="(incl.GST &amp; service)"
+                android:textSize="10sp"
+                app:layout_constraintTop_toBottomOf="@id/group_details_buyer_total_tag"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
         <TextView
             android:id="@+id/group_details_buyer_total_amount"
             android:layout_width="0dp"
@@ -171,23 +197,47 @@
         android:id="@+id/group_details_hitcher_total"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingBottom="20dp"
         app:layout_constraintTop_toBottomOf="@id/groupDetails_expandableRecyclerView"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toTopOf="@id/group_details_btns">
 
-        <TextView
-            android:id="@+id/group_details_hitcher_total_tag"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:padding="15dp"
-            android:text="Total"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="18dp"
-            android:textStyle="bold"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/group_details_hitcher_total_amount"/>
+            app:layout_constraintRight_toLeftOf="@id/group_details_hitcher_total_amount">
+
+            <TextView
+                android:id="@+id/group_details_hitcher_total_tag"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingTop="15dp"
+                android:paddingBottom="0dp"
+                android:text="Hitch Total"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"/>
+
+            <TextView
+                android:id="@+id/groceryDetailHitcherTotal_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-2dp"
+                android:paddingLeft="5dp"
+                android:text="(incl.GST &amp; service)"
+                android:textSize="10sp"
+                app:layout_constraintTop_toBottomOf="@id/group_details_hitcher_total_tag"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <TextView
             android:id="@+id/group_details_hitcher_total_amount"
             android:layout_width="0dp"
@@ -206,6 +256,7 @@
         android:id="@+id/group_details_btns"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingBottom="20dp"
         app:layout_constraintTop_toBottomOf="@id/group_details_hitcher_total"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

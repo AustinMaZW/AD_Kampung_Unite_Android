@@ -55,11 +55,38 @@
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:id="@+id/groceryDetailHitcherTotal_Section"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/groceryDetailListTitle"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/groceryDetailHitcherTotal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="-2dp"
+                            android:text="Total: $0.00"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/groceryDetailHitcherTotal_tag"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="-2dp"
+                            android:paddingLeft="5dp"
+                            android:text="(incl.GST &amp; service)"
+                            android:textSize="10sp" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
                     <TextView
                         android:id="@+id/groceryDetailPickupTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/groceryDetailListTitle"
+                        android:layout_below="@id/groceryDetailHitcherTotal_Section"
                         android:text="Pick-up time &amp; 9.30am"
                         android:textSize="16sp" />
 

@@ -57,14 +57,15 @@
             android:layout_height="wrap_content" />
 
         <com.google.android.material.button.MaterialButton
-            style="@style/Widget.MaterialComponents.Button"
             android:id="@+id/submit_btn"
-            android:text="@string/submit"
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:textColor="@color/Kampong_Blue"
+            android:layout_marginTop="20dp"
             android:backgroundTint="@color/Kampong_Yellow"
-            android:layout_marginTop="20dp"/>
+            android:text="@string/submit"
+            android:textColor="@color/Kampong_Blue"
+            />
     </LinearLayout>
 </ScrollView>
