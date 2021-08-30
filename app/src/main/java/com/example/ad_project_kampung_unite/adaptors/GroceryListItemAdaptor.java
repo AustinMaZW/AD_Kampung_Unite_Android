@@ -71,7 +71,7 @@ public class GroceryListItemAdaptor extends RecyclerView.Adapter<GroceryListItem
         else{
             if(groceryItem.getGroceryList().getGroupPlanGL().getGroupPlanStatus()== GroupPlanStatus.SHOPPINGCOMPLETED){
                 if(groceryItem.getSubtotal()==0){
-                    itemAmount.setText("Not Purchase");
+                    itemAmount.setText("Not Purchased");
                 }
                 else{
                     itemAmount.setText("$" + String.valueOf(groceryItem.getSubtotal()));

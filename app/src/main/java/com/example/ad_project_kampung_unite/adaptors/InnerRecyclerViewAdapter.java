@@ -55,7 +55,12 @@ public class InnerRecyclerViewAdapter extends RecyclerView.Adapter<InnerRecycler
         int quantity = nameList.get(position).getQuantity();
         name.setText(nameList.get(position).getProduct().getProductName());
         test.setText(Integer.toString(quantity) + "x");
-        amount.setText(String.valueOf(nameList.get(position).getSubtotal()));
+
+        if(nameList.get(position).getSubtotal() == 0){
+            amount.setText("Not Purchased");
+        }else{
+            amount.setText("$" + String.valueOf(nameList.get(position).getSubtotal()));
+        }
 
         if(nameList.get(position).getGroceryList().getGroupPlanGL() ==null){
             amount.setVisibility(View.GONE);
