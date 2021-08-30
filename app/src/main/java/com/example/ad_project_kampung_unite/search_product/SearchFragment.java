@@ -2,7 +2,6 @@ package com.example.ad_project_kampung_unite.search_product;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -20,7 +19,6 @@ import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
 import com.example.ad_project_kampung_unite.entities.GroceryList;
 import com.example.ad_project_kampung_unite.entities.Product;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -60,15 +58,11 @@ public class SearchFragment extends Fragment {
 
         // get products from database
         productService = RetrofitClient.createService(ProductService.class);
-
         Call<List<Product>> call = productService.getProductList();
         call.enqueue(new Callback<List<Product>>() {
             @Override
             public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
                 List<Product> products = response.body();
-//                if(result!=null) {
-//                    result.stream().forEach(x -> products.add(x));
-//                }
 
                 SearchProductListAdapter adapter = new SearchProductListAdapter(products, groceryList);
                 recyclerView.setHasFixedSize(true);

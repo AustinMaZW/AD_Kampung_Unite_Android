@@ -1,8 +1,5 @@
 package com.example.ad_project_kampung_unite.search_product;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,9 +20,6 @@ import com.example.ad_project_kampung_unite.entities.Product;
 import com.google.android.material.chip.Chip;
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
