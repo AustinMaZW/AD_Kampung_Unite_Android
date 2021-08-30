@@ -68,14 +68,7 @@ public class UpdatePriceAdapter extends RecyclerView.Adapter<UpdatePriceAdapter.
         holder.tvQuantity.setText(String.valueOf(item.getQuantity()));
         holder.etSubtotal.setText(String.valueOf(item.getProductSubtotal()));
         holder.etDiscount.setText(String.valueOf(item.getProductDiscount()));
-        /*holder.etSubtotal.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if (!hasFocus) {
-                    subtotalMap.put(item.getId(), holder.etSubtotal.getText().toString());
-                }
-            }
-        });*/
+
         holder.etSubtotal.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
