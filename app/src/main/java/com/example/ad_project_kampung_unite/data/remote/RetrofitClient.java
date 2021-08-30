@@ -28,7 +28,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
-    private static final String BASE_URL = "http://10.0.2.2:8080/";
+    private static final String BASE_URL = "http://kampungunite-env.eba-ze5mmppd.us-east-1.elasticbeanstalk.com/";
 
     private static final Gson gson = new GsonBuilder()
             .registerTypeAdapter(LocalDate.class, new LocalDateDeserializer())
@@ -76,14 +76,6 @@ public class RetrofitClient {
             return LocalDateTime.parse(jsonElement.getAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss").withLocale(Locale.ENGLISH));
         }
     }
-
-//    public static class LocalDateTimeDeserializer implements JsonDeserializer<LocalDateTime> {
-//
-//        @Override
-//        public LocalDateTime deserialize(JsonElement jsonElement, Type typeOF, JsonDeserializationContext context) throws JsonParseException {
-//            return LocalDateTime.parse(jsonElement.getAsString(), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss").withLocale(Locale.ENGLISH));
-//        }
-//    }
 
     // convert Date object to json to pass in http request
     public static class LocalDateSerializer implements JsonSerializer<LocalDate> {

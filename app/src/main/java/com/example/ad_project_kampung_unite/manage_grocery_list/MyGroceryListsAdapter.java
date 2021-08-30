@@ -21,8 +21,8 @@ import java.util.List;
 
 public class MyGroceryListsAdapter extends RecyclerView.Adapter<MyGroceryListsHolder> {
 
-    Context c;
-    List<GroceryList> lists;
+    private Context c;
+    private List<GroceryList> lists;
 
     public MyGroceryListsAdapter(Context c, List<GroceryList> lists) {
         this.c = c;
