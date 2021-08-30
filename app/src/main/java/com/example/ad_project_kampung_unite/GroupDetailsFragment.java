@@ -49,6 +49,11 @@ import org.json.JSONObject;
 import java.security.acl.Group;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 import retrofit2.Call;
@@ -73,8 +78,9 @@ public class GroupDetailsFragment extends Fragment {
 
     private RecyclerView rvBuyerGrocery,rvHitchRequests;
     private ImageButton editBtn;
-    private TextView requestComment;
+    private TextView requestComment,hitcherTotalTag, hitcherTotalAmount, buyerTotalTag, buyerTotalAmount ;
     private MaterialButton closeRequestBtn, combinedListBtn;
+    private View hitcherTotalDivider, cardView;
 
     private GroupPlanService groupPlanService;
     private GroceryListService groceryListService;
@@ -133,6 +139,19 @@ public class GroupDetailsFragment extends Fragment {
         groupPlanService = RetrofitClient.createService(GroupPlanService.class);
         getGroupPlanFromServer();
 
+        buyerTotalTag = layoutRoot.findViewById(R.id.group_details_buyer_total_tag);
+        buyerTotalAmount = layoutRoot.findViewById(R.id.group_details_buyer_total_amount);
+        buyerTotalTag.setVisibility(View.GONE);
+        buyerTotalAmount.setVisibility(View.GONE);
+
+        hitcherTotalTag = layoutRoot.findViewById(R.id.group_details_hitcher_total_tag);
+        hitcherTotalAmount = layoutRoot.findViewById(R.id.group_details_hitcher_total_amount);
+        hitcherTotalDivider = layoutRoot.findViewById(R.id.group_details_page_divider_hitcher_total_top);
+
+        hitcherTotalTag.setVisibility(View.GONE);
+        hitcherTotalAmount.setVisibility(View.GONE);
+        hitcherTotalDivider.setVisibility(View.GONE);
+
         requestComment = layoutRoot.findViewById(R.id.group_details_requestcomment);
         requestComment.setVisibility(View.GONE);
 
@@ -168,6 +187,7 @@ public class GroupDetailsFragment extends Fragment {
                                 public void onClick(DialogInterface dialog, int which) {
                                     //change Group plan status to "closed" and update pending requests status to "rejected"
                                     //change all hitch request with status "Pending approval" to "Rejected"
+
                                     hitchRequestList.stream().forEach(x->{
                                         if(x.getRequestStatus().equals(RequestStatus.PENDING)){
                                             x.setRequestStatus(RequestStatus.REJECTED);
@@ -179,6 +199,17 @@ public class GroupDetailsFragment extends Fragment {
                                     System.out.println(GroupPlanStatus.CLOSED);
                                     updateGroupPlanStatusToServer(groupId,GroupPlanStatus.CLOSED);
 
+                                    //For debug purposes only
+//                                    List<Integer> hitchRequestIds = new ArrayList<>();
+//                                    for (int i = 0; i < hitchRequestList.size(); i++) {
+//                                        Integer id = hitchRequestList.get(i).getId();
+//
+//                                        if (hitchRequestList.get(i).getRequestStatus().getDisplayStatus() != "Rejected") {
+//                                            hitchRequestList_excludeRejected.add(hitchRequestList.get(i));
+//                                            hitchRequestIds.add(id);
+//                                        }
+//                                    }
+//                                    getHitcherGroceryItemsFromServer(hitchRequestIds);
                                 }
                             });
                             alert.show();
@@ -230,7 +261,6 @@ public class GroupDetailsFragment extends Fragment {
                 if (response.isSuccessful()) {
                     buyerGroceryList = response.body();
 //                    Log.d("Success", String.valueOf(buyerGroceryItemList.get(0).getProduct().getProductName())); //for testing
-
                 } else {
                     Log.e("Error", response.errorBody().toString());
                 }
@@ -257,12 +287,23 @@ public class GroupDetailsFragment extends Fragment {
                     buyerGroceryItemList = response.body();
 //                    Log.d("Success", String.valueOf(buyerGroceryItemList.get(0).getProduct().getProductName())); //for testing
 
+                    if(groupStatus!="Open to hitch requests"){
+                        Double buyerAmount = 0.0;
+                        for(int i = 0; i<buyerGroceryItemList.size(); i++){
+                            buyerAmount = buyerAmount + buyerGroceryItemList.get(i).getSubtotal();
+                        }
+                        buyerTotalTag.setVisibility(View.VISIBLE);
+                        buyerTotalAmount.setVisibility(View.VISIBLE);
+                        buyerTotalAmount.setText("$ " + buyerAmount.toString());
+                    }
+
                     //recycler view for grocery items
                     rvBuyerGrocery = layoutRoot.findViewById(R.id.recyclerviewGroupDetails);
                     rvBuyerGrocery.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext()));
 
                     GroceryListItemAdaptor groceryListItemAdaptor = new GroceryListItemAdaptor(buyerGroceryItemList);
                     rvBuyerGrocery.setAdapter(groceryListItemAdaptor);  //set the adaptor here
+
                 } else {
                     Log.e("Error", response.errorBody().toString());
                 }
@@ -337,6 +378,19 @@ public class GroupDetailsFragment extends Fragment {
                     Log.d("Success", String.valueOf(childListHolder.get(0).toString())); //for testing
                     System.out.println("childlistholder updated ");
 
+                    if(groupStatus!="Open to hitch requests"){
+                        Double hitcherAmount = 0.0;
+                        for(int i = 0; i < childListHolder.size(); i++){
+                            for(int j = 0; j< childListHolder.get(i).size(); j++){
+                                hitcherAmount = hitcherAmount + childListHolder.get(i).get(j).getSubtotal();
+                            }
+                        }
+
+                        hitcherTotalTag.setVisibility(View.VISIBLE);
+                        hitcherTotalAmount.setVisibility(View.VISIBLE);
+                        hitcherTotalAmount.setText("$ " + hitcherAmount.toString());
+                        hitcherTotalDivider.setVisibility(View.VISIBLE);
+                    }
 
                     //inflate recycler view for all hitch requests and grocery items
                     if(groupStatus=="Open to hitch requests")
@@ -479,12 +533,22 @@ public class GroupDetailsFragment extends Fragment {
         });
     }
 
+    public static <T> Predicate<T> distinctByHitchRequestKey(Function<? super T, ?> keyExtractor){
+        Map<Object, Boolean> seen = new ConcurrentHashMap<>();
+        return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
+    }
+
     private void initiateExpanderForActiveList() {
 
         rvHitchRequests = layoutRoot.findViewById(R.id.groupDetails_expandableRecyclerView);
 
+        List<HitchRequest> mHitchRequestList = new ArrayList<>();
+        mHitchRequestList = hitchRequestList_excludeRejected.stream()
+                .filter(distinctByHitchRequestKey(hr -> hr.getId()))
+                .collect(Collectors.toList());
+
         ActiveGroupExpandableRecyclerViewAdapter expandableCategoryRecyclerViewAdapter =
-                new ActiveGroupExpandableRecyclerViewAdapter(layoutRoot.getContext(), hitchRequestList_excludeRejected,
+                new ActiveGroupExpandableRecyclerViewAdapter(layoutRoot.getContext(), mHitchRequestList,
                         childListHolder/*, groupPlan.getGroupPlanStatus()*/);
 
         rvHitchRequests.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext()));
@@ -504,9 +568,6 @@ public class GroupDetailsFragment extends Fragment {
 
         rvHitchRequests.setLayoutManager(new LinearLayoutManager(layoutRoot.getContext()));
         rvHitchRequests.setAdapter(expandableCategoryRecyclerViewAdapter);
-
-//        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
-//        itemTouchHelper.attachToRecyclerView(rvHitchRequests);
     }
 
     //defining what each swipe action does
