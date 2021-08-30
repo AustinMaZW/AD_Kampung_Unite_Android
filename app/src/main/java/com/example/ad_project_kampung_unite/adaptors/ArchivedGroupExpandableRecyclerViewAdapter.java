@@ -113,8 +113,15 @@ public class ArchivedGroupExpandableRecyclerViewAdapter extends RecyclerView.Ada
         for(int i= 0; i<groceryItemsCount.size(); i++){
             hitcherAmount = hitcherAmount + groceryItemsCount.get(i).getSubtotal();
         }
-        hitcherAmount = hitcherAmount*1.07*1.05;
-        hitcherAmount = Math.round(hitcherAmount*100.0)/100.0;
+
+        double gst = hitcherAmount * 7 / 100;
+        gst = Math.round(gst * 100.0) / 100.0;
+
+        double servicefee = hitcherAmount * 5 / 100;
+        servicefee = Math.round(servicefee * 100.0) / 100.0;
+
+        double total = hitcherAmount + gst + servicefee;
+        hitcherAmount = Math.round(total * 100.0) / 100.0;
 
         TextView name = holder.name;
         TextView hitchamount = holder.hitchamount;
