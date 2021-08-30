@@ -135,7 +135,7 @@ public class ArchivedGroupExpandableRecyclerViewAdapter extends RecyclerView.Ada
             dropBtn.setVisibility(View.INVISIBLE);
             hitchamount.setVisibility(View.VISIBLE);
             hitchamounttag.setVisibility(View.VISIBLE);
-            hitchamount.setText("$" + Double.toString(hitcherAmount));
+            hitchamount.setText("Total: $" + Double.toString(hitcherAmount));
 
             if (hitchRequest.isBuyerConfirmTransaction()) {
                 if (hitchRequest.isHitcherConfirmTransaction()) {

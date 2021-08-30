@@ -78,7 +78,7 @@ public class GroupDetailsFragment extends Fragment {
 
     private RecyclerView rvBuyerGrocery,rvHitchRequests;
     private ImageButton editBtn;
-    private TextView requestComment,hitcherTotalTag,hitcherTotalTag2, hitcherTotalAmount, buyerTotalTag,buyerTotalTag2, buyerTotalAmount;
+    private TextView requestComment,hitcherTotalTag,hitcherTotalTag2,hitcherTotalAmount,buyerTotalTag,buyerTotalTag2, buyerTotalAmount;
     private MaterialButton closeRequestBtn, combinedListBtn;
     private View hitcherTotalDivider, cardView;
 
@@ -143,7 +143,6 @@ public class GroupDetailsFragment extends Fragment {
                     result.putSerializable("bundleKey1", buyerGroceryList);
                     FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                     fragmentManager.setFragmentResult("requestKey1", result);
-
 
                     FragmentManager parentFragmentManager = getParentFragmentManager();
                     EditGroceryListFragment editGroceryListFragment = new EditGroceryListFragment();
@@ -281,7 +280,7 @@ public class GroupDetailsFragment extends Fragment {
 //                    Log.d("Success", String.valueOf(buyerGroceryItemList.get(0).getProduct().getProductName())); //for testing
                     Double buyerAmount = 0.0;
 
-                    if(groupStatus!="Shopping Completed"){
+                    if(groupStatus=="Shopping Completed"){
                         for(int i = 0; i<buyerGroceryItemList.size(); i++){
                             buyerAmount = buyerAmount + buyerGroceryItemList.get(i).getSubtotal();
                         }
