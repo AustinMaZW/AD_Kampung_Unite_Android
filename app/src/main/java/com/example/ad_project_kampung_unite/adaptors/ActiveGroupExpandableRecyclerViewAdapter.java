@@ -20,6 +20,8 @@ import com.example.ad_project_kampung_unite.entities.GroceryItem;
 import com.example.ad_project_kampung_unite.entities.HitchRequest;
 import com.google.android.material.chip.Chip;
 
+import org.w3c.dom.Text;
+
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +52,7 @@ public class ActiveGroupExpandableRecyclerViewAdapter extends RecyclerView.Adapt
 
     //viewholder obj provides access to all views within each item row
     public class ViewHolder extends RecyclerView.ViewHolder{
-        TextView name, pickuptime, itemcount, paymentstatus;
+        TextView name, pickuptime, itemcount, paymentstatus, hitchAmount, hitchAmountTag;
         ImageButton dropBtn;
         Button receivepaymentBtn;
         RecyclerView cardRecyclerView;
@@ -69,6 +71,8 @@ public class ActiveGroupExpandableRecyclerViewAdapter extends RecyclerView.Adapt
             cardRecyclerView = itemView.findViewById(R.id.innerRecyclerView);
             cardView = itemView.findViewById(R.id.cardView);
             mrequeststatus = itemView.findViewById(R.id.group_details_status);
+            hitchAmount = itemView.findViewById(R.id.groceryDetailHitcherTotal);
+            hitchAmountTag = itemView.findViewById(R.id.groceryDetailHitcherTotal_tag);
         }
     }
     // inflate item row layout and returning the holder
@@ -98,9 +102,14 @@ public class ActiveGroupExpandableRecyclerViewAdapter extends RecyclerView.Adapt
         TextView name = holder.name;
         TextView pickuptime = holder.pickuptime;
         TextView itemcount = holder.itemcount;
+        TextView hitchamount = holder.hitchAmount;
+        TextView hitchamounttag = holder.hitchAmountTag;
         Chip requestStatusChip = holder.mrequeststatus;
 
         name.setText(groceryItemList.get(position).get(0).getGroceryList().getName());
+
+        hitchamount.setVisibility(View.GONE);
+        hitchamounttag.setVisibility(View.GONE);
 
         pickuptime.setText("Pick-up time: " + mpickuptime);
         itemcount.setText("Items: " + Integer.toString(groceryItemsCount.size()));

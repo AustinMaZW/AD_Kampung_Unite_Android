@@ -94,6 +94,7 @@ public class EditGroceryListFragment extends Fragment {
         findMatch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 //Jump to HitcherDetail Activity
                 FragmentManager fm = getParentFragmentManager();
                 Log.e("Hitcher Detail","yes_5");
@@ -109,8 +110,6 @@ public class EditGroceryListFragment extends Fragment {
             }
         });
         addButton = layoutRoot.findViewById(R.id.add);
-
-
 
         setUpBtns();
 

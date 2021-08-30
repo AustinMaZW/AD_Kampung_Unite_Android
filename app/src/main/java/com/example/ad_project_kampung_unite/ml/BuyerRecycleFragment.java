@@ -35,13 +35,14 @@ import retrofit2.Response;
  * create an instance of this fragment.
  */
 public class BuyerRecycleFragment extends Fragment {
+    //machine learning result, passed by BuyerListActivity
     private Recommendation recommendation;
-
+    //because recommendation contains plan id list, can directly use it to deliver the plan id, a little bit unnecessary
     public void setRecommendation(Recommendation recommendation) {
         this.recommendation = recommendation;
         this.planIds = recommendation.getPlandIds();
     }
-
+    //get plans by using the plan id list
     private List<GroupPlan> plans;
     public void setPlans(List<GroupPlan> plans){
         this.plans = plans;
@@ -50,19 +51,21 @@ public class BuyerRecycleFragment extends Fragment {
     public void setPlanId(List<Integer> planId){
         this.planIds = planId;
     }
+    //current hitcher detail id
     private int hitcherDetailId;
     public void setHitcherDetailId(int hitcherDetailId) {
         this.hitcherDetailId = hitcherDetailId;
     }
+    //current grocery list
     private GroceryList gList;
     public void setgList(GroceryList gList) {
         this.gList = gList;
     }
-
+    //the area for showing the list of plans
     private RecyclerView recyclerView;
     private BuyerListAdapter myAdapter;
     private GroupPlanService p;
-
+    //get plans for inflate the recycler view
     @Override
     public void onStart() {
         super.onStart();
@@ -83,7 +86,7 @@ public class BuyerRecycleFragment extends Fragment {
         return root;
     }
 
-
+    //build recycler view, but need to get the pick up time slot first, and send all things to the adapter. time slots result current is string type, later will parse to Datetime format
     public void buildRecyclerView(View layoutRoot){
         Call<Map<Integer,List<String>>> getSlots = p.getSlotsByPlanIds(planIds);
         getSlots.enqueue(new Callback<Map<Integer, List<String>>>() {
@@ -98,11 +101,12 @@ public class BuyerRecycleFragment extends Fragment {
             }
             @Override
             public void onFailure(Call<Map<Integer, List<String>>> call, Throwable t) {
+                //if cannot the request fail, show toast message
                 Toast.makeText(getContext(),"Network Not Available",Toast.LENGTH_SHORT).show();
             }
         });
     }
-
+    //get the group plans in the onStart status
     public void queryPlans() {
         new Thread(new Runnable() {
             @Override

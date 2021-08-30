@@ -26,6 +26,7 @@ import com.example.ad_project_kampung_unite.R;
 import com.example.ad_project_kampung_unite.data.remote.HitchRequestService;
 import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
 import com.example.ad_project_kampung_unite.entities.GroceryItem;
+import com.example.ad_project_kampung_unite.entities.GroupPlan;
 import com.example.ad_project_kampung_unite.entities.HitchRequest;
 import com.example.ad_project_kampung_unite.entities.enums.RequestStatus;
 import com.google.android.material.chip.Chip;
@@ -64,7 +65,7 @@ public class ArchivedGroupExpandableRecyclerViewAdapter extends RecyclerView.Ada
 
     //viewholder obj provides access to all views within each item row
     public class ViewHolder extends RecyclerView.ViewHolder{
-        TextView name, pickuptime, itemcount, paymentstatus;
+        TextView name, pickuptime, itemcount, paymentstatus, hitchamount, hitchamountTag;
         ImageButton dropBtn;
         Button receivepaymentBtn;
         RecyclerView cardRecyclerView;
@@ -77,6 +78,8 @@ public class ArchivedGroupExpandableRecyclerViewAdapter extends RecyclerView.Ada
             name = itemView.findViewById(R.id.groceryDetailListTitle);
             pickuptime = itemView.findViewById(R.id.groceryDetailPickupTime);
             itemcount=itemView.findViewById(R.id.groceryDetailItemQuantitySum);
+            hitchamount=itemView.findViewById(R.id.groceryDetailHitcherTotal);
+            hitchamountTag = itemView.findViewById(R.id.groceryDetailHitcherTotal_tag);
             paymentstatus = itemView.findViewById(R.id.payment_status);
             dropBtn = itemView.findViewById(R.id.categoryExpandBtn);
             receivepaymentBtn = itemView.findViewById(R.id.receive_payment_btn);
@@ -106,20 +109,34 @@ public class ArchivedGroupExpandableRecyclerViewAdapter extends RecyclerView.Ada
             groceryItemsTotal = groceryItemsTotal + groceryItemsCount.get(i).getSubtotal();
         }
 
+        Double hitcherAmount = 0.0;
+        for(int i= 0; i<groceryItemsCount.size(); i++){
+            hitcherAmount = hitcherAmount + groceryItemsCount.get(i).getSubtotal();
+        }
+        hitcherAmount = hitcherAmount*0.13;
+
         TextView name = holder.name;
+        TextView hitchamount = holder.hitchamount;
+        TextView hitchamounttag = holder.hitchamountTag;
         TextView pickup = holder.pickuptime;
         TextView itemcount = holder.itemcount;
         Chip requestStatusChip = holder.mrequeststatus;
         ImageButton dropBtn = holder.dropBtn;
 
         name.setText(groceryItemList.get(position).get(0).getGroceryList().getName());
+        hitchamount.setVisibility(View.GONE);
+        hitchamounttag.setVisibility(View.GONE);
         pickup.setVisibility(View.GONE);
         itemcount.setText("Items: " + Integer.toString(groceryItemsCount.size()));
-        dropBtn.setVisibility(View.INVISIBLE);
 
         requestStatusChip.setVisibility(View.GONE);
 
-        if (groupPlanStatus == GroupPlanStatus.SHOPPINGCOMPLETED || groupPlanStatus == GroupPlanStatus.CLOSED) {
+        if (groupPlanStatus == GroupPlanStatus.SHOPPINGCOMPLETED) {
+            dropBtn.setVisibility(View.INVISIBLE);
+            hitchamount.setVisibility(View.VISIBLE);
+            hitchamounttag.setVisibility(View.VISIBLE);
+            hitchamount.setText("Total: $" + Double.toString(hitcherAmount));
+
             if (hitchRequest.isBuyerConfirmTransaction()) {
                 if (hitchRequest.isHitcherConfirmTransaction()) {
                     holder.paymentstatus.setText(R.string.transaction_complete);
@@ -211,6 +228,7 @@ public class ArchivedGroupExpandableRecyclerViewAdapter extends RecyclerView.Ada
                     }
                     holder.receivepaymentBtn.setVisibility(View.GONE);
                     holder.paymentstatus.setVisibility(View.VISIBLE);
+
                 }
                 else {
                     Log.e("updateHitchRequest Error", response.errorBody().toString());
