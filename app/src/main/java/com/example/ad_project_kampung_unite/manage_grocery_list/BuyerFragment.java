@@ -7,8 +7,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -20,7 +18,6 @@ import com.example.ad_project_kampung_unite.data.remote.GroupPlanService;
 import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
 import com.example.ad_project_kampung_unite.entities.GroceryList;
 import com.example.ad_project_kampung_unite.entities.GroupPlan;
-import com.example.ad_project_kampung_unite.entities.HitcherDetail;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -70,7 +67,6 @@ public class BuyerFragment extends Fragment {
             groceryList = (GroceryList) bundle.getSerializable("editToBuyerDetailKey");
             System.out.println(groceryList.getId());
         }
-
 
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
