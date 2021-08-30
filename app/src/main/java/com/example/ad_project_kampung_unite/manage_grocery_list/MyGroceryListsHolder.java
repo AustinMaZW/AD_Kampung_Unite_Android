@@ -9,8 +9,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.ad_project_kampung_unite.ItemClickListener;
 import com.example.ad_project_kampung_unite.R;
 
-//Holder for individual rows in 'My Grocery Lists' recyclerview
-//each row is a separate grocery list
 public class MyGroceryListsHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     TextView mGroceryListName, mPickupDetail, status;
@@ -33,6 +31,5 @@ public class MyGroceryListsHolder extends RecyclerView.ViewHolder implements Vie
 
     public void setItemClickListener(ItemClickListener ic){
         this.itemClickListener = ic;
-
     }
 }

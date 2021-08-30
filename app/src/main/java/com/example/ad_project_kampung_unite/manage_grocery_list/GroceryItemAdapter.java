@@ -9,13 +9,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ad_project_kampung_unite.R;
 import com.example.ad_project_kampung_unite.data.remote.GroceryItemService;
-import com.example.ad_project_kampung_unite.data.remote.GroceryListService;
 import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
 import com.example.ad_project_kampung_unite.entities.GroceryItem;
 import com.squareup.picasso.Picasso;
@@ -69,7 +67,6 @@ public class GroceryItemAdapter extends RecyclerView.Adapter<GroceryItemAdapter.
         return viewHolder;
     }
 
-    // Involves populating data into the item through holder
     @Override
     public void onBindViewHolder(GroceryItemAdapter.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         // Get the data model based on position
@@ -164,7 +161,6 @@ public class GroceryItemAdapter extends RecyclerView.Adapter<GroceryItemAdapter.
 
     }
 
-    // Returns the total count of items in the list
     @Override
     public int getItemCount() {
         return groceryItemList.size();
