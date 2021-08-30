@@ -268,6 +268,7 @@ public class UpdatePriceFragment extends Fragment implements View.OnClickListene
                     if(saveCPL && saveGroceryItem && saveGroupPlanStatus){
                         Bundle bundle = new Bundle();
                         bundle.putInt("gpId", gpId);
+                        bundle.putString("gpStatus", GroupPlanStatus.SHOPPINGCOMPLETED.getDisplayStatus());
 
                         GroupDetailsFragment groupDetailsFragment = new GroupDetailsFragment();
                         groupDetailsFragment.setArguments(bundle);
