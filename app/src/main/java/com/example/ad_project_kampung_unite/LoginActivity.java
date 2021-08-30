@@ -13,10 +13,6 @@ import android.widget.Toast;
 import com.example.ad_project_kampung_unite.entities.UserDetail;
 import com.example.ad_project_kampung_unite.service.UserDetailService;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
@@ -30,7 +26,6 @@ public class LoginActivity extends AppCompatActivity {
 
     EditText editText_username, editText_password;
     SharedPreferences sharedPreferences;
-    //    private static UserDetail userDetail;
     private String auth = "invalidLogin";
 
     private static final String LOGIN_CREDENTIALS = "LoginCredentials";
@@ -48,14 +43,10 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
         Button loginBtn = findViewById(R.id.loginButton);
-
         editText_username = findViewById(R.id.username);
         editText_password = findViewById(R.id.password);
-
         sharedPreferences = getSharedPreferences(LOGIN_CREDENTIALS, MODE_PRIVATE);
-
 
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,51 +59,6 @@ public class LoginActivity extends AppCompatActivity {
                         loginRequest(user);
                     }else
                         Toast.makeText(LoginActivity.this, "Please enter Username / Password", Toast.LENGTH_SHORT).show();
-
-                    //use this for easy no login required
-//                    Intent main = new Intent(LoginActivity.this, MainActivity.class);
-//                    startActivity(main);
-
-                    //login without password - temp addition to delete
-//                    Intent main = new Intent(LoginActivity.this, MainActivity.class);
-//                    SharedPreferences.Editor editor = sharedPreferences.edit();
-//                    editor.putString(KEY_USERID, "3");
-//                    startActivity(main);
-
-//                    //Start use of path variable to login
-//                    String loginUrl = "https://localhost:8080/user/login"+username+"&&"+pwd;
-//                    StringRequest loginRequest = new StringRequest(loginUrl, new Response.Listener<String>() {
-//                        @Override
-//                        public void onResponse(String response) {
-//                            if (response != null) {
-//                                try {
-//                                    JSONArray jsonArray = new JSONArray(response);
-//                                    parseArray(jsonArray);
-////                                    if(userDetail.getAuthentication() != null){
-////                                        userDetail.setUsername(username);
-////                                        userDetail.setPassword(pwd);
-////                                    }
-//                                } catch (JSONException e) {
-//                                    e.printStackTrace();
-//                                }
-//                            }
-//                        }
-//                    }, new Response.ErrorListener() {
-//
-//                        @Override
-//                        public void onErrorResponse(VolleyError error) {
-//                            Toast.makeText(getApplicationContext(),
-//                                    error.toString(),
-//                                    Toast.LENGTH_SHORT).show();
-//                        }
-//                    });
-//                    RequestQueue queue = Volley.newRequestQueue(this);
-//                    queue.add(loginRequest);
-//                    //End use of pathvariable to login
-
-//                    String authenticateUrl = "https://localhost:8080/user/authenticate";
-
-
                 }
             }
         });
@@ -155,8 +101,6 @@ public class LoginActivity extends AppCompatActivity {
                     else{
                         Toast.makeText(LoginActivity.this, "Enter Valid Username / Password", Toast.LENGTH_SHORT).show();
                     }
-//                    Intent main = new Intent(LoginActivity.this, MainActivity.class);
-//                    startActivity(main);
                     sharedPreferences = getSharedPreferences(LOGIN_CREDENTIALS, MODE_PRIVATE);
                     if( sharedPreferences.getString(KEY_AUTHENTICATION,"invalidLogin") != "invalidLogin"){
                         Intent main = new Intent(LoginActivity.this, MainActivity.class);
@@ -165,62 +109,13 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 else{
                     Toast.makeText(LoginActivity.this, "Enter Valid Username / Password", Toast.LENGTH_SHORT).show();
-
-
                 }
             }
-
             @Override
             public void onFailure(Call<UserDetail> call, Throwable t) {
                 Toast.makeText(LoginActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
-    /*
-    AuthenticateRequest
-     */
-//    private void authenticateRequest(UserDetail user) {
-//        String url = "https://localhost:8080/user/";
-//        Retrofit.Builder builder = new Retrofit.Builder()
-//                .baseUrl(url)
-//                .addConverterFactory(GsonConverterFactory.create());
-//        Retrofit retrofit = builder.build();
-//
-//        UserDetailService userDetailService = retrofit.create(UserDetailService.class);
-//        Call<UserDetail> call = userDetailService.login(user);
-//        call.enqueue(new Callback<UserDetail>() {
-//            @Override
-//            public void onResponse(Call<UserDetail> call, Response<UserDetail> response) {
-//                Toast.makeText(LoginActivity.this, "Successful Login"+ response.body().getAuthentication(), Toast.LENGTH_SHORT).show();
-//                if(response.body().getAuthentication() != null){
-//                    auth = response.body().getAuthentication();
-//                    System.out.println(auth);
-//                }
-//                SharedPreferences.Editor editor = sharedPreferences.edit();
-//                editor.putString(KEY_USERNAME, editText_username.getText().toString());
-//                editor.putString(KEY_PASSWORD, editText_password.getText().toString());
-//                editor.putString(KEY_AUTHENTICATION, auth);
-//                editor.commit();
-//            }
-//
-//            @Override
-//            public void onFailure(Call<UserDetail> call, Throwable t) {
-//                Toast.makeText(LoginActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//    }
-
-    private void parseArray(JSONArray jsonArray) {
-        for (int i = 0; i < jsonArray.length(); i++) {
-            try {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-//                userDetail.setAuthentication(jsonObject.getString("authentication"));
-                auth = jsonObject.getString("authentication");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 }
