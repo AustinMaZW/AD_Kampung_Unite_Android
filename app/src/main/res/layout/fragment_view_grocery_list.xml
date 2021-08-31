@@ -79,6 +79,26 @@
                 android:textColor="@color/black"
                 android:textSize="12sp" />
 
+            <TextView
+                android:id="@+id/hitcherview_buyer_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/pickup_time"
+                android:layout_marginTop="5dp"
+                android:text="Buyer Name: "
+                android:textColor="@color/black"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/hitcherview_buyer_phone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/hitcherview_buyer_name"
+                android:layout_marginTop="5dp"
+                android:text="Buyer Phone Number: "
+                android:textColor="@color/black"
+                android:textSize="12sp" />
+
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">

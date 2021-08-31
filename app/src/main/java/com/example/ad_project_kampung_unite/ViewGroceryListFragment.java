@@ -28,10 +28,12 @@ import com.example.ad_project_kampung_unite.data.remote.GroceryListService;
 import com.example.ad_project_kampung_unite.data.remote.GroupPlanService;
 import com.example.ad_project_kampung_unite.data.remote.HitchRequestService;
 import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
+import com.example.ad_project_kampung_unite.data.remote.UserDetailService;
 import com.example.ad_project_kampung_unite.entities.GroceryItem;
 import com.example.ad_project_kampung_unite.entities.GroceryList;
 import com.example.ad_project_kampung_unite.entities.GroupPlan;
 import com.example.ad_project_kampung_unite.entities.HitchRequest;
+import com.example.ad_project_kampung_unite.entities.UserDetail;
 import com.example.ad_project_kampung_unite.entities.enums.GroupPlanStatus;
 import com.example.ad_project_kampung_unite.entities.enums.RequestStatus;
 import com.example.ad_project_kampung_unite.manage_grocery_list.EditGroceryListFragment;
@@ -61,15 +63,17 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
     private HitchRequestService hitchRequestService;
     private GroceryListService groceryListService;
     private GroupPlanService groupPlanService;
+    private UserDetailService userDetailService;
     private GroupPlan approvedGroupPlan;
     private GroceryList groceryList;
+    private UserDetail buyerDetail;
 
     private Context context;
 
     //views here
     private View layoutRoot;
     private RecyclerView rvHitchRequests,rvGroceryItems;
-    private TextView rqStatusTitle, rqStatDescription, pickupStore, pickupLoc, pickupTime;
+    private TextView rqStatusTitle, rqStatDescription, pickupStore, pickupLoc, pickupTime, buyerName, buyerPhone;
     private TextView tvSubtotalAmount, tvGstAmount, tvServicefeeAmount, tvTotalAmount, tvPaymentStatus;
     private Button hitchRqButton, quitGroupBtn, btnCompletePayment, editListBtn;
     private LinearLayout llPaymentComponent;
@@ -104,6 +108,8 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
         hitchRqButton = layoutRoot.findViewById(R.id.hitch_rq_btn);
         hitchRqButton.setOnClickListener(this);
         quitGroupBtn = layoutRoot.findViewById(R.id.quit_group);
+        buyerName = layoutRoot.findViewById(R.id.hitcherview_buyer_name);
+        buyerPhone = layoutRoot.findViewById(R.id.hitcherview_buyer_phone);
 
         setQuitGroupBtn();       //for quitGroup
         editListBtn = layoutRoot.findViewById(R.id.edit_groceries);
@@ -213,14 +219,10 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
                     }
                     hitchRequests.stream().forEach(x->{
                         if (x.getRequestStatus() == RequestStatus.ACCEPTED){
-                            updateApprovedStatUI(x);
+                            findBuyerDetail(x);
                         }
                     });
-                    if(approvedGroupPlan==null){
-                        //remove views that aren't applicable to status == pending
-                        layoutRoot.findViewById(R.id.status_approved).setVisibility(View.GONE);
-                        buildHitchRequestRV();
-                    }
+
                     fragRoot.setVisibility(View.VISIBLE);
                 } else {
                     Log.e("getHitchRequestsByGroceryListId Error", response.errorBody().toString());
@@ -229,6 +231,38 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
 
             @Override
             public void onFailure(Call<List<HitchRequest>> call, Throwable t) {
+                // like no internet connection / the website doesn't exist
+                call.cancel();
+                Log.w("Failure", "Failure!");
+                t.printStackTrace();
+            }
+        });
+    }
+
+    private void findBuyerDetail(HitchRequest hitchRequest){
+        userDetailService = RetrofitClient.createService(UserDetailService.class);
+        Call<UserDetail> call = userDetailService.findBuyerDetail(hitchRequest.getId());
+
+        call.enqueue(new Callback<UserDetail>() {
+            @Override
+            public void onResponse(Call<UserDetail> call, Response<UserDetail> response) {
+
+                if (response.isSuccessful()) {
+                    buyerDetail = response.body();
+                    updateApprovedStatUI(hitchRequest, buyerDetail);
+
+                    if(approvedGroupPlan==null){
+                        //remove views that aren't applicable to status == pending
+                        layoutRoot.findViewById(R.id.status_approved).setVisibility(View.GONE);
+                        buildHitchRequestRV();
+                    }
+                } else {
+                    Log.e("getHitchRequestsByGroceryListId Error", response.errorBody().toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserDetail> call, Throwable t) {
                 // like no internet connection / the website doesn't exist
                 call.cancel();
                 Log.w("Failure", "Failure!");
@@ -270,7 +304,7 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
     }
 
 
-    private void updateApprovedStatUI(HitchRequest hitchRequest) {
+    private void updateApprovedStatUI(HitchRequest hitchRequest, UserDetail userDetail) {
         System.out.println("There is an accepted request, change layout");
         if(hitchRequest.getGroupPlan().getGroupPlanStatus()!=GroupPlanStatus.AVAILABLE){
             quitGroupBtn.setVisibility(View.GONE);
@@ -281,6 +315,10 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
         rqStatDescription.setVisibility(View.GONE);
         pickupStore.setText("Buyer will purchase from: " + approvedGroupPlan.getStoreName());
         pickupLoc.setText("Pick up Location: " + approvedGroupPlan.getPickupAddress());
+        buyerName.setText("Buyer's Name: " + userDetail.getFirstName());
+        if (userDetail.getPhoneNumber() !=null){
+            buyerPhone.setText("Buyer's Phone: "+ userDetail.getPhoneNumber());
+        }
 
         LocalDateTime pickupTimeFrom =  hitchRequest.getPickupTimeChosen();
         LocalTime pickupTimeTo = pickupTimeFrom.plusMinutes(30).toLocalTime();
