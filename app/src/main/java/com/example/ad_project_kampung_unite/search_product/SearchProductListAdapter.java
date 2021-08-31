@@ -1,5 +1,6 @@
 package com.example.ad_project_kampung_unite.search_product;
 
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,14 +10,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ad_project_kampung_unite.R;
+import com.example.ad_project_kampung_unite.ViewGroceryListFragment;
 import com.example.ad_project_kampung_unite.data.remote.GroceryItemService;
 import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
 import com.example.ad_project_kampung_unite.entities.GroceryItem;
 import com.example.ad_project_kampung_unite.entities.GroceryList;
 import com.example.ad_project_kampung_unite.entities.Product;
+import com.example.ad_project_kampung_unite.manage_grocery_list.EditGroceryListFragment;
 import com.google.android.material.chip.Chip;
 import com.squareup.picasso.Picasso;
 
@@ -93,7 +98,9 @@ public class SearchProductListAdapter extends RecyclerView.Adapter<SearchProduct
                                 call1.enqueue(new Callback<Integer>() {
                                     @Override
                                     public void onResponse(Call<Integer> call, Response<Integer> response) {
-                                        Toast.makeText(view.getContext(),quantity + " " + product.getProductName() + " added",Toast.LENGTH_SHORT).show();
+//                                        Toast.makeText(view.getContext(),quantity + " " + product.getProductName() + " added",Toast.LENGTH_SHORT).show();
+
+                                        returnToEditGroceryListFrag(view);
                                     }
 
                                     @Override
@@ -109,7 +116,9 @@ public class SearchProductListAdapter extends RecyclerView.Adapter<SearchProduct
                                 call2.enqueue(new Callback<Integer>() {
                                     @Override
                                     public void onResponse(Call<Integer> call, Response<Integer> response) {
-                                        Toast.makeText(view.getContext(),"1 "+ product.getProductName() + " added",Toast.LENGTH_SHORT).show();
+//                                        Toast.makeText(view.getContext(),"1 "+ product.getProductName() + " added",Toast.LENGTH_SHORT).show();
+                                        returnToEditGroceryListFrag(view);
+
                                     }
 
                                     @Override
@@ -133,6 +142,21 @@ public class SearchProductListAdapter extends RecyclerView.Adapter<SearchProduct
 
             }
         });
+    }
+
+    private void returnToEditGroceryListFrag(View view) {
+        Bundle result = new Bundle();
+        result.putSerializable("bundleKey1", groceryList);
+
+        AppCompatActivity activity = (AppCompatActivity) view.getContext();
+        FragmentManager fm = activity.getSupportFragmentManager();
+        fm.setFragmentResult("requestKey1", result);
+
+        EditGroceryListFragment editGroceryListFragment = new EditGroceryListFragment();
+        fm.beginTransaction()
+                .replace(R.id.fragment_container,editGroceryListFragment)
+                .addToBackStack(null)
+                .commit();
     }
 
 

@@ -100,9 +100,10 @@ public class GroceryItemAdapter extends RecyclerView.Adapter<GroceryItemAdapter.
                 if(groceryItem.getQuantity() > 1) {
                     quantity = groceryItem.getQuantity() -1;
                 } else {
-                    groceryItemList.remove(position);
-                    notifyItemRemoved(position);
-                    notifyItemRangeChanged(position, groceryItemList.size());
+                    if(groceryItemList.size()>0){
+                        groceryItemList.remove(position);
+                    }
+
                     quantity = 0;
                 }
 
@@ -114,7 +115,12 @@ public class GroceryItemAdapter extends RecyclerView.Adapter<GroceryItemAdapter.
                     @Override
                     public void onResponse(Call<Integer> call, Response<Integer> response) {
                         pQty.setText(String.valueOf(quantity));
-
+//                        int resultQty = response.body();
+                        if(quantity==0){
+                            notifyDataSetChanged();
+//                            notifyItemRemoved(position);
+//                            notifyItemRangeChanged(position, groceryItemList.size());
+                        }
                     }
                     @Override
                     public void onFailure(Call<Integer> call, Throwable t) {
