@@ -22,6 +22,8 @@ public interface UserDetailService {
     @POST("create")
     Call<UserDetail> create(@Body UserDetail userDetail);
 
+    @GET("user/hitchrq/{hitchRqId}")
+    Call<UserDetail> findBuyerDetail(@Path("hitchRqId") int hitchRqId);
 }
 
 

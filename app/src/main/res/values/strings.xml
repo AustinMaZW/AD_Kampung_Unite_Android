@@ -22,11 +22,14 @@
     <string name="pending_payment">Pending Pick Up</string>
     <string name="receive_payment_confirm_msg">Have you received the payment from hitcher for this request?</string>
     <string name="user_base_url">http://10.0.2.2:8080/user/</string>
+<!--    <string name="user_base_url">http://kampungunite-env.eba-ze5mmppd.us-east-1.elasticbeanstalk.com/user/</string>-->
     <string name="finish_shopping">Finish Shopping</string>
     <string name="item_name">Item Name</string>
     <string name="quantity">Quantity</string>
     <string name="base_url">http://10.0.2.2:8080/</string>
+<!--    <string name="base_url">http://kampungunite-env.eba-ze5mmppd.us-east-1.elasticbeanstalk.com/</string>-->
     <string name="cpl_base_url">http://10.0.2.2:8080/cplist/</string>
+<!--    <string name="cpl_base_url">http://kampungunite-env.eba-ze5mmppd.us-east-1.elasticbeanstalk.com/cplist/</string>-->
     <string name="qty">Qty</string>
     <string name="discount">Discount</string>
     <string name="subtotal_excl_disc">Subtotal (Excl. Discount)</string>
