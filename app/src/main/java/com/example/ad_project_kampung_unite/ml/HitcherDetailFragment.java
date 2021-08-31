@@ -1,5 +1,7 @@
 package com.example.ad_project_kampung_unite.ml;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,7 +17,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.ad_project_kampung_unite.R;
@@ -25,11 +29,13 @@ import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
 import com.example.ad_project_kampung_unite.entities.GroceryList;
 import com.example.ad_project_kampung_unite.entities.HitcherDetail;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import retrofit2.Call;
@@ -52,6 +58,7 @@ public class HitcherDetailFragment extends Fragment{
     private Recommendation recommendation;
     //Hicher detail components, for getting the information of hitcher detail
     private EditText pickUpDate,location,timeSlot;
+    private int mYear, mMonth, mDay, mHour, mMinute;
     // send request button, send request to spring boot API
     private Button submitBtn;
     // retrofit interface
@@ -147,8 +154,11 @@ public class HitcherDetailFragment extends Fragment{
         View view = inflater.inflate(R.layout.fragment_hitcher_detail, container, false);
         intent_buyerList = new Intent(getContext(),BuyerListActivity.class);
         pickUpDate = view.findViewById(R.id.pick_up_date);
+        createDatePickerDialog(pickUpDate);
+
         location = view.findViewById(R.id.locationAd);
         timeSlot = view.findViewById(R.id.timeSlot_);
+        createTimePickerDialog(timeSlot);
         submitBtn = view.findViewById(R.id.submitBtn);
         getHitcherDetail();
         submitBtn.setOnClickListener(new View.OnClickListener() {
@@ -161,7 +171,7 @@ public class HitcherDetailFragment extends Fragment{
                     saveHitcherDetail();
                 }catch (Exception e){
                     //if there is any accident, show dialog to user to tell them hitcher detail is invalid
-                    showDialog("Warning!!!!!!!!","Invalid Hitcher Detail");
+                    showDialog("Invalid Hitcher Detail!","Please check all fields");
                 }
             }
         });
@@ -281,5 +291,61 @@ public class HitcherDetailFragment extends Fragment{
             }
         }).start();
         return ids;
+    }
+
+    public void createDatePickerDialog(EditText date) {
+        date.setClickable(true);
+        date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // Get Current Date
+                final Calendar c = Calendar.getInstance();
+                mYear = c.get(Calendar.YEAR);
+                mMonth = c.get(Calendar.MONTH);
+                mDay = c.get(Calendar.DAY_OF_MONTH);
+
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+                        new DatePickerDialog.OnDateSetListener() {
+
+                            @Override
+                            public void onDateSet(DatePicker view, int year,
+                                                  int monthOfYear, int dayOfMonth) {
+                                c.set(year, monthOfYear, dayOfMonth);
+                                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                                String strDate = format.format(c.getTime());
+                                date.setText(strDate);
+                            }
+                        }, mYear, mMonth, mDay);
+                datePickerDialog.show();
+            }
+        });
+    }
+
+    public void createTimePickerDialog(EditText time) {
+        time.setClickable(true);
+        time.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Get Current Time
+                final Calendar c = Calendar.getInstance();
+                c.set(Calendar.HOUR_OF_DAY, 3);
+                c.set(Calendar.MINUTE, 0);
+
+                // Launch Time Picker Dialog
+                TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(),
+                        new TimePickerDialog.OnTimeSetListener() {
+
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay,
+                                                  int minute) {
+                                String strTime = String.format("%02d:%02d",hourOfDay,minute);
+                                time.setText(strTime+":00");
+                            }
+                        }, mHour, mMinute, false);
+                timePickerDialog.show();
+            }
+        });
     }
 }
