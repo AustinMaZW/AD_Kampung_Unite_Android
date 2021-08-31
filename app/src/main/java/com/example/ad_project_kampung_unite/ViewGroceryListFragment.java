@@ -137,8 +137,7 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
             Log.i("Click", "clicked complete payment");
             if (acceptedHitchRequest != null) {
                 Log.i("HitchRequest", acceptedHitchRequest.toString());
-                acceptedHitchRequest.setHitcherConfirmTransaction(CONFIRMED);
-                updateConrirmTransaction();
+                getHitchRequestAndUpdateConfirmTransaction(acceptedHitchRequest.getId());
             }
         }
 
@@ -468,7 +467,34 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
         }
     }
 
-    private void updateConrirmTransaction() {
+    private void getHitchRequestAndUpdateConfirmTransaction(int hitchRequestId) {
+        if (groceryList.getHitcherDetail() != null) {
+            Call<HitchRequest> call = hitchRequestService.getHitchRequestById(hitchRequestId);
+            call.enqueue(new Callback<HitchRequest>() {
+                @Override
+                public void onResponse(Call<HitchRequest> call, Response<HitchRequest> response) {
+                    if (response.isSuccessful()) {
+                        acceptedHitchRequest = response.body();
+
+                        //update hitcher's confirm transaction
+                        acceptedHitchRequest.setHitcherConfirmTransaction(CONFIRMED);
+                        updateConfirmTransaction();
+                    } else {
+                        Log.e("getAcceptedHitchRequestByHitcherDetailId Error", response.errorBody().toString());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<HitchRequest> call, Throwable t) {
+                    call.cancel();
+                    Log.w("Failure", "Failure!");
+                    t.printStackTrace();
+                }
+            });
+        }
+    }
+
+    private void updateConfirmTransaction() {
         Call<HitchRequest> call = hitchRequestService.updateHitchRequest(acceptedHitchRequest);
         call.enqueue(new Callback<HitchRequest>() {
             @Override

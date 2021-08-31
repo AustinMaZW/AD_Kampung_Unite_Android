@@ -204,8 +204,6 @@ public class ArchivedGroupExpandableRecyclerViewAdapter extends RecyclerView.Ada
             public void onClick(DialogInterface dialog, int which) {
                 //retrieve hitchRequest again, then update buyer's confirm transaction
                 getHitchRequestAndUpdateConfirmTransaction(hitchRequestId, holder);
-//                hitchRequest.setBuyerConfirmTransaction(true);
-//                updateConrirmTransaction(hitchRequest, holder);
             }
         });
 
