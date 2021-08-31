@@ -30,5 +30,6 @@ public interface HitchRequestService {
     @GET("hitchrequest/approve/{hitchRequestId}")
     Call<Boolean> approveHitchRq(@Path("hitchRequestId") int id);
 
-
+    @GET("hitchrequest/hrq/{hitchRequestId}")
+    Call<HitchRequest> getHitchRequestById(@Path("hitchRequestId") int id);
 }

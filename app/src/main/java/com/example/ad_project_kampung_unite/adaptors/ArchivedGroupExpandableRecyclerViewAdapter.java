@@ -183,7 +183,7 @@ public class ArchivedGroupExpandableRecyclerViewAdapter extends RecyclerView.Ada
         holder.receivepaymentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                loadConfirmDialog(hitchRequest, holder);
+                loadConfirmDialog(hitchRequest.getId(), holder);
             }
         });
     }
@@ -194,7 +194,7 @@ public class ArchivedGroupExpandableRecyclerViewAdapter extends RecyclerView.Ada
         return hitchRequestsList.size();
     }
 
-    private void loadConfirmDialog(HitchRequest hitchRequest, ViewHolder holder) {
+    private void loadConfirmDialog(int hitchRequestId, ViewHolder holder) {
         // Create dialog to confirm close requests
         AlertDialog.Builder alert = new AlertDialog.Builder(context);
         alert.setMessage(R.string.receive_payment_confirm_msg);
@@ -202,9 +202,10 @@ public class ArchivedGroupExpandableRecyclerViewAdapter extends RecyclerView.Ada
         alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                //update buyer's confirm transaction
-                hitchRequest.setBuyerConfirmTransaction(true);
-                updateConrirmTransaction(hitchRequest, holder);
+                //retrieve hitchRequest again, then update buyer's confirm transaction
+                getHitchRequestAndUpdateConfirmTransaction(hitchRequestId, holder);
+//                hitchRequest.setBuyerConfirmTransaction(true);
+//                updateConrirmTransaction(hitchRequest, holder);
             }
         });
 
@@ -214,6 +215,33 @@ public class ArchivedGroupExpandableRecyclerViewAdapter extends RecyclerView.Ada
         });
 
         alert.show();
+    }
+
+    private void getHitchRequestAndUpdateConfirmTransaction(int hitchRequestId, ViewHolder holder) {
+        hitchRequestService = RetrofitClient.createService(HitchRequestService.class);
+        //retrieve hitchRequest
+        Call<HitchRequest> call = hitchRequestService.getHitchRequestById(hitchRequestId);
+        call.enqueue(new Callback<HitchRequest>() {
+            @Override
+            public void onResponse(Call<HitchRequest> call, Response<HitchRequest> response) {
+                if (response.isSuccessful()) {
+                    HitchRequest hitchRequest = response.body();
+
+                    //update buyer's confirm transaction
+                    hitchRequest.setBuyerConfirmTransaction(true);
+                    updateConrirmTransaction(hitchRequest, holder);
+                }
+                else {
+                    Log.e("getHitchRequestById Error", response.errorBody().toString());
+                }
+            }
+            @Override
+            public void onFailure(Call<HitchRequest> call, Throwable t) {
+                call.cancel();
+                Log.w("Failure", "Failure!");
+                t.printStackTrace();
+            }
+        });
     }
 
     private void updateConrirmTransaction(HitchRequest hitchRequest, ViewHolder holder) {
