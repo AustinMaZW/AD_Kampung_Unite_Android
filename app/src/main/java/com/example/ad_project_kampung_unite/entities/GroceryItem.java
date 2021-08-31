@@ -1,6 +1,8 @@
 package com.example.ad_project_kampung_unite.entities;
 
-public class GroceryItem {
+import java.io.Serializable;
+
+public class GroceryItem implements Serializable {
 	private int id;
 	private int quantity;
 	private double subtotal;

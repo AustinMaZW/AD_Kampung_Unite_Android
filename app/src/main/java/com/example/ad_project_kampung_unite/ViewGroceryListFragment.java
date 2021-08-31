@@ -4,12 +4,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentResultListener;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,10 +26,12 @@ import com.example.ad_project_kampung_unite.data.remote.GroceryListService;
 import com.example.ad_project_kampung_unite.data.remote.GroupPlanService;
 import com.example.ad_project_kampung_unite.data.remote.HitchRequestService;
 import com.example.ad_project_kampung_unite.data.remote.RetrofitClient;
+import com.example.ad_project_kampung_unite.data.remote.UserDetailService;
 import com.example.ad_project_kampung_unite.entities.GroceryItem;
 import com.example.ad_project_kampung_unite.entities.GroceryList;
 import com.example.ad_project_kampung_unite.entities.GroupPlan;
 import com.example.ad_project_kampung_unite.entities.HitchRequest;
+import com.example.ad_project_kampung_unite.entities.UserDetail;
 import com.example.ad_project_kampung_unite.entities.enums.GroupPlanStatus;
 import com.example.ad_project_kampung_unite.entities.enums.RequestStatus;
 import com.example.ad_project_kampung_unite.manage_grocery_list.EditGroceryListFragment;
@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -61,15 +62,17 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
     private HitchRequestService hitchRequestService;
     private GroceryListService groceryListService;
     private GroupPlanService groupPlanService;
+    private UserDetailService userDetailService;
     private GroupPlan approvedGroupPlan;
     private GroceryList groceryList;
+    private UserDetail buyerDetail;
 
     private Context context;
 
     //views here
     private View layoutRoot;
     private RecyclerView rvHitchRequests,rvGroceryItems;
-    private TextView rqStatusTitle, rqStatDescription, pickupStore, pickupLoc, pickupTime;
+    private TextView rqStatusTitle, rqStatDescription, pickupStore, pickupLoc, pickupTime, buyerName, buyerPhone;
     private TextView tvSubtotalAmount, tvGstAmount, tvServicefeeAmount, tvTotalAmount, tvPaymentStatus;
     private Button hitchRqButton, quitGroupBtn, btnCompletePayment, editListBtn;
     private LinearLayout llPaymentComponent;
@@ -104,6 +107,8 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
         hitchRqButton = layoutRoot.findViewById(R.id.hitch_rq_btn);
         hitchRqButton.setOnClickListener(this);
         quitGroupBtn = layoutRoot.findViewById(R.id.quit_group);
+        buyerName = layoutRoot.findViewById(R.id.hitcherview_buyer_name);
+        buyerPhone = layoutRoot.findViewById(R.id.hitcherview_buyer_phone);
 
         setQuitGroupBtn();       //for quitGroup
         editListBtn = layoutRoot.findViewById(R.id.edit_groceries);
@@ -206,22 +211,27 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
 
                 if (response.isSuccessful()) {
                     hitchRequests = response.body();
-                    //logic if there is an approved request, then do following
+                    //if no requests done by hitcher, prompt them to join a group
                     if(hitchRequests.size()==0){
                         rqStatusTitle.setText("No request at this time");
                         rqStatDescription.setText("Please find a group by clicking 'FIND ANOTHER GROUP'");
+                        layoutRoot.findViewById(R.id.status_approved).setVisibility(View.GONE);
                     }
-                    hitchRequests.stream().forEach(x->{
-                        if (x.getRequestStatus() == RequestStatus.ACCEPTED){
-                            updateApprovedStatUI(x);
+
+                    //below to check if hitcher already been accepted
+                    boolean accepted=false;
+                    for (HitchRequest hitchRequest: hitchRequests) {
+                        if(hitchRequest.getRequestStatus() == RequestStatus.ACCEPTED){
+                            accepted = true;
+                            findBuyerDetail(hitchRequest);
                         }
-                    });
-                    if(approvedGroupPlan==null){
-                        //remove views that aren't applicable to status == pending
+                    }
+
+                    if(!accepted){      //if not accepted, then inflate all the request details
                         layoutRoot.findViewById(R.id.status_approved).setVisibility(View.GONE);
                         buildHitchRequestRV();
+                        fragRoot.setVisibility(View.VISIBLE);
                     }
-                    fragRoot.setVisibility(View.VISIBLE);
                 } else {
                     Log.e("getHitchRequestsByGroceryListId Error", response.errorBody().toString());
                 }
@@ -229,6 +239,34 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
 
             @Override
             public void onFailure(Call<List<HitchRequest>> call, Throwable t) {
+                // like no internet connection / the website doesn't exist
+                call.cancel();
+                Log.w("Failure", "Failure!");
+                t.printStackTrace();
+            }
+        });
+    }
+
+    private void findBuyerDetail(HitchRequest hitchRequest){
+        userDetailService = RetrofitClient.createService(UserDetailService.class);
+        Call<UserDetail> call = userDetailService.findBuyerDetail(hitchRequest.getId());
+
+        call.enqueue(new Callback<UserDetail>() {
+            @Override
+            public void onResponse(Call<UserDetail> call, Response<UserDetail> response) {
+
+                if (response.isSuccessful()) {
+                    buyerDetail = response.body();
+                    updateApprovedStatUI(hitchRequest, buyerDetail);
+
+                    fragRoot.setVisibility(View.VISIBLE);
+                } else {
+                    Log.e("getHitchRequestsByGroceryListId Error", response.errorBody().toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserDetail> call, Throwable t) {
                 // like no internet connection / the website doesn't exist
                 call.cancel();
                 Log.w("Failure", "Failure!");
@@ -270,8 +308,11 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
     }
 
 
-    private void updateApprovedStatUI(HitchRequest hitchRequest) {
+    private void updateApprovedStatUI(HitchRequest hitchRequest, UserDetail userDetail) {
         System.out.println("There is an accepted request, change layout");
+//        layoutRoot.findViewById(R.id.status_approved).setVisibility(View.VISIBLE);
+//        layoutRoot.findViewById(R.id.rv_hitch_rq).setVisibility(View.GONE);
+
         if(hitchRequest.getGroupPlan().getGroupPlanStatus()!=GroupPlanStatus.AVAILABLE){
             quitGroupBtn.setVisibility(View.GONE);
         }
@@ -281,6 +322,10 @@ public class ViewGroceryListFragment extends Fragment implements View.OnClickLis
         rqStatDescription.setVisibility(View.GONE);
         pickupStore.setText("Buyer will purchase from: " + approvedGroupPlan.getStoreName());
         pickupLoc.setText("Pick up Location: " + approvedGroupPlan.getPickupAddress());
+        buyerName.setText("Buyer's Name: " + userDetail.getFirstName());
+        if (userDetail.getPhoneNumber() !=null){
+            buyerPhone.setText("Buyer's Phone: "+ userDetail.getPhoneNumber());
+        }
 
         LocalDateTime pickupTimeFrom =  hitchRequest.getPickupTimeChosen();
         LocalTime pickupTimeTo = pickupTimeFrom.plusMinutes(30).toLocalTime();
