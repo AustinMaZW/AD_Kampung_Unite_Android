@@ -2,6 +2,7 @@ package com.example.ad_project_kampung_unite.manage_grocery_list;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -88,11 +90,30 @@ public class BuyerFragment extends Fragment {
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveGroupPlanDetails();
+                try {
+                    saveGroupPlanDetails();
+                } catch (Exception e) {
+                    showDialog("Invalid Group Plan Details!","Please check all fields");
+                }
             }
         });
 
         return layoutRoot;
+    }
+
+    private void showDialog(String title,String msg){
+        AlertDialog.Builder radioDialog = new AlertDialog.Builder(getContext());
+        radioDialog.setTitle(title).setMessage(msg).setIcon(R.drawable.logo_small).setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                submitBtn.setEnabled(true);
+            }
+        }).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        }).show();
     }
 
     public void createDatePickerDialog(EditText date) {

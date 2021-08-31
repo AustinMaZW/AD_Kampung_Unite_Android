@@ -171,7 +171,7 @@ public class HitcherDetailFragment extends Fragment{
                     saveHitcherDetail();
                 }catch (Exception e){
                     //if there is any accident, show dialog to user to tell them hitcher detail is invalid
-                    showDialog("Warning!!!!!!!!","Invalid Hitcher Detail");
+                    showDialog("Invalid Hitcher Detail!","Please check all fields");
                 }
             }
         });
