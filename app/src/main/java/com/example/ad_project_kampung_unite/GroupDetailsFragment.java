@@ -581,11 +581,26 @@ public class GroupDetailsFragment extends Fragment {
             List<HitchRequest> tempHitchRequestList = new ArrayList<>();
 
             if(direction == ItemTouchHelper.LEFT){
-                hitchRq.setRequestStatus(RequestStatus.REJECTED);
-                updateHitchRequestStatusToServer(hitchRq);  //send http rq to server to approve
 
-                Snackbar.make(rvHitchRequests, "Hitch request rejected", Snackbar.LENGTH_LONG).show();
+                AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+                alert.setMessage("Reject hitch request?");
 
+                alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        hitchRq.setRequestStatus(RequestStatus.REJECTED);
+                        updateHitchRequestStatusToServer(hitchRq);  //send http rq to server to approve
+                        Snackbar.make(rvHitchRequests, "Hitch request rejected", Snackbar.LENGTH_LONG).show();
+                    }
+                });
+
+                alert.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    }
+                });
+
+                alert.show();
 
             }
             else if (direction == ItemTouchHelper.RIGHT){
